@@ -16,7 +16,7 @@
 <meta property="og:description" content="概念 单例模式(Singleton Design Pattern):一个类只允许创建一个对象（或者实例）     要解决的问题&#x2F;用途 资源访问冲突 表示全局唯一类,如配置信息类">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-03-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-19T05:24:17.091Z">
+<meta property="article:modified_time" content="2021-03-19T08:46:32.284Z">
 <meta property="article:author" content="BugMakerPro">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -200,7 +200,7 @@
 <th>实现方式</th>
 <th>概念</th>
 <th>是否线程安全</th>
-<th>是否延迟加载</th>
+<th>是否支持延迟加载</th>
 <th>适用场景</th>
 </tr>
 </thead>
@@ -220,24 +220,24 @@
 </tr>
 <tr>
 <td>双重检测</td>
-<td>单元格</td>
-<td></td>
-<td></td>
-<td></td>
+<td>只要instance被创建之后，即便再调用getInstance()函数也不会再进入到加锁逻辑中了。<br>所以，这种实现方式解决了懒汉式并发度低的问题</td>
+<td>是</td>
+<td>是</td>
+<td>详见代码</td>
 </tr>
 <tr>
 <td>静态内部类</td>
-<td>单元格</td>
-<td></td>
-<td></td>
-<td></td>
+<td>java特有,在此不做讲解</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>枚举</td>
-<td>单元格</td>
-<td></td>
-<td></td>
-<td></td>
+<td>java特有,在此不做讲解</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 </tbody></table>
 <hr>
