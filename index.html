@@ -169,6 +169,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-slice实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/22/design/slice_practice01/">一次slice bug</a>
+    </h1>
+  
+
+        
+        <a href="/2021/03/22/design/slice_practice01/" class="archive-article-date">
+  	<time datetime="2021-03-22T08:40:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/2021/03/22/design/slice_practice01/1.png"></p>
+<h5 id="一次slice-bug"><a href="#一次slice-bug" class="headerlink" title="一次slice bug"></a>一次slice bug</h5><blockquote>
+<p>bug源：今天重构前同事的遗留代码,在review过程中,有段代码看起来有些别扭,有几分线程不安全的味道<br>bug描述：多个协程往同一个slice里追加操作需要开发者保证线程安全<br>bug修复： 详见代码  </p>
+</blockquote>
+<hr>
+        
+          <a class="article-more-a" href="/2021/03/22/design/slice_practice01/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">GO实践</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/design//" class="article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/03/22/design/slice_practice01/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-单例模式-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -190,7 +281,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="/2021/03/22/design/single01/1.png">   </p>
-<img src="/2021/03/22/design/single01/1.png" class title="This is an example image">
 <h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
 <p>单例模式(<strong>Singleton Design Pattern</strong>):一个类只允许创建一个对象（或者实例）  </p>
 </blockquote>
@@ -414,6 +504,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">GO实践</a>
               </li>
             
             <div class="clearfix"></div>
