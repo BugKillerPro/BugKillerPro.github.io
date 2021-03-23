@@ -6,26 +6,26 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://bugmakerpro.github.io">
-  <title>Category: slice | BugMakerPro</title>
+  <title>Category: GO实践 | BugMakerPro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="一次slice bug bug源：今天重构前同事的遗留代码,在review过程中,有段代码看起来有些别扭,有几分线程不安全的味道bug描述：多个协程往同一个slice里追加操作需要开发者保证线程安全bug修复： 详见代码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一次slice bug">
-<meta property="og:url" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/index.html">
+<meta property="og:url" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/index.html">
 <meta property="og:site_name" content="BugMakerPro">
 <meta property="og:description" content="一次slice bug bug源：今天重构前同事的遗留代码,在review过程中,有段代码看起来有些别扭,有几分线程不安全的味道bug描述：多个协程往同一个slice里追加操作需要开发者保证线程安全bug修复： 详见代码">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/1.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/5.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/2.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/3.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/4.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/1.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/5.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/2.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/3.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/4.png">
 <meta property="article:published_time" content="2021-03-22T08:40:26.000Z">
-<meta property="article:modified_time" content="2021-03-22T09:53:06.796Z">
+<meta property="article:modified_time" content="2021-03-23T09:00:10.221Z">
 <meta property="article:author" content="BugMakerPro">
 <meta property="article:tag" content="GO实践">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/1.png">
+<meta name="twitter:image" content="https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/1.png">
   
     <link rel="alternative" href="/atom.xml" title="BugMakerPro" type="application/atom+xml">
   
@@ -72,7 +72,7 @@
 	        
 				<li><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li>
 	        
-				<li><a href="/tag/go%E5%AE%9E%E8%B7%B5/">go实践</a></li>
+				<li><a href="/tags/GO%E5%AE%9E%E8%B7%B5/">GO实践</a></li>
 	        
 				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 	        
@@ -158,7 +158,7 @@
 		        
 					<li style="width: 20%"><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li>
 		        
-					<li style="width: 20%"><a href="/tag/go%E5%AE%9E%E8%B7%B5/">go实践</a></li>
+					<li style="width: 20%"><a href="/tags/GO%E5%AE%9E%E8%B7%B5/">GO实践</a></li>
 		        
 					<li style="width: 20%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 		        
@@ -187,7 +187,7 @@
   
 
         
-        <a href="/2021/03/22/design/slice_practice01/" class="archive-article-date">
+        <a href="/2021/03/22/go-practice/slice_practice01/" class="archive-article-date">
   	<time datetime="2021-03-22T08:40:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-22</time>
 </a>
         
@@ -195,7 +195,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/2021/03/22/design/slice_practice01/1.png"></p>
+        <p><img src="/2021/03/22/go-practice/slice_practice01/1.png"></p>
 <h5 id="一次slice-bug"><a href="#一次slice-bug" class="headerlink" title="一次slice bug"></a>一次slice bug</h5><blockquote>
 <p>bug源：今天重构前同事的遗留代码,在review过程中,有段代码看起来有些别扭,有几分线程不安全的味道<br>bug描述：多个协程往同一个slice里追加操作需要开发者保证线程安全<br>bug修复： 详见代码  </p>
 </blockquote>
@@ -216,16 +216,16 @@
 </blockquote>
 </li>
 </ul>
-<p>理解为什么这个失败会发生，请看看这个旧例子的 x 的内存布局<br><img src="/2021/03/22/design/slice_practice01/5.png">  </p>
+<p>理解为什么这个失败会发生，请看看这个旧例子的 x 的内存布局<br><img src="/2021/03/22/go-practice/slice_practice01/5.png">  </p>
 <p>x 没有足够的容量进行修改</p>
 <p>Go 语言发现没有足够的内存空间来存储 <em>hello</em>,<em>world</em> 和　<em>goodbye</em>, <em>bob</em>,  </p>
 <p>于是分配的新的内存给 <em>y</em> 与 <em>z</em>。   </p>
 <p>数据竞争不会在多进程读取内存时发生，<em>x</em> 没有被修改。  </p>
 <p>这里没有冲突，也就没有竞争。  </p>
-<p><img src="/2021/03/22/design/slice_practice01/2.png">  </p>
+<p><img src="/2021/03/22/go-practice/slice_practice01/2.png">  </p>
 <p> <em>z</em> 与 <em>y</em> 获取新的内存空间  </p>
-<p>在新的代码里，事情不一样了<br><img src="/2021/03/22/design/slice_practice01/3.png"><br><em>x</em> 有更多的容量</p>
-<p>在这里，go 注意到有足够的内存存放 <em>hello</em>, <em>world</em>，<br>另一个协程也发现有足够的空间存放 <em>goodbye</em>, <em>bob</em>，<br>这个竞争的发生是因为这两个协程都尝试往同一个内存空间写入，<br>谁也不知道谁是赢家。<br><img src="/2021/03/22/design/slice_practice01/4.png"><br>这是 Go 语言的一个特性而非 bug ，append 不会强制每一次调用它都申请新的内存。<br>它允许用户在循环内进行 append 操作时不会破坏垃圾回收机制。<br>缺点是你必须清楚知道在多个协程对 slice 的操作。</p>
+<p>在新的代码里，事情不一样了<br><img src="/2021/03/22/go-practice/slice_practice01/3.png"><br><em>x</em> 有更多的容量</p>
+<p>在这里，go 注意到有足够的内存存放 <em>hello</em>, <em>world</em>，<br>另一个协程也发现有足够的空间存放 <em>goodbye</em>, <em>bob</em>，<br>这个竞争的发生是因为这两个协程都尝试往同一个内存空间写入，<br>谁也不知道谁是赢家。<br><img src="/2021/03/22/go-practice/slice_practice01/4.png"><br>这是 Go 语言的一个特性而非 bug ，append 不会强制每一次调用它都申请新的内存。<br>它允许用户在循环内进行 append 操作时不会破坏垃圾回收机制。<br>缺点是你必须清楚知道在多个协程对 slice 的操作。</p>
 <h6 id="疑问：slice的append操作如何保证线程安全？"><a href="#疑问：slice的append操作如何保证线程安全？" class="headerlink" title="疑问：slice的append操作如何保证线程安全？"></a>疑问：slice的append操作如何保证线程安全？</h6><blockquote>
 <p>最简单的解决方法是不使用共享状态的第一个变量来进行 append 。<br>   相反，根据你的需要来 make 一个新的 slice ，<br>   使用这个新的 slice 作为 append 的第一个变量。<br>   下面是失败的测试示例的修正版，这里的替代方法是使用 copy </p>
 </blockquote>
@@ -294,7 +294,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/design//" class="article-tag-list-link color5">设计模式</a>
+        			<a href="/categories/go-practice//" class="article-tag-list-link color5">GO实践</a>
         		</li>
       		
 		</ul>
@@ -349,7 +349,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/" alt="微信分享二维码">
     </div>
 </div>
 
