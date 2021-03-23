@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://bugmakerpro.github.io/2021/03/23/design/factory01/</loc>
+    
+    <lastmod>2021-03-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://bugmakerpro.github.io/2021/03/22/design/slice_practice01/</loc>
     
     <lastmod>2021-03-22</lastmod>
@@ -39,7 +46,7 @@
 
   <url>
     <loc>https://bugmakerpro.github.io/</loc>
-    <lastmod>2021-03-22</lastmod>
+    <lastmod>2021-03-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -47,14 +54,14 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2021-03-22</lastmod>
+    <lastmod>2021-03-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugmakerpro.github.io/tags/GO%E5%AE%9E%E8%B7%B5/</loc>
-    <lastmod>2021-03-22</lastmod>
+    <lastmod>2021-03-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -63,7 +70,7 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/categories/design/</loc>
-    <lastmod>2021-03-22</lastmod>
+    <lastmod>2021-03-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
