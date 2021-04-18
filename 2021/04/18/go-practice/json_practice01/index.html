@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://bugmakerpro.github.io">
-  <title>Archives: 2021 | BugMakerPro</title>
+  <title>Category: GO实践 | BugMakerPro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="牧码人">
-<meta property="og:type" content="website">
-<meta property="og:title" content="BugMakerPro">
-<meta property="og:url" content="https://bugmakerpro.github.io/archives/2021/index.html">
+  <meta name="description" content="go自定义json,CustomMarshalJSON 需求描述: golang 的原生 json package 有时会有一些与预期不符合的情况,例如对接编码(json.Marshal) golang 会默认 “整型浮点数” 如: 1.00 转换为json 的整型 1, 但有时并不希望这种转换.所以就有了CustomMarshalJSON,即自定义json">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go自定义json.md">
+<meta property="og:url" content="https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/index.html">
 <meta property="og:site_name" content="BugMakerPro">
-<meta property="og:description" content="牧码人">
+<meta property="og:description" content="go自定义json,CustomMarshalJSON 需求描述: golang 的原生 json package 有时会有一些与预期不符合的情况,例如对接编码(json.Marshal) golang 会默认 “整型浮点数” 如: 1.00 转换为json 的整型 1, 但有时并不希望这种转换.所以就有了CustomMarshalJSON,即自定义json">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-18T04:39:58.000Z">
+<meta property="article:modified_time" content="2021-04-18T05:28:36.379Z">
 <meta property="article:author" content="BugMakerPro">
-<meta property="article:tag" content="Go Java Vue">
+<meta property="article:tag" content="GO实践">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="BugMakerPro" type="application/atom+xml">
@@ -167,36 +169,76 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-go自定义json-md" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      go自定义json.md
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/04/18/go-practice/json_practice01/" class="archive-article-date">
+
+        
+        <a href="/2021/04/18/go-practice/json_practice01/" class="archive-article-date">
   	<time datetime="2021-04-18T04:39:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-04-18</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/04/18/go-practice/json_practice01/">go自定义json.md</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h5 id="go自定义json-CustomMarshalJSON"><a href="#go自定义json-CustomMarshalJSON" class="headerlink" title="go自定义json,CustomMarshalJSON"></a>go自定义json,CustomMarshalJSON</h5><blockquote>
+<p>需求描述: golang 的原生 json package 有时会有一些与预期不符合的情况,<br>例如对接编码(json.Marshal) golang 会默认 “整型浮点数” 如: 1.00 转换为json 的整型 1, 但有时并不希望这种转换.<br>所以就有了CustomMarshalJSON,即自定义json</p>
+</blockquote>
+<hr>
+<span id="more"></span>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://pkg.go.dev/encoding/json#ex-package--CustomMarshalJSON" title="Markdown">官方例子</a></p>
+</blockquote>
+<h6 id="Marshaler-和-Unmarshaler-源码"><a href="#Marshaler-和-Unmarshaler-源码" class="headerlink" title="Marshaler 和 Unmarshaler 源码"></a>Marshaler 和 Unmarshaler 源码</h6><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="comment">// Marshaler is the interface implemented by types that</span></span><br><span class="line"><span class="comment">// can marshal themselves into valid JSON.</span></span><br><span class="line"><span class="keyword">type</span> Marshaler <span class="keyword">interface</span> &#123;</span><br><span class="line">	MarshalJSON() ([]<span class="keyword">byte</span>, error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unmarshaler is the interface implemented by types</span></span><br><span class="line"><span class="comment">// that can unmarshal a JSON description of themselves.</span></span><br><span class="line"><span class="comment">// The input can be assumed to be a valid encoding of</span></span><br><span class="line"><span class="comment">// a JSON value. UnmarshalJSON must copy the JSON data</span></span><br><span class="line"><span class="comment">// if it wishes to retain the data after returning.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// By convention, to approximate the behavior of Unmarshal itself,</span></span><br><span class="line"><span class="comment">// Unmarshalers implement UnmarshalJSON([]byte(&quot;null&quot;)) as a no-op.</span></span><br><span class="line"><span class="keyword">type</span> Unmarshaler <span class="keyword">interface</span> &#123;</span><br><span class="line">	UnmarshalJSON([]<span class="keyword">byte</span>) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="你只要能看懂一个单词themselves，你就明白该怎么解决上面需求描述里的问题了。"><a href="#你只要能看懂一个单词themselves，你就明白该怎么解决上面需求描述里的问题了。" class="headerlink" title="你只要能看懂一个单词themselves，你就明白该怎么解决上面需求描述里的问题了。"></a>你只要能看懂一个单词<code>themselves</code>，你就明白该怎么解决上面需求描述里的问题了。</h2><h6 id="例1："><a href="#例1：" class="headerlink" title="例1："></a>例1：</h6><blockquote>
+<p>解决浮点数据类型编码小数位丢失的问题</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;bytes&quot;</span></span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;strconv&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Person <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Util <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> StrictFloat64 <span class="keyword">float64</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义类型上实现 Marshaler 的接口, 在进行 Marshal 时就会使用此除的实现来进行 json 编码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f StrictFloat64)</span> <span class="title">MarshalJSON</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">float64</span>(f) == <span class="keyword">float64</span>(<span class="keyword">int</span>(f)) &#123;</span><br><span class="line">		<span class="keyword">return</span> []<span class="keyword">byte</span>(strconv.FormatFloat(<span class="keyword">float64</span>(f), <span class="string">&#x27;f&#x27;</span>, <span class="number">-1</span>, <span class="number">64</span>)), <span class="literal">nil</span> <span class="comment">// 可以自由调整精度</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">byte</span>(strconv.FormatFloat(<span class="keyword">float64</span>(f), <span class="string">&#x27;f&#x27;</span>, <span class="number">-1</span>, <span class="number">64</span>)), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> StrictPerson <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Util StrictFloat64</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	p1 := Person&#123;<span class="string">&quot;ross&quot;</span>, <span class="number">1.01</span>&#125;</span><br><span class="line">	p2 := Person&#123;<span class="string">&quot;jack&quot;</span>, <span class="number">1.00</span>&#125; </span><br><span class="line">	p1Json, _ := json.Marshal(p1)</span><br><span class="line">	fmt.Println(<span class="string">&quot;\&quot;ross\&quot;, 1.01 --&gt; &quot;</span> + <span class="keyword">string</span>(p1Json))</span><br><span class="line">	p2Json, _ := json.Marshal(p2)</span><br><span class="line">	fmt.Println(<span class="string">&quot;\&quot;ross\&quot;, 1.00 --&gt; &quot;</span> + <span class="keyword">string</span>(p2Json))</span><br><span class="line"></span><br><span class="line">	sp1 := StrictPerson&#123;<span class="string">&quot;ross&quot;</span>, <span class="number">1.01</span>&#125;</span><br><span class="line">	sp2 := StrictPerson&#123;<span class="string">&quot;jack&quot;</span>, <span class="number">1.00001</span>&#125; </span><br><span class="line">	sp1Json, _ := json.Marshal(sp1)</span><br><span class="line">	fmt.Println(<span class="string">&quot;\&quot;ross\&quot;, 1.01 (自定义 StrictFloat64 类型)--&gt; &quot;</span> + <span class="keyword">string</span>(sp1Json))</span><br><span class="line">	sp2Json, _ := json.Marshal(sp2)</span><br><span class="line">	fmt.Println(<span class="string">&quot;\&quot;ross\&quot;, 1.00 (自定义 StrictFloat64 类型) --&gt; &quot;</span> + <span class="keyword">string</span>(sp2Json))</span><br><span class="line"></span><br><span class="line">	p_Demo := &amp;StrictPerson&#123;&#125;</span><br><span class="line">	json.Unmarshal(sp2Json, p_Demo)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v&quot;</span>, p_Demo)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出:</span></span><br><span class="line"><span class="comment">//&quot;ross&quot;, 1.01 --&gt; &#123;&quot;Name&quot;:&quot;ross&quot;,&quot;Util&quot;:1.01&#125;</span></span><br><span class="line"><span class="comment">//&quot;ross&quot;, 1.00 --&gt; &#123;&quot;Name&quot;:&quot;jack&quot;,&quot;Util&quot;:1&#125;</span></span><br><span class="line"><span class="comment">//&quot;ross&quot;, 1.01 (自定义 StrictFloat64 类型)--&gt; &#123;&quot;Name&quot;:&quot;ross&quot;,&quot;Util&quot;:1.01&#125;</span></span><br><span class="line"><span class="comment">//&quot;ross&quot;, 1.00 (自定义 StrictFloat64 类型) --&gt; &#123;&quot;Name&quot;:&quot;jack&quot;,&quot;Util&quot;:1.00001&#125;</span></span><br><span class="line"><span class="comment">//&amp;main.StrictPerson&#123;Name:&quot;jack&quot;, Util:1.00001&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h6 id="例2："><a href="#例2：" class="headerlink" title="例2："></a>例2：</h6><blockquote>
+<p>解决非2 RFC3339 标准格式时间转换问题</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ExTime <span class="keyword">struct</span> &#123;</span><br><span class="line">	time.Time</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *ExTime)</span> <span class="title">UnmarshalJSON</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	b = bytes.Trim(b, <span class="string">&quot;\&quot;&quot;</span>)  <span class="comment">// 此除需要去掉传入的数据的两端的 &quot;&quot;</span></span><br><span class="line">	ext, err := time.Parse(ExTimeUnmarshalTimeFormat, <span class="keyword">string</span>(b))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	&#125;</span><br><span class="line">	*t = ExTime&#123;ext&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t ExTime)</span> <span class="title">MarshalJSON</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> stamp = fmt.Sprintf(<span class="string">&quot;\&quot;%s\&quot;&quot;</span>, time.Time(t.Time).Format(ExTimeMarshalTimeFormat))</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">byte</span>(stamp), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ExTimeUnmarshalTimeFormat = <span class="string">&quot;2006-01-02 15:04:05&quot;</span></span><br><span class="line"><span class="keyword">var</span> ExTimeMarshalTimeFormat = <span class="string">&quot;2006-01-02 15:04:05&quot;</span></span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+<h6 id="例3："><a href="#例3：" class="headerlink" title="例3："></a>例3：</h6><blockquote>
+<p>解决内嵌结构体序列化问题</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Message <span class="keyword">struct</span> &#123;</span><br><span class="line">    From <span class="keyword">string</span>     <span class="string">`json:&quot;from&quot;`</span></span><br><span class="line">    To   <span class="keyword">string</span>     <span class="string">`json:&quot;to&quot;`</span></span><br><span class="line">    Data <span class="keyword">string</span> <span class="string">`json:&quot;data&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    msg := Message&#123;</span><br><span class="line">        From: <span class="string">&quot;XiaoMing&quot;</span>,</span><br><span class="line">        To:   <span class="string">&quot;LiGang&quot;</span>,</span><br><span class="line">        Data: <span class="string">`&#123;&quot;title&quot;:&quot;test&quot;,&quot;body&quot;:&quot;something&quot;&#125;`</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    jsonData, err := json.Marshal(msg)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(jsonData))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在上面的例子中，Data字段是string类型，但是保存的内容是json格式的数据，这个时候，程序输出：</span></span><br><span class="line"><span class="comment">// &#123;&quot;from&quot;:&quot;XiaoMing&quot;,&quot;to&quot;:&quot;LiGang&quot;,&quot;data&quot;:&quot;&#123;\&quot;title\&quot;:\&quot;test\&quot;,\&quot;body\&quot;:\&quot;something\&quot;&#125;&quot;&#125;</span></span><br><span class="line"><span class="comment">// 序列化之后的data是一个字符串,而不是我们想要的json结构的字符串</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解决办法：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> JsonString <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(j JsonString)</span> <span class="title">MarshalJSON</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;marshal...&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> []<span class="keyword">byte</span>(j), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Message2 <span class="keyword">struct</span> &#123;</span><br><span class="line">    From <span class="keyword">string</span>     <span class="string">`json:&quot;from&quot;`</span></span><br><span class="line">    To   <span class="keyword">string</span>     <span class="string">`json:&quot;to&quot;`</span></span><br><span class="line">    Data JsonString <span class="string">`json:&quot;data&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -208,7 +250,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -221,191 +263,104 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/03/23/design/factory01/" class="archive-article-date">
-  	<time datetime="2021-03-23T08:38:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-23</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2021/03/23/design/factory01/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">工厂模式</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/03/23/design/factory01/">工厂模式</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/design//" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/03/22/go-practice/slice_practice01/" class="archive-article-date">
-  	<time datetime="2021-03-22T08:40:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/03/22/go-practice/slice_practice01/">一次slice bug</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">GO实践</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/go-practice//" class="article-tag-list-link color5">GO实践</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/03/22/design/single01/" class="archive-article-date">
-  	<time datetime="2021-03-22T07:59:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/03/22/design/single01/">单例模式.md</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/design//" class="article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/03/22/uncatalog/ckmkaw47z0001bgr75rr4bxhy/" class="archive-article-date">
-  	<time datetime="2021-03-22T07:57:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/03/22/uncatalog/ckmkaw47z0001bgr75rr4bxhy/">article_name.md</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -428,10 +383,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
-		isCategory: false,
+		isCategory: true,
 		open_in_new: true,
 		toc_hide_index: true,
 		root: "/",
