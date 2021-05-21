@@ -70,6 +70,8 @@
 	        
 				<li><a href="/tags/GO%E5%AE%9E%E8%B7%B5/">GO实践</a></li>
 	        
+				<li><a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a></li>
+	        
 				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 	        
 			</ul>
@@ -130,6 +132,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -148,15 +152,17 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 20%"><a href="/">主页</a></li>
+					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
 		        
-					<li style="width: 20%"><a href="/archives/index.html">归档</a></li>
+					<li style="width: 16.666666666666668%"><a href="/archives/index.html">归档</a></li>
 		        
-					<li style="width: 20%"><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li>
 		        
-					<li style="width: 20%"><a href="/tags/GO%E5%AE%9E%E8%B7%B5/">GO实践</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/GO%E5%AE%9E%E8%B7%B5/">GO实践</a></li>
 		        
-					<li style="width: 20%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a></li>
+		        
+					<li style="width: 16.666666666666668%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
 		        
 				</ul>
 			</nav>
@@ -216,27 +222,6 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Message <span class="keyword">struct</span> &#123;</span><br><span class="line">    From <span class="keyword">string</span>     <span class="string">`json:&quot;from&quot;`</span></span><br><span class="line">    To   <span class="keyword">string</span>     <span class="string">`json:&quot;to&quot;`</span></span><br><span class="line">    Data <span class="keyword">string</span> <span class="string">`json:&quot;data&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    msg := Message&#123;</span><br><span class="line">        From: <span class="string">&quot;XiaoMing&quot;</span>,</span><br><span class="line">        To:   <span class="string">&quot;LiGang&quot;</span>,</span><br><span class="line">        Data: <span class="string">`&#123;&quot;title&quot;:&quot;test&quot;,&quot;body&quot;:&quot;something&quot;&#125;`</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    jsonData, err := json.Marshal(msg)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(jsonData))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在上面的例子中，Data字段是string类型，但是保存的内容是json格式的数据，这个时候，程序输出：</span></span><br><span class="line"><span class="comment">// &#123;&quot;from&quot;:&quot;XiaoMing&quot;,&quot;to&quot;:&quot;LiGang&quot;,&quot;data&quot;:&quot;&#123;\&quot;title\&quot;:\&quot;test\&quot;,\&quot;body\&quot;:\&quot;something\&quot;&#125;&quot;&#125;</span></span><br><span class="line"><span class="comment">// 序列化之后的data是一个字符串,而不是我们想要的json结构的字符串</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解决办法：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> JsonString <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(j JsonString)</span> <span class="title">MarshalJSON</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;marshal...&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> []<span class="keyword">byte</span>(j), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Message2 <span class="keyword">struct</span> &#123;</span><br><span class="line">    From <span class="keyword">string</span>     <span class="string">`json:&quot;from&quot;`</span></span><br><span class="line">    To   <span class="keyword">string</span>     <span class="string">`json:&quot;to&quot;`</span></span><br><span class="line">    Data JsonString <span class="string">`json:&quot;data&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -466,6 +451,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">GO实践,每天一个bug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
             
             <div class="clearfix"></div>
