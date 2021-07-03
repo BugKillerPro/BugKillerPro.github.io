@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="https://bugmakerpro.github.io">
   <title>linux回忆录 | BugMakerPro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线,在服务器上敲命令的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
+  <meta name="description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线和应用工程师的配备,在服务器上敲命令和写shell脚本的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux回忆录">
 <meta property="og:url" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/index.html">
 <meta property="og:site_name" content="BugMakerPro">
-<meta property="og:description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线,在服务器上敲命令的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
+<meta property="og:description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线和应用工程师的配备,在服务器上敲命令和写shell脚本的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/0.png">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/vim_op.png">
@@ -28,8 +28,20 @@
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/9.png">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/10.png">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/11.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/12.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/13.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/14.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/15.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/16.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/17.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/18.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/19.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/20.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/21.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/22.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/23.png">
 <meta property="article:published_time" content="2021-07-01T11:43:10.000Z">
-<meta property="article:modified_time" content="2021-07-03T10:21:23.974Z">
+<meta property="article:modified_time" content="2021-07-03T11:49:16.165Z">
 <meta property="article:author" content="BugMakerPro">
 <meta property="article:tag" content="Go Java Vue">
 <meta name="twitter:card" content="summary">
@@ -215,7 +227,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/0.png"><br>从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线,在服务器上敲命令的机会就更少了。<br>但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！</p>
+        <p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/0.png"><br>从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线和应用工程师的配备,在服务器上敲命令和写shell脚本的机会就更少了。<br>但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！</p>
 <span id="more"></span>
 <h3 id="1-基础"><a href="#1-基础" class="headerlink" title="1,基础"></a>1,基础</h3><h4 id="1-1-万能man命令"><a href="#1-1-万能man命令" class="headerlink" title="1.1 万能man命令"></a>1.1 万能<code>man</code>命令</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 功能：格式化并显示在线帮助手册页面.(也就是查看命令的帮助信息)</span></span><br><span class="line">man ls</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出:</span></span><br><span class="line">LS(1)                         General Commands Manual                         LS(1)</span><br><span class="line"></span><br><span class="line">NAME</span><br><span class="line">       ls, dir, vdir - 列目录内容</span><br><span class="line"></span><br><span class="line">提要</span><br><span class="line">       ls [选项] [文件名...]</span><br><span class="line"></span><br><span class="line">       POSIX 标准选项: [-CFRacdilqrtu1]</span><br><span class="line"></span><br><span class="line">GNU 选项 (短格式):</span><br><span class="line">       [-1abcdfgiklmnopqrstuxABCDFGLNQRSUX]   [-w  cols]  [-T  cols]  [-I  pattern]</span><br><span class="line">       [--full-time] [--format=&#123;long,verbose,commas,across,vertical,single-column&#125;]</span><br><span class="line">       [--sort=&#123;none,time,size,extension&#125;] [--time=&#123;atime,access,use,ctime,status&#125;]</span><br><span class="line">       [--color[=&#123;none,auto,always&#125;]] [--help] [--version] [--]</span><br><span class="line"></span><br><span class="line">描述（ DESCRIPTION ）</span><br><span class="line">       程序ls先列出非目录的文件项，然后是每一个目录中的“可显示”文件。如果</span><br><span class="line">       没有选项之外的参数【译注：即文件名部分为空】出现，缺省为  &quot;.&quot; （当前目录）。</span><br><span class="line">       选项“    -d    ”使得目录与非目录项同样对待。除非“    -a    ”    选项出现，文</span><br><span class="line">       件名以“.”开始的文件不属“可显示”文件。</span><br><span class="line"></span><br><span class="line">       以当前目录为准，每一组文件（包括非目录文件项，以及每一内含文件的目录）分</span><br><span class="line">       别按文件名比较顺序排序。如果“     -l      ”选项存在，每组文件前显示一摘要行:</span><br><span class="line">       给出该组文件长度之和（以 512 字节为单位）。</span><br><span class="line"></span><br><span class="line">       输出是到标准输出（    stdout    ）。除非以“   -C   ”选项要求按多列输出，输出</span><br><span class="line">       将是一行一个。然而，输出到终端时，单列输出或多列输出是不确定的。可以分别</span><br><span class="line">       用选项“ -1 ” 或“ -C ”来强制按单列或多列输出。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="1-2-ls命令"><a href="#1-2-ls命令" class="headerlink" title="1.2 ls命令"></a>1.2 <code>ls</code>命令</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sjzs5590/article/details/8254527b"><code>ls -l</code>输出字段详解</a></p>
@@ -376,8 +388,22 @@
 <p>字母方式修改权限<br><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/7.png"><br>数字方式修改权限<br><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/8.png"> </p>
 <h3 id="4-网络管理"><a href="#4-网络管理" class="headerlink" title="4,网络管理"></a>4,网络管理</h3><h4 id="4-1-网络状态查看"><a href="#4-1-网络状态查看" class="headerlink" title="4.1,网络状态查看"></a>4.1,网络状态查看</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/9.png"></p>
 <p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/10.png">  </p>
-<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/11.png"></p>
-<h4 id="4-2-网络配置"><a href="#4-2-网络配置" class="headerlink" title="4.2,网络配置"></a>4.2,网络配置</h4>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/11.png">  </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/12.png"></p>
+<h4 id="4-2-网络配置-可以跳过"><a href="#4-2-网络配置-可以跳过" class="headerlink" title="4.2,网络配置(可以跳过)"></a>4.2,网络配置(可以跳过)</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/13.png">  </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/14.png"></p>
+<h4 id="4-3-网络故障排查"><a href="#4-3-网络故障排查" class="headerlink" title="4.3,网络故障排查"></a>4.3,网络故障排查</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/15.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 到目标主机(ip/域名)是否畅通</span></span><br><span class="line">ping ip/domain</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 检测发出数据包的主机到目标主机之间所经过的网关数量</span></span><br><span class="line">traceroute -w 1 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> mtr 是一个集合 ping 和 traceroute 功能并能直观显示结果的网络诊断工具</span></span><br><span class="line">mtr</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 把域名解析成ip</span></span><br><span class="line">nslookup www.baidu.com</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 端口通畅情况</span></span><br><span class="line">telnet ip/domian + export </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 抓包(后文详讲)</span></span><br><span class="line">tcpdump</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看服务监听地址</span></span><br><span class="line">netstat -ntpl</span><br><span class="line">ss -ntpl</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-网络服务管理-跳过"><a href="#4-3-网络服务管理-跳过" class="headerlink" title="4.3,网络服务管理(跳过)"></a>4.3,网络服务管理(跳过)</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/16.png"></p>
+<h3 id="5-软件包管理器"><a href="#5-软件包管理器" class="headerlink" title="5,软件包管理器"></a>5,软件包管理器</h3><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/17.png">  </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/18.png">   </p>
+<h4 id="5-1-rpm包"><a href="#5-1-rpm包" class="headerlink" title="5.1,rpm包"></a>5.1,rpm包</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/19.png">  </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/20.png">   </p>
+<h4 id="5-2-yum包"><a href="#5-2-yum包" class="headerlink" title="5.2,yum包"></a>5.2,yum包</h4><p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/21.png">  </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/22.png">    </p>
+<p><img src="/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/23.png">  </p>
+<h4 id="5-2-通过源代码编译安装软件-跳过"><a href="#5-2-通过源代码编译安装软件-跳过" class="headerlink" title="5.2,通过源代码编译安装软件(跳过)"></a>5.2,通过源代码编译安装软件(跳过)</h4>
       
 
       
