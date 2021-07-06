@@ -2,16 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbk0001dwr71w78a4jb/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/</loc>
     
     <lastmod>2021-07-06</lastmod>
     
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbk0001dwr71w78a4jb/</loc>
     
-    <lastmod>2021-07-03</lastmod>
+    <lastmod>2021-07-06</lastmod>
     
   </url>
   
@@ -152,6 +152,13 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/tags/go%E5%AE%9E%E8%B7%B5/</loc>
+    <lastmod>2021-07-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/linux%E5%9B%9E%E5%BF%86%E5%BD%95/</loc>
     <lastmod>2021-07-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
