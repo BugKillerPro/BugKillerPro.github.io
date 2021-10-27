@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv8ufkuh0000iwr76nc14qzz/</loc>
+    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l9f000qv0r7bn48dbig/</loc>
     
     <lastmod>2021-10-27</lastmod>
     
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv8ynka800002sr7f6klf9bt/</loc>
+    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/</loc>
     
     <lastmod>2021-10-27</lastmod>
     
@@ -23,7 +23,7 @@
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv7xbp050012n0r7gq5q9w0f/</loc>
+    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv998l9x001mv0r7ggr51u53/</loc>
     
     <lastmod>2021-10-27</lastmod>
     
@@ -86,14 +86,14 @@
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv7xbozp000dn0r7g01t3be2/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/</loc>
     
     <lastmod>2021-07-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv7xbozr000in0r7gjc23ymq/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l99000kv0r7d8izhbnp/</loc>
     
     <lastmod>2021-07-12</lastmod>
     
@@ -135,7 +135,7 @@
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/2021/03/22/uncatalog/ckv7xbozf0006n0r7b4yl43tn/</loc>
+    <loc>https://bugmakerpro.github.io/2021/03/22/uncatalog/ckv998l900007v0r7ex2x5g2g/</loc>
     
     <lastmod>2021-03-22</lastmod>
     
@@ -186,27 +186,6 @@
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/tags/GO%E5%AE%9E%E8%B7%B5-%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AAbug/</loc>
-    <lastmod>2021-10-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://bugmakerpro.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
-    <lastmod>2021-10-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://bugmakerpro.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2021-10-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://bugmakerpro.github.io/tags/prometheus/</loc>
     <lastmod>2021-10-27</lastmod>
     <changefreq>daily</changefreq>
@@ -222,6 +201,27 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/tags/node-exporter/</loc>
+    <lastmod>2021-10-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/GO%E5%AE%9E%E8%B7%B5-%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AAbug/</loc>
+    <lastmod>2021-10-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2021-10-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2021-10-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -251,14 +251,14 @@
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
+    <loc>https://bugmakerpro.github.io/categories/design/</loc>
     <lastmod>2021-10-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://bugmakerpro.github.io/categories/design/</loc>
+    <loc>https://bugmakerpro.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2021-10-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
