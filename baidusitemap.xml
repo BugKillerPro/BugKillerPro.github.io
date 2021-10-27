@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://bugmakerpro.github.io/2021/05/06/go-practice/Asymmetric_Encryption_practice01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/03/23/design/factory01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/03/22/design/single01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/05/18/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/dtp01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/05/10/go-practice/mysql_bug_practice01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l99000kv0r7d8izhbnp/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/10/26/go-practice/go_practice_exporter_01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
     <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l9f000qv0r7bn48dbig/</loc>
     <lastmod>2021-10-27</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/</loc>
     <lastmod>2021-10-27</lastmod>
   </url>
   <url>
@@ -13,7 +49,7 @@
     <lastmod>2021-10-27</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv998l9x001mv0r7ggr51u53/</loc>
+    <loc>https://bugmakerpro.github.io/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/</loc>
     <lastmod>2021-10-27</lastmod>
   </url>
   <url>
@@ -21,52 +57,16 @@
     <lastmod>2021-10-27</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/</loc>
-    <lastmod>2021-10-26</lastmod>
+    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/</loc>
+    <lastmod>2021-10-27</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/10/26/go-practice/go_practice_exporter_01/</loc>
-    <lastmod>2021-10-26</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/03/23/design/factory01/</loc>
-    <lastmod>2021-10-25</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/</loc>
-    <lastmod>2021-10-25</lastmod>
+    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv998l9x001mv0r7ggr51u53/</loc>
+    <lastmod>2021-10-27</lastmod>
   </url>
   <url>
     <loc>https://bugmakerpro.github.io/image/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html</loc>
     <lastmod>2021-10-12</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/</loc>
-    <lastmod>2021-07-12</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l99000kv0r7d8izhbnp/</loc>
-    <lastmod>2021-07-12</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/05/10/go-practice/mysql_bug_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/05/18/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/dtp01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/05/06/go-practice/Asymmetric_Encryption_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/03/22/design/single01/</loc>
-    <lastmod>2021-07-06</lastmod>
   </url>
   <url>
     <loc>https://bugmakerpro.github.io/2021/03/22/uncatalog/ckv998l900007v0r7ex2x5g2g/</loc>

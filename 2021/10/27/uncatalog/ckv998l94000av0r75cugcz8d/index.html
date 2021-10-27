@@ -54,7 +54,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/1.png">
 <meta property="article:published_time" content="2021-10-27T02:38:20.000Z">
-<meta property="article:modified_time" content="2021-10-27T06:33:37.229Z">
+<meta property="article:modified_time" content="2021-10-27T09:04:43.931Z">
 <meta property="article:author" content="BugMakerPro">
 <meta property="article:tag" content="GO实践">
 <meta name="twitter:card" content="summary">
@@ -218,8 +218,9 @@
       
 
       
-        <span itemprop="articleBody"><p><img src="/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/1.png"><br>goroutine leak</p>
+        <span itemprop="articleBody"><p>goroutine leak</p>
 <span id="more"></span>
+<p><img src="/2021/10/27/uncatalog/ckv998l94000av0r75cugcz8d/1.png"></p>
 <h1 id="什么是泄露？"><a href="#什么是泄露？" class="headerlink" title="什么是泄露？"></a>什么是泄露？</h1><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="TEXT"><figure class="iseeu highlight /text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不好的事情流传出去让别人知道了</span><br></pre></td></tr></table></figure></div>
 <p>额……,这个解释对程序员来说好像不太贴近生活,那我们换一个  </p>
 <h3 id="内存泄露-Memory-Leak"><a href="#内存泄露-Memory-Leak" class="headerlink" title="内存泄露(Memory Leak)"></a>内存泄露(Memory Leak)</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="TEXT"><figure class="iseeu highlight /text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">对于java程序员来说,这个词汇肯定不陌生.</span><br><span class="line">内存泄露本意是申请的内存空间没有被正确释放,  </span><br><span class="line">导致后续程序里这块内存被永远占用（不可达）,  </span><br><span class="line">而且指向这块内存空间的指针不再存在时,  </span><br><span class="line">这块内存也就永远不可达了,内存空间就这么一点点被蚕食.  </span><br><span class="line">借用别人的比喻就是:  </span><br><span class="line">比如有10张纸,本来一人一张,画完自己擦了还回去,别人可以继续画,现在有个坏蛋要了纸不擦不还,然后还跑了找不到人了,如此就只剩下9张纸给别人用了,这样的人多起来后,最后大家一张纸都没有了;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>

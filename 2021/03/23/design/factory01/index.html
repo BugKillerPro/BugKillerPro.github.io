@@ -54,7 +54,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://bugmakerpro.github.io/2021/03/23/design/factory01/1.png">
 <meta property="article:published_time" content="2021-03-23T08:38:46.985Z">
-<meta property="article:modified_time" content="2021-10-25T13:27:14.653Z">
+<meta property="article:modified_time" content="2021-10-27T09:07:02.176Z">
 <meta property="article:author" content="BugMakerPro">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -233,12 +233,14 @@
       
 
       
-        <span itemprop="articleBody"><h2 id><a href="#" class="headerlink" title="  "></a><img src="/2021/03/23/design/factory01/1.png">  </h2><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
+        <span itemprop="articleBody"><hr>
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
 <p>简单工厂模式(Simple Factory Pattern)<br>工厂方法模式(Factory Method)：定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类<br>抽象工厂模式：提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定具体类   </p>
 </blockquote>
 <hr>
 <span id="more"></span>
 
+<p><img src="/2021/03/23/design/factory01/1.png"></p>
 <h4 id="要解决的问题-用途"><a href="#要解决的问题-用途" class="headerlink" title="要解决的问题/用途"></a>要解决的问题/用途</h4><ul>
 <li>当创建逻辑比较复杂，是一个“大工程”的时候，我们就考虑使用<em>工厂模式</em></li>
 <li>封装对象的创建过程，将对象的创建和使用相分离</li>
@@ -395,7 +397,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">  </span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.0.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98-%E7%94%A8%E9%80%94"><span class="nav-number">1.0.2.</span> <span class="nav-text">要解决的问题&#x2F;用途</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.0.3.</span> <span class="nav-text">如何实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Simple-Factory-Pattern"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">1,简单工厂模式(Simple Factory Pattern)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%EF%BC%88Factory-Method%EF%BC%89"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">2,工厂方法（Factory Method）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%EF%BC%88Abstract-Factory%EF%BC%89"><span class="nav-number">1.0.4.</span> <span class="nav-text">抽象工厂（Abstract Factory）</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98-%E7%94%A8%E9%80%94"><span class="nav-number">2.</span> <span class="nav-text">要解决的问题&#x2F;用途</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">如何实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Simple-Factory-Pattern"><span class="nav-number">3.1.</span> <span class="nav-text">1,简单工厂模式(Simple Factory Pattern)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%EF%BC%88Factory-Method%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">2,工厂方法（Factory Method）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%EF%BC%88Abstract-Factory%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">抽象工厂（Abstract Factory）</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
