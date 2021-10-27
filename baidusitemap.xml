@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://bugmakerpro.github.io/2021/06/03/git%E5%9B%9E%E5%BF%86%E5%BD%95/git_practice01/</loc>
+    <lastmod>2021-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/</loc>
+    <lastmod>2021-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/06/03/go-practice/go_practice_01/</loc>
+    <lastmod>2021-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/10/26/go-practice/go_practice_exporter_01/</loc>
+    <lastmod>2021-10-26</lastmod>
+  </url>
+  <url>
     <loc>https://bugmakerpro.github.io/2021/03/23/design/factory01/</loc>
     <lastmod>2021-10-25</lastmod>
   </url>
@@ -13,11 +29,11 @@
     <lastmod>2021-10-12</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbg0000dwr79dn0bt16/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv7xbozp000dn0r7g01t3be2/</loc>
     <lastmod>2021-07-12</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckqkvtwbk0001dwr71w78a4jb/</loc>
+    <loc>https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv7xbozr000in0r7gjc23ymq/</loc>
     <lastmod>2021-07-12</lastmod>
   </url>
   <url>
@@ -25,19 +41,11 @@
     <lastmod>2021-07-06</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckpes4vbb00007cr7aai13fhm/</loc>
+    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv7xbp050012n0r7gq5q9w0f/</loc>
     <lastmod>2021-07-06</lastmod>
   </url>
   <url>
     <loc>https://bugmakerpro.github.io/2021/03/22/go-practice/slice_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/06/03/git%E5%9B%9E%E5%BF%86%E5%BD%95/git_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/06/03/go%E5%AE%9E%E8%B7%B5/go_practice_01/</loc>
     <lastmod>2021-07-06</lastmod>
   </url>
   <url>
@@ -53,11 +61,7 @@
     <lastmod>2021-07-06</lastmod>
   </url>
   <url>
-    <loc>https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/</loc>
-    <lastmod>2021-07-06</lastmod>
-  </url>
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/03/22/uncatalog/ckmkaw47z0001bgr75rr4bxhy/</loc>
+    <loc>https://bugmakerpro.github.io/2021/03/22/uncatalog/ckv7xbozf0006n0r7b4yl43tn/</loc>
     <lastmod>2021-03-22</lastmod>
   </url>
   <url>
