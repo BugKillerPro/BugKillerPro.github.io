@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv8ynka800002sr7f6klf9bt/</loc>
+    
+    <lastmod>2021-10-27</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/06/03/go-practice/go_practice_01/</loc>
+    
+    <lastmod>2021-10-27</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/10/27/uncatalog/ckv8ufkuh0000iwr76nc14qzz/</loc>
+    
+    <lastmod>2021-10-27</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv7xbp050012n0r7gq5q9w0f/</loc>
+    
+    <lastmod>2021-10-27</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://bugmakerpro.github.io/about/index.html</loc>
     
     <lastmod>2021-10-27</lastmod>
@@ -24,13 +52,6 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/2021/04/18/go-practice/json_practice01/</loc>
-    
-    <lastmod>2021-10-26</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/06/03/go-practice/go_practice_01/</loc>
     
     <lastmod>2021-10-26</lastmod>
     
@@ -80,13 +101,6 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/2021/05/10/go-practice/mysql_bug_practice01/</loc>
-    
-    <lastmod>2021-07-06</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://bugmakerpro.github.io/2021/05/26/uncatalog/ckv7xbp050012n0r7gq5q9w0f/</loc>
     
     <lastmod>2021-07-06</lastmod>
     
@@ -187,6 +201,20 @@
   
   <url>
     <loc>https://bugmakerpro.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2021-10-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/prometheus/</loc>
+    <lastmod>2021-10-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugmakerpro.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/</loc>
     <lastmod>2021-10-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
