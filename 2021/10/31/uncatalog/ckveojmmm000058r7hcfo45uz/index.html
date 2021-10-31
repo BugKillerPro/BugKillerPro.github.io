@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="读书笔记," />
+  <meta name="keywords" content="prometheus,源码阅读,exporter开发," />
 
 
 
@@ -45,20 +45,22 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="读书笔记之《Go语言高级编程(Advanced Go Programming)》">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go语言高级编程">
-<meta property="og:url" content="https://bugmakerpro.github.io/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/index.html">
+<meta property="og:title" content="exporter开发(下篇)">
+<meta property="og:url" content="https://bugmakerpro.github.io/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/index.html">
 <meta property="og:site_name" content="BugMakerPro">
-<meta property="og:description" content="读书笔记之《Go语言高级编程(Advanced Go Programming)》">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/1.png">
-<meta property="article:published_time" content="2021-10-24T10:25:39.848Z">
-<meta property="article:modified_time" content="2021-10-27T09:05:40.305Z">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/1.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/2.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/3.png">
+<meta property="article:published_time" content="2021-10-31T02:24:51.000Z">
+<meta property="article:modified_time" content="2021-10-31T03:39:34.351Z">
 <meta property="article:author" content="BugMakerPro">
-<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="prometheus">
+<meta property="article:tag" content="源码阅读">
+<meta property="article:tag" content="exporter开发">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://bugmakerpro.github.io/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/1.png">
+<meta name="twitter:image" content="https://bugmakerpro.github.io/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/1.png">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -70,7 +72,7 @@
 
 
 
-  <title> Go语言高级编程 | BugMakerPro </title>
+  <title> exporter开发(下篇) | BugMakerPro </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -185,7 +187,7 @@
             
             
               
-                Go语言高级编程
+                exporter开发(下篇)
               
             
           </h1>
@@ -194,26 +196,11 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2021-10-24T18:25:39+08:00" content="2021-10-24">
-              2021-10-24
+            <time itemprop="dateCreated" datetime="2021-10-31T10:24:51+08:00" content="2021-10-31">
+              2021-10-31
             </time>
           </span>
 
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; In
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
           
 
           
@@ -233,20 +220,22 @@
       
 
       
-        <span itemprop="articleBody"><p>读书笔记之《Go语言高级编程(Advanced Go Programming)》</p>
-<span id="more"></span>  
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<p><img src="/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/1.png"></p>
+<h1 id="exporter开发-下篇"><a href="#exporter开发-下篇" class="headerlink" title="exporter开发(下篇)"></a>exporter开发(下篇)</h1><p>  准备工作已经在上篇讲过了，这里我们就直接开始撸代码</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>  目录结构：<br>  .<br>  ├── collector<br>  │   └── pid.go<br>  └── main.go</p>
+<p>  main.go</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;custom_exporters/demo_04/collector&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/prometheus/client_golang/prometheus&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/prometheus/client_golang/prometheus/promhttp&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	prometheus.MustRegister(collector.NewPidCollector())</span><br><span class="line">	http.Handle(<span class="string">&quot;/metrics&quot;</span>, promhttp.Handler())</span><br><span class="line">	<span class="keyword">if</span> err := http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;Error occur when start server %v&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
-<p><img src="/2021/10/24/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/read_note_Advanced_Go_Programming_01/1.png"><br>&ensp;&ensp;最近组里的<code>Python</code>小伙伴们都开始学GO了,找我推荐下教程,对于有其他语言基础的人来说,<br>有两本书非常适合作为<code>GO</code>的入门教程:  </p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://chai2010.cn/advanced-go-programming-book/" title="Markdown">Go语言高级编程(Advanced Go Programming)</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.kancloud.cn/kancloud/web-application-with-golang/44105" title="Markdown">Go Web 编程</a>  </li>
-</ul>
-<p>&ensp;&ensp;作者分别是曹春晖和谢孟军,两位都是<code>GO</code>中国的布道师。<br>借着这次推荐的机会,我又把《Go语言高级编程》读了一遍,以免小伙伴们来问我的时候,还有不太熟悉的地方。😁  </p>
-<p>&ensp;&ensp;语法基础章节,讲的比较浅显,毕竟作者再序言里面也说了:  </p>
-<pre><code class="text">本书针对有一定Go语言经验，想深入了解Go语言各种高级用法的开发人员。  
-对于Go语言新手，在阅读本书前建议先熟读D&amp;K的《The Go Programming Language》。  
-</code></pre>
-<p>&ensp;&ensp;除此之外,后续的章节,就比较符合书名里的<code>advenced</code>这个中心思想了.<br>&ensp;&ensp;具体的内容方面,作者结合实战场景,通过循序渐进的方式给出了一些解决方案,但是具体到代码落地,还是需要读者自己去思考和实现,这一点对于编程经验不够丰富的新手可能不太友好.但是多动手、多动脑总是没错的.<br>&ensp;&ensp;阅读技巧方面,如果对语言底层的东西不是特别感兴趣或者没时间的话,第二章 CGO编程 和 第三章 汇编语言<br>是可以直接跳过的,剩下的其他章节对于偏业务开发的同学来说就全是干货了.<br>&ensp;&ensp;两年前,刚从<code>java</code>转<code>go</code>的时候,就选了这本书作为入门书籍,而且当时项目很急,几乎是一边学一边开发.特别是第五章 GO和Web<br>当时项目组刚刚全员转<code>go</code>,对于<code>go</code>语言方面的轮子积累为空,当时的<code>leader</code>又比较固执,不打算用包括<code>gin</code>在内的任何开源框架,<br>而自研<code>web</code>框架的任务又落在了我的肩上,当时,对于还没入门<code>go</code>的我,确实有点慌🤣.所以当看到该书得第五章的时候,我就像高原反应患者<br>突然得到了不限量氧气瓶一样,兴奋和激动的加持下,边搬砖边读这本书,仅用了3天左右就把这本书吸收了,当然,第二章和第三章跳过了.😂<br>看完之后,还没来得及看一看<code>gin</code>的源码,就开始自己手撸<code>web</code>框架了,好在是基于<code>httprouter</code>做路由管理开发的,上线之后,边维护边迭代,<br>可用性和性能方面还没有出过明显的问题.感谢这本书,扮演了救火的角色.<br>&ensp;&ensp;最近再次拿起这本书,看完之后,天空飘来五个字…,不好意思,重来,脑海里只有四个字:开卷有益.差不多快有一年没有读过完整的一本书了,<br>理由和大家一样–没时间🤣.而且最近半年状态也不太好,自我反思了一下,主要原因就是股票;3月份开发了一个选股系统,刚上线时,效果非常凶猛.经过系统和我个人的<br>两层筛选之后,选出的股票成功率几乎100%,而且涨幅也不小,通常2周左右,30%左右的涨幅.所以刚开始小仓位试水,效果非常理想.所以个人心态就变了,<br>很难再静下来心继续提高自己了.可惜,到了8月份,系统似乎不灵了,导致截止到现在,还是亏损状态.所以这次读完这本书之后,心理平静了不少,感谢这本书,再次扮演了救火的角色,<br>让我平静了下来.<br>&ensp;&ensp;当然了,这本书也有不少的缺陷,比如在实践方面,每每讲到痛点就突然峰回路转另起一章,没有具体的落地方案,不禁让人有些失望.但是对于鱼龙混杂的<br><code>go</code>教程来说,这本书至少做到了言之有物,非常值得一读.</p>
+<p>  pid.go  </p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> collector</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;github.com/prometheus/client_golang/prometheus&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/shirou/gopsutil/host&quot;</span></span><br><span class="line">  <span class="string">&quot;os&quot;</span></span><br><span class="line">  <span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> PidCollector <span class="keyword">struct</span> &#123;</span><br><span class="line">  pidDesc    *prometheus.Desc   <span class="comment">//当前collector的pid</span></span><br><span class="line">  mutex          sync.Mutex</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPidCollector</span><span class="params">()</span><span class="title">PidCollector</span></span>  &#123;</span><br><span class="line">  <span class="keyword">return</span> PidCollector&#123;pidDesc:  prometheus.NewDesc(</span><br><span class="line">    <span class="string">&quot;cur_collector_pid&quot;</span>,</span><br><span class="line">    <span class="string">&quot;当前collector的pid&quot;</span>,</span><br><span class="line">    []<span class="keyword">string</span>&#123;<span class="string">&quot;HOST_NAME&quot;</span>&#125;,</span><br><span class="line">    <span class="literal">nil</span>)&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Describe implements the prometheus.Collector interface.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p PidCollector)</span> <span class="title">Describe</span><span class="params">(ch <span class="keyword">chan</span>&lt;- *prometheus.Desc)</span></span> &#123;</span><br><span class="line">  ch &lt;- p.pidDesc</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Collect implements the prometheus.Collector interface.This method may be called concurrently and must therefore be</span></span><br><span class="line"><span class="comment">// implemented in a concurrency safe way</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p PidCollector)</span> <span class="title">Collect</span><span class="params">(ch <span class="keyword">chan</span>&lt;- prometheus.Metric)</span></span> &#123;</span><br><span class="line">  p.mutex.Lock()</span><br><span class="line">  <span class="keyword">defer</span> p.mutex.Unlock()</span><br><span class="line">  host,_:= host.Info()</span><br><span class="line">  ch &lt;- prometheus.MustNewConstMetric(</span><br><span class="line">    p.pidDesc,</span><br><span class="line">    prometheus.GaugeValue,</span><br><span class="line">    <span class="keyword">float64</span>(os.Getpid()),</span><br><span class="line">    host.Hostname,</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="prometheus配置"><a href="#prometheus配置" class="headerlink" title="prometheus配置"></a>prometheus配置</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="YAML"><figure class="iseeu highlight /yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="comment"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span></span><br><span class="line">  <span class="comment"># metrics_path defaults to &#x27;/metrics&#x27;</span></span><br><span class="line">  <span class="comment"># scheme defaults to &#x27;http&#x27;.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;pid collector&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">localhost:8080</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img src="/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/2.png"></p>
+<p><img src="/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/3.png"></p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>  这只是一个简单的<code>collector</code>实践，如果有多个指标需要采集，我们就可以在 <code>XXXCollector</code>结构体里面定义多个<code>Desc</code>，具体指标值的获取，需要根据具体场景来实现。</p>
 </span>
       
     </div>
@@ -255,7 +244,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">#读书笔记</a>
+            <a href="/tags/prometheus/" rel="tag">#prometheus</a>
+          
+            <a href="/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">#源码阅读</a>
+          
+            <a href="/tags/exporter%E5%BC%80%E5%8F%91/" rel="tag">#exporter开发</a>
           
         </div>
       
@@ -264,17 +257,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/01/uncatalog/ckv998l99000kv0r7d8izhbnp/" rel="next" title="shell回忆录">
-                <i class="fa fa-chevron-left"></i> shell回忆录
+              <a href="/2021/10/29/uncatalog/ckvcbok080000j0r7d9f9gqjj/" rel="next" title="exporter开发(上篇)">
+                <i class="fa fa-chevron-left"></i> exporter开发(上篇)
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/10/27/uncatalog/ckv998l9f000qv0r7bn48dbig/" rel="prev" title="node_exporter源码阅读">
-                node_exporter源码阅读 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -381,7 +370,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#exporter%E5%BC%80%E5%8F%91-%E4%B8%8B%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text">exporter开发(下篇)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">prometheus配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C"><span class="nav-number">1.3.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%B0%BE"><span class="nav-number">1.4.</span> <span class="nav-text">结尾</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
