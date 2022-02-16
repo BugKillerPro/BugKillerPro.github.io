@@ -1,0 +1,647 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="golang,协程,goroutine," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang的几种协程终止方法和区别">
+<meta property="og:url" content="https://bugmakerpro.github.io/2022/02/16/uncatalog/ckzpbwxd00000ecr7802m1nw2/index.html">
+<meta property="og:site_name" content="BugMakerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugmakerpro.github.io/2022/02/16/uncatalog/ckzpbwxd00000ecr7802m1nw2/1.png">
+<meta property="article:published_time" content="2022-02-16T07:04:21.000Z">
+<meta property="article:modified_time" content="2022-02-16T09:05:30.627Z">
+<meta property="article:author" content="BugMakerPro">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="协程">
+<meta property="article:tag" content="goroutine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugmakerpro.github.io/2022/02/16/uncatalog/ckzpbwxd00000ecr7802m1nw2/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> golang的几种协程终止方法和区别 | BugMakerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugMakerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                golang的几种协程终止方法和区别
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2022-02-16T15:04:21+08:00" content="2022-02-16">
+              2022-02-16
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<p><img src="/2022/02/16/uncatalog/ckzpbwxd00000ecr7802m1nw2/1.png"></p>
+<h1 id="return"><a href="#return" class="headerlink" title="return"></a>return</h1><p>结束当前函数,并返回指定值,defer调用会执行;</p>
+<h3 id="这里需要引申出来一个知识点–return和defer的执行顺序问题-先看一段代码："><a href="#这里需要引申出来一个知识点–return和defer的执行顺序问题-先看一段代码：" class="headerlink" title="这里需要引申出来一个知识点–return和defer的执行顺序问题,先看一段代码："></a>这里需要引申出来一个知识点–return和defer的执行顺序问题,先看一段代码：</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;f1 result: &quot;</span>, f1())</span><br><span class="line">	fmt.Println(<span class="string">&quot;------&quot;</span>)</span><br><span class="line">	fmt.Println(<span class="string">&quot;f2 result: &quot;</span>, f2())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f1</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		i++</span><br><span class="line">		fmt.Println(<span class="string">&quot;f11: &quot;</span>, i)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		i++</span><br><span class="line">		fmt.Println(<span class="string">&quot;f12: &quot;</span>, i)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	i = <span class="number">1000</span></span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f2</span><span class="params">()</span> <span class="params">(i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		i++</span><br><span class="line">		fmt.Println(<span class="string">&quot;f21: &quot;</span>, i)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		i++</span><br><span class="line">		fmt.Println(<span class="string">&quot;f22: &quot;</span>, i)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	i = <span class="number">1000</span></span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出:"></a>输出:</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f12:  1001</span><br><span class="line">f11:  1002</span><br><span class="line">f1 result:  1000</span><br><span class="line">------</span><br><span class="line">f22:  1001</span><br><span class="line">f21:  1002</span><br><span class="line">f2 result:  1002</span><br></pre></td></tr></table></figure></div>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h3><ul>
+<li>多个defer的执行顺序为“后进先出”</li>
+<li>defer、return、返回值三者的执行逻辑应该是：<br>return最先执行，return负责将结果写入返回值中<br>接着defer开始执行一些收尾工作<br>最后函数携带当前返回值退出</li>
+<li>如果函数的返回值是无名的（不带命名返回值,如上面例子中的<code>f1</code>）<br>则go语言会在执行return的时候会执行一个类似创建一个临时变量作为保存return值的动作  </li>
+<li>而有名返回值的函数（如上面例子中的<code>f2</code>），由于返回值在函数定义的时候已经将该变量进行定义，<br>在执行return的时候会先执行返回值保存操作，而后续的defer函数会改变这个返回值，<br>但是由于使用的函数定义的变量，所以执行defer操作后对该变量的修改会影响到return的值</li>
+</ul>
+<p>针对后面两条，我们可以通过<code>go tool compile </code>工具来进行验证:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go tool compile -S -N -l main.go &gt; main.s //  -N -l两个命令行选项用于关闭Go编译器的优化,优化后的代码会掩盖实现细节</span><br></pre></td></tr></table></figure></div>
+<p>查看<code>main.s</code>文件,重点查看一下几行:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0x00af 00175 (main.go:23)	MOVQ	$1000, &quot;&quot;.i+8(SP)</span><br><span class="line">0x00b8 00184 (main.go:24)	MOVQ	$1000, &quot;&quot;.~r0+144(SP) &#x2F;&#x2F; 这里就是上面所说的创建一个临时变量作为保存return值的动作</span><br><span class="line">0x00c4 00196 (main.go:24)	XCHGL	AX, AX</span><br><span class="line">0x00c5 00197 (main.go:24)	CALL	runtime.deferreturn(SB)</span><br><span class="line">0x00ca 00202 (main.go:24)	MOVQ	128(SP), BP</span><br><span class="line">0x00d2 00210 (main.go:24)	ADDQ	$136, SP</span><br><span class="line">0x00d9 00217 (main.go:24)	RET</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0x009e 00158 (main.go:38)	MOVQ	$1000, &quot;&quot;.i+136(SP)</span><br><span class="line">0x00aa 00170 (main.go:39)	XCHGL	AX, AX</span><br><span class="line">0x00ab 00171 (main.go:39)	CALL	runtime.deferreturn(SB)</span><br><span class="line">0x00b0 00176 (main.go:39)	MOVQ	120(SP), BP</span><br><span class="line">0x00b5 00181 (main.go:39)	SUBQ	$-128, SP</span><br><span class="line">0x00b9 00185 (main.go:39)	RET</span><br></pre></td></tr></table></figure></div>
+<h3 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读:"></a>代码解读:</h3><p>为了弄清上述两种情况的区别，我们首先要理解return 返回值的运行机制:<br>return 并非原子操作，分为赋值，和返回值两步操作<br>f1 : 实际上return 执行了两步操作，因为返回值没有命名，<br>所以return 默认指定了一个临时变量（假设为s），首先将i赋值给s,<br>后续的操作因为是针对i,进行的，所以不会影响s, 此后因为s不会更新，<br>所以return s 不会改变，相当于：<br>var i int<br>s := i<br>return s<br>f2 : 同上，s 就相当于命名的变量i, 因为所有的操作都是基于命名变量i(s),返回值也是i,<br>所以每一次defer操作，都会更新返回值i</p>
+<h1 id="runtime-Goexit"><a href="#runtime-Goexit" class="headerlink" title="runtime.Goexit()"></a>runtime.Goexit()</h1><p>结束当前<code>goroutine</code>,其他的<code>goroutine</code>不受影响,主程序也一样继续运行,<code>defer</code>会被调用;<br>如果在<code>main</code>函数中调用,则<code>main goroutine</code>终止,由于<code>main</code>函数没有<code>return</code>,则其他<code>groutine</code>会继续执行;(<code>main groutine</code>正常退出,则其他<code>groutine</code>都会退出)</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 源码注释在此</span></span><br><span class="line"><span class="comment">// Goexit terminates the goroutine that calls it. No other goroutine is affected.</span></span><br><span class="line"><span class="comment">// Goexit runs all deferred calls before terminating the goroutine. Because Goexit</span></span><br><span class="line"><span class="comment">// is not a panic, any recover calls in those deferred functions will return nil.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Calling Goexit from the main goroutine terminates that goroutine</span></span><br><span class="line"><span class="comment">// without func main returning. Since func main has not returned,</span></span><br><span class="line"><span class="comment">// the program continues execution of other goroutines.</span></span><br><span class="line"><span class="comment">// If all other goroutines exit, the program crashes.</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="os-Exit-code-int"><a href="#os-Exit-code-int" class="headerlink" title="os.Exit(code int)"></a>os.Exit(code int)</h1><p>会结束当前程序,不管你三七二十一。几乎不会用到</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 源码注释在此</span></span><br><span class="line"><span class="comment">// Exit causes the current program to exit with the given status code.</span></span><br><span class="line"><span class="comment">// Conventionally, code zero indicates success, non-zero an error.</span></span><br><span class="line"><span class="comment">// The program terminates immediately; deferred functions are not run.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// For portability, the status code should be in the range [0, 125].</span></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="panic-v-interface"><a href="#panic-v-interface" class="headerlink" title="panic(v interface{})"></a>panic(v interface{})</h1><p>停止当前<code>goroutine</code>的正常执行,<code>defer</code>会执行,<code>panic</code>会一直向上传递.</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 源码注释在此</span></span><br><span class="line"><span class="comment">// The panic built-in function stops normal execution of the current</span></span><br><span class="line"><span class="comment">// goroutine. When a function F calls panic, normal execution of F stops</span></span><br><span class="line"><span class="comment">// immediately. Any functions whose execution was deferred by F are run in</span></span><br><span class="line"><span class="comment">// the usual way, and then F returns to its caller. To the caller G, the</span></span><br><span class="line"><span class="comment">// invocation of F then behaves like a call to panic, terminating G&#x27;s</span></span><br><span class="line"><span class="comment">// execution and running any deferred functions. This continues until all</span></span><br><span class="line"><span class="comment">// functions in the executing goroutine have stopped, in reverse order. At</span></span><br><span class="line"><span class="comment">// that point, the program is terminated with a non-zero exit code. This</span></span><br><span class="line"><span class="comment">// termination sequence is called panicking and can be controlled by the</span></span><br><span class="line"><span class="comment">// built-in function recover.</span></span><br></pre></td></tr></table></figure></div>
+<h1 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h1><p>多看源码，多实验，好记性不如烂笔头。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+            <a href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">#协程</a>
+          
+            <a href="/tags/goroutine/" rel="tag">#goroutine</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/31/uncatalog/ckveojmmm000058r7hcfo45uz/" rel="next" title="exporter开发(下篇)">
+                <i class="fa fa-chevron-left"></i> exporter开发(下篇)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#return"><span class="nav-number">1.</span> <span class="nav-text">return</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%99%E9%87%8C%E9%9C%80%E8%A6%81%E5%BC%95%E7%94%B3%E5%87%BA%E6%9D%A5%E4%B8%80%E4%B8%AA%E7%9F%A5%E8%AF%86%E7%82%B9%E2%80%93return%E5%92%8Cdefer%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F%E9%97%AE%E9%A2%98-%E5%85%88%E7%9C%8B%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">这里需要引申出来一个知识点–return和defer的执行顺序问题,先看一段代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA"><span class="nav-number">1.0.2.</span> <span class="nav-text">输出:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.0.3.</span> <span class="nav-text">原因:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.0.4.</span> <span class="nav-text">代码解读:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#runtime-Goexit"><span class="nav-number">2.</span> <span class="nav-text">runtime.Goexit()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#os-Exit-code-int"><span class="nav-number">3.</span> <span class="nav-text">os.Exit(code int)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#panic-v-interface"><span class="nav-number">4.</span> <span class="nav-text">panic(v interface{})</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E5%B0%BE"><span class="nav-number">5.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugMakerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
