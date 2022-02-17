@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="k8s,k8s安装安装网络插件,k8s集群搭建," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta name="description" content="k8s集群搭建&#x2F;k8s安装安装网络插件网络上的教程在安装网络插件的时候,总会出问题,遂出此手把手教程.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s集群搭建">
+<meta property="og:url" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/index.html">
+<meta property="og:site_name" content="BugMakerPro">
+<meta property="og:description" content="k8s集群搭建&#x2F;k8s安装安装网络插件网络上的教程在安装网络插件的时候,总会出问题,遂出此手把手教程.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/1.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_1.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_2.png">
+<meta property="og:image" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_3.png">
+<meta property="article:published_time" content="2022-02-17T03:23:10.000Z">
+<meta property="article:modified_time" content="2022-02-17T06:42:27.613Z">
+<meta property="article:author" content="BugMakerPro">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="k8s安装安装网络插件">
+<meta property="article:tag" content="k8s集群搭建">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugmakerpro.github.io/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> k8s集群搭建 | BugMakerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugMakerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                k8s集群搭建
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2022-02-17T11:23:10+08:00" content="2022-02-17">
+              2022-02-17
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>k8s集群搭建/k8s安装安装网络插件<br>网络上的教程在安装网络插件的时候,总会出问题,遂出此手把手教程.</p>
+<span id="more"></span>
+<p><img src="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/1.png"></p>
+<h1 id="k8s集群搭建-k8s安装安装网络插件"><a href="#k8s集群搭建-k8s安装安装网络插件" class="headerlink" title="k8s集群搭建/k8s安装安装网络插件"></a>k8s集群搭建/k8s安装安装网络插件</h1><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Kubernetes 简称 k8s，是用 8 来代替 8 个字符 “ubernete” 的缩写</span><br></pre></td></tr></table></figure></div>
+<p>k8s 集群大体上分为两大类：</p>
+<ul>
+<li>一主多从：一台 master 节点和多台 node 节点，搭建比较简单，但是有可能出现 master 单机故障</li>
+<li>多主多从： 多台 master 节点和多台 node 节点，搭建比较麻烦，但是安全性高<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="TEXT"><figure class="iseeu highlight /text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不管是 一主多从 异或者是 多主多从 ，这里至少都是需要三台服务器，而且每台服务器的规格至少得在 2G内存 2颗CPU 配置起步;  </span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>手把手开始搭建:</p>
+<h2 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1,环境配置"></a>1,环境配置</h2><h3 id="1-1-主机名解析"><a href="#1-1-主机名解析" class="headerlink" title="1.1 主机名解析"></a>1.1 主机名解析</h3><p>我这里有三台服务器,ip和角色分配如下：  </p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>ip</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>192.168.161.111</td>
+<td>master</td>
+</tr>
+<tr>
+<td>2</td>
+<td>192.168.209.156</td>
+<td>node1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>192.168.209.157</td>
+<td>node2</td>
+</tr>
+</tbody></table>
+<hr>
+<p>为了集群节点间的直接调用，我们需要配置一下主机名解析，分别在三台服务器上编辑 <code>/etc/hosts</code>,添加一下内容:  </p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.161.111 master</span><br><span class="line">192.168.209.156 node1</span><br><span class="line">192.168.209.157 node2</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-2-同步时间"><a href="#1-2-同步时间" class="headerlink" title="1.2 同步时间"></a>1.2 同步时间</h3><p>集群中的时间必须要精确一致，我们可以直接使用<code>chronyd</code>服务从网络同步时间，三台服务器需做同样的操作  </p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start chroynd </span><br><span class="line">systemctl enable chroynd</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-3-禁用iptables和firewalld服务"><a href="#1-3-禁用iptables和firewalld服务" class="headerlink" title="1.3 禁用iptables和firewalld服务"></a>1.3 禁用iptables和firewalld服务</h3><p>kubernetes和docker在运行中会产生大量的iptables规则，为了不让系统规则跟它们混淆，直接关闭系统的规则。三台虚拟机需做同样操作</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 关闭firewalld服务</span></span><br><span class="line">systemctl stop firewalld </span><br><span class="line">systemctl disable firewallld</span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭iptables服务</span></span><br><span class="line">systemctl stop iptables</span><br><span class="line">systemctl disable iptables</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-4-禁用selinux"><a href="#1-4-禁用selinux" class="headerlink" title="1.4 禁用selinux"></a>1.4 禁用selinux</h3><p>selinux是linux系统下的一个安全服务，如果不关闭它，在安装集群中会产生各种各样的奇葩问题</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 永久关闭</span></span><br><span class="line">sed -i &#x27;s/enforcing/disabled/&#x27; /etc/selinux/config</span><br><span class="line"><span class="meta">#</span><span class="bash"> 临时关闭</span></span><br><span class="line">setenforce 0</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="1-5-禁用swap分区"><a href="#1-5-禁用swap分区" class="headerlink" title="1.5 禁用swap分区"></a>1.5 禁用swap分区</h3><p>swap分区指的是虚拟内存分区，它的作用是在物理内存使用完之后，将磁盘空间虚拟成内存来使用启用swap设备会对系统的性能产生非常负面的影响，<br>因此kubernetes要求每个节点都要禁用swap设备但是如果因为某些原因确实不能关闭swap分区，就需要在集群安装过程中通过明确的参数进行配置说明</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 永久关闭 ,注释掉swap那一行</span></span><br><span class="line">vim /etc/fstab</span><br><span class="line"><span class="meta">#</span><span class="bash"> 临时关闭</span></span><br><span class="line">swapoff -a</span><br></pre></td></tr></table></figure></div>
+<h3 id="1-6-修改Linux的内核参数"><a href="#1-6-修改Linux的内核参数" class="headerlink" title="1.6 修改Linux的内核参数"></a>1.6 修改Linux的内核参数</h3><p>我们需要修改linux的内核参数，添加网桥过滤和地址转发功能，<br>编辑<code>/etc/sysctl.d/kubernetes.conf</code>文件，添加如下配置</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></div>
+<p>添加后进行以下操作：<br> <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 重新加载配置</span></span><br><span class="line">sysctl -p</span><br><span class="line"><span class="meta">#</span><span class="bash"> 加载网桥过滤模块</span></span><br><span class="line">modprobe br_netfilter</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看网桥过滤模块是否加载成功</span></span><br><span class="line">lsmod | grep br_netfilter</span><br></pre></td></tr></table></figure></div></p>
+<h3 id="1-7-配置-ipvs-功能"><a href="#1-7-配置-ipvs-功能" class="headerlink" title="1.7 配置 ipvs 功能"></a>1.7 配置 ipvs 功能</h3><p>在kubernetes中service有两种代理模型，一种是基于iptables的，一种是基于ipvs的 相比较的话，<br>ipvs的性能明显要高一些，但是如果要使用它，需要手动载入ipvs模块</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装ipset和ipvsadm</span></span><br><span class="line">yum install ipset ipvsadmin -y</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加需要加载的模块写入脚本文件</span></span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/sysconfig/modules/ipvs.modules</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">modprobe -- ip_vs</span><br><span class="line">modprobe -- ip_vs_rr</span><br><span class="line">modprobe -- ip_vs_wrr</span><br><span class="line">modprobe -- ip_vs_sh</span><br><span class="line">modprobe -- nf_conntrack_ipv4</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 为脚本文件添加执行权限</span></span><br><span class="line">chmod +x /etc/sysconfig/modules/ipvs.modules</span><br><span class="line"> /bin/bash /etc/sysconfig/modules/ipvs.modules</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看对应的模块是否加载成功</span></span><br><span class="line"> lsmod | grep -e ip_vs -e nf_conntrack_ipv4</span><br></pre></td></tr></table></figure></div>
+<p>完成以上配置后重启服务器 ：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-docker安装"><a href="#2-docker安装" class="headerlink" title="2,docker安装"></a>2,docker安装</h2><ul>
+<li>1.Linux要求内核3.0以上</li>
+<li>2.CentOS 7</li>
+</ul>
+<h3 id="2-1-环境查看"><a href="#2-1-环境查看" class="headerlink" title="2.1 环境查看"></a>2.1 环境查看</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">系统内核要求3.0以上</span></span><br><span class="line">[root@localhost ~]# uname -r</span><br><span class="line">3.10.0-1062.el7.x86_64</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">系统版本</span></span><br><span class="line">[root@localhost ~]# cat /etc/os-release </span><br><span class="line">NAME=&quot;CentOS Linux&quot;</span><br><span class="line">VERSION=&quot;7 (Core)&quot;</span><br><span class="line">ID=&quot;centos&quot;</span><br><span class="line">ID_LIKE=&quot;rhel fedora&quot;</span><br><span class="line">VERSION_ID=&quot;7&quot;</span><br><span class="line">PRETTY_NAME=&quot;CentOS Linux 7 (Core)&quot;</span><br><span class="line">ANSI_COLOR=&quot;0;31&quot;</span><br><span class="line">CPE_NAME=&quot;cpe:/o:centos:centos:7&quot;</span><br><span class="line">HOME_URL=&quot;https://www.centos.org/&quot;</span><br><span class="line">BUG_REPORT_URL=&quot;https://bugs.centos.org/&quot;</span><br><span class="line"></span><br><span class="line">CENTOS_MANTISBT_PROJECT=&quot;CentOS-7&quot;</span><br><span class="line">CENTOS_MANTISBT_PROJECT_VERSION=&quot;7&quot;</span><br><span class="line">REDHAT_SUPPORT_PRODUCT=&quot;centos&quot;</span><br><span class="line">REDHAT_SUPPORT_PRODUCT_VERSION=&quot;7&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2-2-安装"><a href="#2-2-安装" class="headerlink" title="2.2 安装"></a>2.2 安装</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">1.卸载旧版本</span></span><br><span class="line"> yum remove docker \</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">                   docker-client \</span></span><br><span class="line"><span class="bash">&gt;                   docker-client-latest \</span></span><br><span class="line"><span class="bash">&gt;                   docker-common \</span></span><br><span class="line"><span class="bash">&gt;                   docker-latest \</span></span><br><span class="line"><span class="bash">&gt;                   docker-latest-logrotate \</span></span><br><span class="line"><span class="bash">&gt;                   docker-logrotate \</span></span><br><span class="line"><span class="bash">&gt;                   docker-engine</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">2.需要的安装包</span></span><br><span class="line">yum install -y yum-utils</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">3.设置镜像的仓库</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"><span class="meta">#</span><span class="bash">上述方法默认是从国外的，不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">推荐使用国内的</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">  </span><br><span class="line"><span class="meta">#</span><span class="bash">更新软件包索引</span></span><br><span class="line">yum makecache fast</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">4.安装docker docker-ce 社区版 而ee是企业版</span></span><br><span class="line">yum install docker-ce docker-ce-cli containerd.io # 这里我们使用社区版即可</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">5.启动docker</span></span><br><span class="line">systemctl start docker</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">6.使用docker version 查看是否安装成功</span></span><br><span class="line">docker version</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">7.测试</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">8.查看一下下载的hello-world镜像</span></span><br><span class="line">[root@localhost /]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">hello-world         latest              bf756fb1ae65        5 months ago        13.3kB</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-k8s集群初始化"><a href="#3-k8s集群初始化" class="headerlink" title="3,k8s集群初始化"></a>3,k8s集群初始化</h2><h3 id="3-1-由于-kubernetes-的镜像源在国外，速度比较慢，因此我们需要切换成国内的镜像源"><a href="#3-1-由于-kubernetes-的镜像源在国外，速度比较慢，因此我们需要切换成国内的镜像源" class="headerlink" title="3.1 由于 kubernetes 的镜像源在国外，速度比较慢，因此我们需要切换成国内的镜像源"></a>3.1 由于 <code>kubernetes</code> 的镜像源在国外，速度比较慢，因此我们需要切换成国内的镜像源</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 编辑 /etc/yum.repos.d/kubernetes.repo 添加一下配置</span></span><br><span class="line">vim /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3-2-然后安装kubeadm、kubelet和kubectl-三个组件"><a href="#3-2-然后安装kubeadm、kubelet和kubectl-三个组件" class="headerlink" title="3.2 然后安装kubeadm、kubelet和kubectl 三个组件"></a>3.2 然后安装<code>kubeadm</code>、<code>kubelet</code>和<code>kubectl</code> 三个组件</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install --setopt=obsoletes=0 kubeadm-1.17.4-0 kubelet-1.17.4-0 kubectl-1.17.4-0 -y</span><br></pre></td></tr></table></figure></div>
+<h3 id="3-3-配置-kubelet-的group"><a href="#3-3-配置-kubelet-的group" class="headerlink" title="3.3 配置 kubelet 的group"></a>3.3 配置 kubelet 的group</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 编辑 /etc/sysconfig/kubelet，添加下面的配置</span></span><br><span class="line">KUBELET_CGROUP_ARGS=&quot;--cgroup-driver=systemd&quot;</span><br><span class="line">KUBE_PROXY_MODE=&quot;ipvs&quot;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3-4-初始化集群，仅在master上执行此步骤"><a href="#3-4-初始化集群，仅在master上执行此步骤" class="headerlink" title="3.4 初始化集群，仅在master上执行此步骤"></a>3.4 初始化集群，仅在<code>master</code>上执行此步骤</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建集群</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于默认拉取镜像地址 k8s.gcr.io 国内无法访问，这里指定阿里云镜像仓库地址</span></span><br><span class="line">[root@master ~]# kubeadm init \</span><br><span class="line">--apiserver-advertise-address=192.168.161.1111 \</span><br><span class="line">--image-repository registry.aliyuncs.com/google_containers \</span><br><span class="line">--kubernetes-version=v1.17.4 \</span><br><span class="line">--pod-network-cidr=10.244.0.0/16 \</span><br><span class="line">--service-cidr=10.96.0.0/12 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">使用 kubectl 工具</span></span><br><span class="line">[root@master ~]# mkdir -p $HOME/.kube</span><br><span class="line">[root@master ~]# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">[root@master ~]# sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3-5-把node节点加入集群"><a href="#3-5-把node节点加入集群" class="headerlink" title="3.5 把node节点加入集群"></a>3.5 把<code>node</code>节点加入集群</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> token 在上一步的结果中</span></span><br><span class="line">kubeadm join 192.168.108.100:6443 --token xxx \ </span><br><span class="line">--discovery-token-ca-cert-hash sha256:xxx</span><br></pre></td></tr></table></figure></div>
+<h3 id="3-6-安装网络插件，这一步也是很多教程都会出错的地方"><a href="#3-6-安装网络插件，这一步也是很多教程都会出错的地方" class="headerlink" title="3.6 安装网络插件，这一步也是很多教程都会出错的地方"></a>3.6 安装网络插件，这一步也是很多教程都会出错的地方</h3><p>kubernetes支持多种网络插件，比如flannel、calico、canal等等，这里选择使用flanne<br>下载 flanneld-v0.13.0-amd64.docker ：<a target="_blank" rel="noopener" href="https://github.com/flannel-io/flannel/releases/" title="Markdown">下载地址</a><br>下载完成后，上传至 master 服务器 执行以下命令</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker load &lt; flanneld-v0.13.0-amd64.docker</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看镜像，flannel</span></span><br><span class="line">docker images</span><br></pre></td></tr></table></figure></div>
+<p>然后我们需要获取flannel的配置文件来部署 flannel 服务</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这里往往会失败，往下看</span></span><br><span class="line">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br></pre></td></tr></table></figure></div>
+<p>但是由于众所周知的网络的原因，这个文件并不能保证网络插件安装成功，所以我在这里准备了一个文件，镜像地址已经更换阿里数据源；</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/BugMakerPro/blog_config_files/blob/main/kube-flannel.yml</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用配置文件启动fannel</span></span><br><span class="line">kubectl apply -f kube-flannel.yml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看集群节点的状态</span></span><br><span class="line">kubectl get nodes</span><br></pre></td></tr></table></figure></div>
+<p><img src="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_1.png" alt="img_1.png"></p>
+<p>STATUS全部Ready就成功了，网上的其他教程，问题大都无法全部Ready.</p>
+<h2 id="3-k8s集群测试"><a href="#3-k8s集群测试" class="headerlink" title="3,k8s集群测试"></a>3,k8s集群测试</h2><p>集群已搭建完成，我们再创建一个Nginx服务测试下</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">创建一个nginx服务</span></span><br><span class="line">kubectl create deployment nginx  --image=nginx:1.14-alpine</span><br><span class="line"><span class="meta">#</span><span class="bash">暴露端口</span></span><br><span class="line">kubectl expose deploy nginx  --port=80 --target-port=80  --type=NodePort</span><br><span class="line"><span class="meta">#</span><span class="bash">查看服务</span></span><br><span class="line">kubectl get pod,svc</span><br></pre></td></tr></table></figure></div>
+<p><img src="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_2.png" alt="img_2.png"></p>
+<p><img src="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/img_3.png" alt="img_3.png"></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/k8s/" rel="tag">#k8s</a>
+          
+            <a href="/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%89%E8%A3%85%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6/" rel="tag">#k8s安装安装网络插件</a>
+          
+            <a href="/tags/k8s%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" rel="tag">#k8s集群搭建</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/02/16/uncatalog/ckzqlzcj6000018r7er7n80mg/" rel="next" title="docker基础">
+                <i class="fa fa-chevron-left"></i> docker基础
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA-k8s%E5%AE%89%E8%A3%85%E5%AE%89%E8%A3%85%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">k8s集群搭建&#x2F;k8s安装安装网络插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">1,环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%B8%BB%E6%9C%BA%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 主机名解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%90%8C%E6%AD%A5%E6%97%B6%E9%97%B4"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 同步时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E7%A6%81%E7%94%A8iptables%E5%92%8Cfirewalld%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 禁用iptables和firewalld服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E7%A6%81%E7%94%A8selinux"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 禁用selinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E7%A6%81%E7%94%A8swap%E5%88%86%E5%8C%BA"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.5 禁用swap分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E4%BF%AE%E6%94%B9Linux%E7%9A%84%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.6.</span> <span class="nav-text">1.6 修改Linux的内核参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-%E9%85%8D%E7%BD%AE-ipvs-%E5%8A%9F%E8%83%BD"><span class="nav-number">1.1.7.</span> <span class="nav-text">1.7 配置 ipvs 功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-docker%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">2,docker安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%8E%AF%E5%A2%83%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 环境查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-k8s%E9%9B%86%E7%BE%A4%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">3,k8s集群初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%94%B1%E4%BA%8E-kubernetes-%E7%9A%84%E9%95%9C%E5%83%8F%E6%BA%90%E5%9C%A8%E5%9B%BD%E5%A4%96%EF%BC%8C%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83%E6%85%A2%EF%BC%8C%E5%9B%A0%E6%AD%A4%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E5%88%87%E6%8D%A2%E6%88%90%E5%9B%BD%E5%86%85%E7%9A%84%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 由于 kubernetes 的镜像源在国外，速度比较慢，因此我们需要切换成国内的镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%84%B6%E5%90%8E%E5%AE%89%E8%A3%85kubeadm%E3%80%81kubelet%E5%92%8Ckubectl-%E4%B8%89%E4%B8%AA%E7%BB%84%E4%BB%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 然后安装kubeadm、kubelet和kubectl 三个组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E9%85%8D%E7%BD%AE-kubelet-%E7%9A%84group"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 配置 kubelet 的group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%9B%86%E7%BE%A4%EF%BC%8C%E4%BB%85%E5%9C%A8master%E4%B8%8A%E6%89%A7%E8%A1%8C%E6%AD%A4%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 初始化集群，仅在master上执行此步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E6%8A%8Anode%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5 把node节点加入集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E5%AE%89%E8%A3%85%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%EF%BC%8C%E8%BF%99%E4%B8%80%E6%AD%A5%E4%B9%9F%E6%98%AF%E5%BE%88%E5%A4%9A%E6%95%99%E7%A8%8B%E9%83%BD%E4%BC%9A%E5%87%BA%E9%94%99%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-number">1.3.6.</span> <span class="nav-text">3.6 安装网络插件，这一步也是很多教程都会出错的地方</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-k8s%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95"><span class="nav-number">1.4.</span> <span class="nav-text">3,k8s集群测试</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugMakerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
