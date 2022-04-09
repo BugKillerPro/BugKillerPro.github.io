@@ -48,45 +48,45 @@
 <meta name="description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线和应用工程师的配备,在服务器上敲命令和写shell脚本的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux回忆录">
-<meta property="og:url" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/index.html">
-<meta property="og:site_name" content="BugMakerPro">
+<meta property="og:url" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/index.html">
+<meta property="og:site_name" content="BugKillerPro">
 <meta property="og:description" content="从java切换到go之后,就很少登到服务器上排查问题了,加之CICD顺利上线和应用工程师的配备,在服务器上敲命令和写shell脚本的机会就更少了。但是,这门传统手艺咱不能落下,遂写下该回忆录,想到哪写到哪吧.见谅！">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/0.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/vim_op.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/1.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/2.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/3.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/4.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/5.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/6.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/7.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/8.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/9.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/10.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/11.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/12.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/13.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/14.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/15.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/16.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/17.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/18.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/19.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/20.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/21.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/22.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/23.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/24.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/25.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/26.png">
-<meta property="og:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/27.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/0.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/vim_op.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/8.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/9.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/11.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/12.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/13.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/14.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/15.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/16.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/17.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/18.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/19.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/20.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/21.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/22.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/23.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/24.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/25.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/26.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/27.png">
 <meta property="article:published_time" content="2021-07-01T11:43:10.702Z">
 <meta property="article:modified_time" content="2021-10-27T09:05:48.264Z">
-<meta property="article:author" content="BugMakerPro">
+<meta property="article:author" content="BugKillerPro">
 <meta property="article:tag" content="linux回忆录">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://bugmakerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/0.png">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2021/07/01/uncatalog/ckv998l9b000mv0r7fcfrav6u/0.png">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -98,7 +98,7 @@
 
 
 
-  <title> linux回忆录 | BugMakerPro </title>
+  <title> linux回忆录 | BugKillerPro </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -129,7 +129,7 @@
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">BugMakerPro</span>
+      <span class="site-title">BugKillerPro</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -520,7 +520,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -584,7 +584,7 @@
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">BugMakerPro</span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
 </div>
 
 <div class="powered-by">
