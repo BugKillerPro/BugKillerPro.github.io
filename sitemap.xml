@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48bverj000054r77iq83ab9/</loc>
+    
+    <lastmod>2022-06-10</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/</loc>
+    
+    <lastmod>2022-06-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/</loc>
     
     <lastmod>2022-06-10</lastmod>
@@ -45,13 +59,6 @@
   
   <url>
     <loc>https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/</loc>
-    
-    <lastmod>2022-06-10</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/</loc>
     
     <lastmod>2022-06-10</lastmod>
     
@@ -425,6 +432,13 @@
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/Docker/</loc>
+    <lastmod>2022-06-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugkillerpro.github.io/tags/Kubernetes%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
