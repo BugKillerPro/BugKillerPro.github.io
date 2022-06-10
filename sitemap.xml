@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/</loc>
+    
+    <lastmod>2022-06-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/</loc>
     
     <lastmod>2022-06-09</lastmod>
@@ -270,7 +277,7 @@
 
   <url>
     <loc>https://bugkillerpro.github.io/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -278,140 +285,140 @@
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/GO%E5%AE%9E%E8%B7%B5/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/git%E5%9B%9E%E5%BF%86%E5%BD%95/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/linux%E5%9B%9E%E5%BF%86%E5%BD%95/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/prometheus/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/node-exporter/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/GO%E5%AE%9E%E8%B7%B5-%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AAbug/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/exporter%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/golang/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E5%8D%8F%E7%A8%8B/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/goroutine/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/k8s/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/k8s%E5%AE%89%E8%A3%85%E5%AE%89%E8%A3%85%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/k8s%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/Kubernetes/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/Docker/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -420,35 +427,35 @@
   
   <url>
     <loc>https://bugkillerpro.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/categories/go-practice/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/categories/git%E5%9B%9E%E5%BF%86%E5%BD%95/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/categories/design/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bugkillerpro.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
-    <lastmod>2022-06-09</lastmod>
+    <lastmod>2022-06-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
