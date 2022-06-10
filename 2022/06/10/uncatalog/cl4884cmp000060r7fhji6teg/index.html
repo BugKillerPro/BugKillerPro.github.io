@@ -1,0 +1,746 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Docker," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="云原生基础系列之docker(三)docker基础技术:linux cgroup">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-10T08:27:23.657Z">
+<meta property="article:modified_time" content="2022-06-10T09:00:26.935Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> 云原生基础系列之docker(三)docker基础技术:linux cgroup | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                云原生基础系列之docker(三)docker基础技术:linux cgroup
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+<p><strong>Kubernetes后续进阶系列</strong>云主要涉及云原生开发相关的内容，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+<hr>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
+<p>Namespace解决的问题主要是环境隔离的问题，这只是虚拟化中最最基础的一步，我们还需要解决对计算机资源使用上的隔离。也就是说，虽然你通过Namespace把我Jail到一个特定的环境中去了，但是我在其中的进程使用用CPU、内存、磁盘等这些计算资源其实还是可以随心所欲的。所以，我们希望对进程进行资源利用上的限制或控制。这就是Linux CGroup出来了的原因。</p>
+</blockquote>
+<p>Linux CGroup全称Linux Control Group， 是Linux内核的一个功能，用来限制，控制与分离一个进程组群的资源（如CPU、内存、磁盘输入输出等）。这个项目最早是由Google的工程师在2006年发起（主要是Paul Menage和Rohit Seth），最早的名称为进程容器（process containers）。在2007年时，因为在Linux内核中，容器（container）这个名词太过广泛，为避免混乱，被重命名为cgroup，并且被合并到2.6.24版的内核中去。然后，其它开始了他的发展。<br>Linux CGroupCgroup 可让您为系统中所运行任务（进程）的用户定义组群分配资源—比如CPU时间、系统内存、网络带宽或者这些资源的组合。您可以监控您配置的cgroup，拒绝cgroup 访问某些资源，甚至在运行的系统中动态配置您的cgroup。<br>主要提供了如下功能：</p>
+<ul>
+<li><em>Resource limitation</em>: 限制资源使用，比如内存使用上限以及文件系统的缓存限制。</li>
+<li><em>Prioritization</em>: 优先级控制，比如：CPU利用和磁盘IO吞吐。</li>
+<li><em>Accounting</em>: 一些审计或一些统计，主要目的是为了计费。</li>
+<li><em>Control</em>: 挂起进程，恢复执行进程。<br>使用cgroup，系统管理员可更具体地控制对系统资源的分配、优先顺序、拒绝、管理和监控。可更好地根据任务和用户分配硬件资源，提高总体效率。</li>
+</ul>
+<p>在实践中，系统管理员一般会利用CGroup做下面这些事（有点像为某个虚拟机分配资源似的）：</p>
+<ul>
+<li>隔离一个进程集合（比如：nginx的所有进程），并限制他们所消费的资源，比如绑定CPU的核。</li>
+<li>为这组进程 分配其足够使用的内存</li>
+<li>为这组进程分配相应的网络带宽和磁盘存储限制</li>
+<li>限制访问某些设备（通过设置设备的白名单） </li>
+</ul>
+<p>那么CGroup是怎么干的呢？我们先来点感性认识吧。</p>
+<p>首先，Linux把CGroup这个事实现成了一个file system，你可以mount。在我的Ubuntu 14.04下，你输入以下命令你就可以看到cgroup已为你mount好了。<br> <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hchen@ubuntu:~$ mount -t cgroup</span><br><span class="line">cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,relatime,cpuset)</span><br><span class="line">cgroup on /sys/fs/cgroup/cpu type cgroup (rw,relatime,cpu)</span><br><span class="line">cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,relatime,cpuacct)</span><br><span class="line">cgroup on /sys/fs/cgroup/memory type cgroup (rw,relatime,memory)</span><br><span class="line">cgroup on /sys/fs/cgroup/devices type cgroup (rw,relatime,devices)</span><br><span class="line">cgroup on /sys/fs/cgroup/freezer type cgroup (rw,relatime,freezer)</span><br><span class="line">cgroup on /sys/fs/cgroup/blkio type cgroup (rw,relatime,blkio)</span><br><span class="line">cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,net_prio)</span><br><span class="line">cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,net_cls)</span><br><span class="line">cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,relatime,perf_event)</span><br><span class="line">cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,relatime,hugetlb)</span><br></pre></td></tr></table></figure></div><br>或者使用lssubsys命令：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> lssubsys  -m</span></span><br><span class="line">cpuset /sys/fs/cgroup/cpuset</span><br><span class="line">cpu /sys/fs/cgroup/cpu</span><br><span class="line">cpuacct /sys/fs/cgroup/cpuacct</span><br><span class="line">memory /sys/fs/cgroup/memory</span><br><span class="line">devices /sys/fs/cgroup/devices</span><br><span class="line">freezer /sys/fs/cgroup/freezer</span><br><span class="line">blkio /sys/fs/cgroup/blkio</span><br><span class="line">net_cls /sys/fs/cgroup/net_cls</span><br><span class="line">net_prio /sys/fs/cgroup/net_prio</span><br><span class="line">perf_event /sys/fs/cgroup/perf_event</span><br><span class="line">hugetlb /sys/fs/cgroup/hugetlb</span><br></pre></td></tr></table></figure></div>
+<p>我们可以看到，在/sys/fs下有一个cgroup的目录，这个目录下还有很多子目录，比如： cpu，cpuset，memory，blkio……这些，这些都是cgroup的子系统。分别用于干不同的事的。</p>
+<p>如果你没有看到上述的目录，你可以自己mount，下面给了一个示例：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir cgroup</span><br><span class="line">mount -t tmpfs cgroup_root ./cgroup</span><br><span class="line">mkdir cgroup/cpuset</span><br><span class="line">mount -t cgroup -ocpuset cpuset ./cgroup/cpuset/</span><br><span class="line">mkdir cgroup/cpu</span><br><span class="line">mount -t cgroup -ocpu cpu ./cgroup/cpu/</span><br><span class="line">mkdir cgroup/memory</span><br><span class="line">mount -t cgroup -omemory memory ./cgroup/memory/</span><br></pre></td></tr></table></figure></div>
+<p>一旦mount成功，你就会看到这些目录下就有好文件了，比如，如下所示的cpu和cpuset的子系统：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">hchen@ubuntu:~$ ls /sys/fs/cgroup/cpu /sys/fs/cgroup/cpuset/ </span><br><span class="line">/sys/fs/cgroup/cpu:</span><br><span class="line">cgroup.clone_children  cgroup.sane_behavior  cpu.shares         release_agent</span><br><span class="line">cgroup.event_control   cpu.cfs_period_us     cpu.stat           tasks</span><br><span class="line">cgroup.procs           cpu.cfs_quota_us      notify_on_release  user</span><br><span class="line"></span><br><span class="line">/sys/fs/cgroup/cpuset/:</span><br><span class="line">cgroup.clone_children  cpuset.mem_hardwall             cpuset.sched_load_balance</span><br><span class="line">cgroup.event_control   cpuset.memory_migrate           cpuset.sched_relax_domain_level</span><br><span class="line">cgroup.procs           cpuset.memory_pressure          notify_on_release</span><br><span class="line">cgroup.sane_behavior   cpuset.memory_pressure_enabled  release_agent</span><br><span class="line">cpuset.cpu_exclusive   cpuset.memory_spread_page       tasks</span><br><span class="line">cpuset.cpus            cpuset.memory_spread_slab       user</span><br><span class="line">cpuset.mem_exclusive   cpuset.mems</span><br></pre></td></tr></table></figure></div>
+<p>你可以到/sys/fs/cgroup的各个子目录下去make个dir，你会发现，一旦你创建了一个子目录，这个子目录里又有很多文件了。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hchen@ubuntu:/sys/fs/cgroup/cpu$ sudo mkdir haoel</span><br><span class="line">[sudo] password for hchen: </span><br><span class="line">hchen@ubuntu:/sys/fs/cgroup/cpu$ ls ./haoel</span><br><span class="line">cgroup.clone_children  cgroup.procs       cpu.cfs_quota_us  cpu.stat           tasks</span><br><span class="line">cgroup.event_control   cpu.cfs_period_us  cpu.shares        notify_on_release</span><br></pre></td></tr></table></figure></div>
+<p>好了，我们来看几个示例。</p>
+<h3 id="CPU-限制"><a href="#CPU-限制" class="headerlink" title="CPU 限制"></a>CPU 限制</h3><p>假设，我们有一个非常吃CPU的程序，叫deadloop，其源码如下：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="C"><figure class="iseeu highlight /c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(;;) i++;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>用sudo执行起来后，毫无疑问，CPU被干到了100%（下面是top命令的输出）</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     </span><br><span class="line">3529 root      20   0    4196    736    656 R 99.6  0.1   0:23.13 deadloop   </span><br></pre></td></tr></table></figure></div>
+<p>然后，我们这前不是在/sys/fs/cgroup/cpu下创建了一个haoel的group。我们先设置一下这个group的cpu利用的限制：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hchen@ubuntu:~# cat /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us </span><br><span class="line">-1</span><br><span class="line">root@ubuntu:~# echo 20000 &gt; /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us</span><br></pre></td></tr></table></figure></div>
+<p>我们看到，这个进程的PID是3529，我们把这个进程加到这个cgroup中：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 3529 &gt;&gt; /sys/fs/cgroup/cpu/haoel/tasks</span><br></pre></td></tr></table></figure></div>
+<p>然后，就会在top中看到CPU的利用立马下降成20%了。（前面我们设置的20000就是20%的意思）</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     </span><br><span class="line">3529 root      20   0    4196    736    656 R 19.9  0.1   8:06.11 deadloop    </span><br></pre></td></tr></table></figure></div>
+<p>下面的代码是一个线程的示例：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="C"><figure class="iseeu highlight /c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE         <span class="comment">/* See feature_test_macros(7) */</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> NUM_THREADS = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread_main</span><span class="params">(<span class="keyword">void</span> *threadid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* 把自己加入cgroup中（syscall(SYS_gettid)为得到线程的系统tid） */</span></span><br><span class="line">    <span class="keyword">char</span> cmd[<span class="number">128</span>];</span><br><span class="line">    <span class="built_in">sprintf</span>(cmd, <span class="string">&quot;echo %ld &gt;&gt; /sys/fs/cgroup/cpu/haoel/tasks&quot;</span>, syscall(SYS_gettid));</span><br><span class="line">    system(cmd); </span><br><span class="line">    <span class="built_in">sprintf</span>(cmd, <span class="string">&quot;echo %ld &gt;&gt; /sys/fs/cgroup/cpuset/haoel/tasks&quot;</span>, syscall(SYS_gettid));</span><br><span class="line">    system(cmd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> tid;</span><br><span class="line">    tid = (<span class="keyword">long</span>)threadid;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World! It&#x27;s me, thread #%ld, pid #%ld!\n&quot;</span>, tid, syscall(SYS_gettid));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> a=<span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        a++;</span><br><span class="line">    &#125;</span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num_threads;</span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>)&#123;</span><br><span class="line">        num_threads = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (num_threads&lt;=<span class="number">0</span> || num_threads&gt;=<span class="number">100</span>)&#123;</span><br><span class="line">        num_threads = NUM_THREADS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 设置CPU利用率为50% */</span></span><br><span class="line">    mkdir(<span class="string">&quot;/sys/fs/cgroup/cpu/haoel&quot;</span>, <span class="number">755</span>);</span><br><span class="line">    system(<span class="string">&quot;echo 50000 &gt; /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us&quot;</span>);</span><br><span class="line"></span><br><span class="line">    mkdir(<span class="string">&quot;/sys/fs/cgroup/cpuset/haoel&quot;</span>, <span class="number">755</span>);</span><br><span class="line">    <span class="comment">/* 限制CPU只能使用#2核和#3核 */</span></span><br><span class="line">    system(<span class="string">&quot;echo \&quot;2,3\&quot; &gt; /sys/fs/cgroup/cpuset/haoel/cpuset.cpus&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pthread_t</span>* threads = (<span class="keyword">pthread_t</span>*) <span class="built_in">malloc</span> (<span class="keyword">sizeof</span>(<span class="keyword">pthread_t</span>)*num_threads);</span><br><span class="line">    <span class="keyword">int</span> rc;</span><br><span class="line">    <span class="keyword">long</span> t;</span><br><span class="line">    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;num_threads; t++)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;In main: creating thread %ld\n&quot;</span>, t);</span><br><span class="line">        rc = pthread_create(&amp;threads[t], <span class="literal">NULL</span>, thread_main, (<span class="keyword">void</span> *)t);</span><br><span class="line">        <span class="keyword">if</span> (rc)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;ERROR; return code from pthread_create() is %d\n&quot;</span>, rc);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Last thing that main() should do */</span></span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">free</span>(threads);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="内存使用限制"><a href="#内存使用限制" class="headerlink" title="内存使用限制"></a>内存使用限制</h3><p>我们再来看一个限制内存的例子（下面的代码是个死循环，其它不断的分配内存，每次512个字节，每次休息一秒）：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="C"><figure class="iseeu highlight /c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> chunk_size = <span class="number">512</span>;</span><br><span class="line">    <span class="keyword">void</span> *p = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((p = <span class="built_in">malloc</span>(p, chunk_size)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;out of memory!!\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">memset</span>(p, <span class="number">1</span>, chunk_size);</span><br><span class="line">        size += chunk_size;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[%d] - memory is allocated [%8d] bytes \n&quot;</span>, getpid(), size);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>然后，在我们另外一边：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建memory cgroup</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir /sys/fs/cgroup/memory/haoel</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> 64k &gt; /sys/fs/cgroup/memory/haoel/memory.limit_in_bytes</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 把上面的进程的pid加入这个cgroup</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> [pid] &gt; /sys/fs/cgroup/memory/haoel/tasks</span> </span><br></pre></td></tr></table></figure></div>
+<p>你会看到，一会上面的进程就会因为内存问题被kill掉了。</p>
+<h3 id="磁盘I-O限制"><a href="#磁盘I-O限制" class="headerlink" title="磁盘I/O限制"></a>磁盘I/O限制</h3><p>我们先看一下我们的硬盘IO，我们的模拟命令如下：（从/dev/sda1上读入数据，输出到/dev/null上）</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo dd if=/dev/sda1 of=/dev/null</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>我们通过iotop命令我们可以看到相关的IO速度是55MB/s（虚拟机内）:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO&gt;    COMMAND          </span><br><span class="line">8128 be/4 root       55.74 M/s    0.00 B/s  0.00 % 85.65 % dd if=/de~=/dev/null...</span><br></pre></td></tr></table></figure></div>
+<p>然后，我们先创建一个blkio（块设备IO）的cgroup</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /sys/fs/cgroup/blkio/haoel</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>并把读IO限制到1MB/s，并把前面那个dd命令的pid放进去（注：8:0 是设备号，你可以通过ls -l /dev/sda1获得）：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# echo &#x27;8:0 1048576&#x27;  &gt; /sys/fs/cgroup/blkio/haoel/blkio.throttle.read_bps_device </span><br><span class="line">root@ubuntu:~# echo 8128 &gt; /sys/fs/cgroup/blkio/haoel/tasks</span><br></pre></td></tr></table></figure></div>
+<p>再用iotop命令，你马上就能看到读速度被限制到了1MB/s左右。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO&gt;    COMMAND          </span><br><span class="line">8128 be/4 root      973.20 K/s    0.00 B/s  0.00 % 94.41 % dd if=/de~=/dev/null...</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="CGroup的子系统"><a href="#CGroup的子系统" class="headerlink" title="CGroup的子系统"></a>CGroup的子系统</h3><p>好了，有了以上的感性认识我们来，我们来看看control group有哪些子系统：</p>
+<ul>
+<li>blkio — 这个子系统为块设备设定输入/输出限制，比如物理设备（磁盘，固态硬盘，USB 等等）。</li>
+<li>cpu — 这个子系统使用调度程序提供对 CPU 的 cgroup 任务访问。</li>
+<li>cpuacct — 这个子系统自动生成 cgroup 中任务所使用的 CPU 报告。</li>
+<li>cpuset — 这个子系统为 cgroup 中的任务分配独立 CPU（在多核系统）和内存节点。</li>
+<li>devices — 这个子系统可允许或者拒绝 cgroup 中的任务访问设备。</li>
+<li>freezer — 这个子系统挂起或者恢复 cgroup 中的任务。</li>
+<li>memory — 这个子系统设定 cgroup 中任务使用的内存限制，并自动生成内存资源使用报告。</li>
+<li>net_cls — 这个子系统使用等级识别符（classid）标记网络数据包，可允许 Linux 流量控制程序（tc）识别从具体 cgroup 中生成的数据包。</li>
+<li>net_prio — 这个子系统用来设计网络流量的优先级</li>
+<li>hugetlb — 这个子系统主要针对于HugeTLB系统进行限制，这是一个大页文件系统。</li>
+</ul>
+<p>注意，你可能在Ubuntu 14.04下看不到net_cls和net_prio这两个cgroup，你需要手动mount一下：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo modprobe cls_cgroup</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /sys/fs/cgroup/net_cls</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t cgroup -o net_cls none /sys/fs/cgroup/net_cls</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo modprobe netprio_cgroup</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir /sys/fs/cgroup/net_prio</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t cgroup -o net_prio none /sys/fs/cgroup/net_prio</span></span><br></pre></td></tr></table></figure></div>
+<p>关于各个子系统的参数细节，以及更多的Linux CGroup的文档，你可以看看下面的文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/cgroup-v1/">Linux Kernel的官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/6/html-single/resource_management_guide/index#ch-Subsystems_and_Tunable_Parameters">Redhat的官方文档</a></li>
+</ul>
+<h3 id="CGroup的术语"><a href="#CGroup的术语" class="headerlink" title="CGroup的术语"></a>CGroup的术语</h3><p>CGroup有下述术语：</p>
+<ul>
+<li>任务（Tasks）：就是系统的一个进程。</li>
+<li>控制组（Control Group）：一组按照某种标准划分的进程，比如官方文档中的Professor和Student，或是WWW和System之类的，其表示了某进程组。Cgroups中的资源控制都是以控制组为单位实现。一个进程可以加入到某个控制组。而资源的限制是定义在这个组上，就像上面示例中我用的haoel一样。简单点说，cgroup的呈现就是一个目录带一系列的可配置文件。</li>
+<li>层级（Hierarchy）：控制组可以组织成hierarchical的形式，既一颗控制组的树（目录结构）。控制组树上的子节点继承父结点的属性。简单点说，hierarchy就是在一个或多个子系统上的cgroups目录树。</li>
+<li>子系统（Subsystem）：一个子系统就是一个资源控制器，比如CPU子系统就是控制CPU时间分配的一个控制器。子系统必须附加到一个层级上才能起作用，一个子系统附加到某个层级以后，这个层级上的所有控制族群都受到这个子系统的控制。Cgroup的子系统可以有很多，也在不断增加中。</li>
+</ul>
+<h3 id="下一代的CGroup"><a href="#下一代的CGroup" class="headerlink" title="下一代的CGroup"></a>下一代的CGroup</h3><p>上面，我们可以看到，CGroup的一些常用方法和相关的术语。一般来说，这样的设计在一般情况下还是没什么问题的，除了操作上的用户体验不是很好，但基本满足我们的一般需求了。</p>
+<p>不过，对此，有个叫Tejun Heo的同学非常不爽，他在Linux社区里对cgroup吐了一把槽，还引发了内核组的各种讨论。</p>
+<p>对于Tejun Heo同学来说，cgroup设计的相当糟糕。他给出了些例子，大意就是说，如果有多种层级关系，也就是说有多种对进程的分类方式，比如，我们可以按用户来分，分成Professor和Student，同时，也有按应用类似来分的，比如WWW和NFS等。那么，当一个进程即是Professor的，也是WWW的，那么就会出现多层级正交的情况，从而出现对进程上管理的混乱。另外，一个case是，如果有一个层级A绑定cpu，而层级B绑定memory，还有一个层级C绑定cputset，而有一些进程有的需要AB，有的需要AC，有的需要ABC，管理起来就相当不易。</p>
+<p>层级操作起来比较麻烦，而且如果层级变多，更不易于操作和管理，虽然那种方式很好实现，但是在使用上有很多的复杂度。你可以想像一个图书馆的图书分类问题，你可以有各种不同的分类，分类和图书就是一种多对多的关系。</p>
+<p>所以，在Kernel 3.16后，引入了unified hierarchy的新的设计，这个东西引入了一个叫__DEVEL__sane_behavior的特性（这个名字很明显意味目前还在开发试验阶段），它可以把所有子系统都挂载到根层级下，只有叶子节点可以存在tasks，非叶子节点只进行资源控制。</p>
+<p>我们mount一下看看：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t cgroup -o __DEVEL__sane_behavior cgroup ./cgroup</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls ./cgroup</span></span><br><span class="line">cgroup.controllers  cgroup.procs  cgroup.sane_behavior  cgroup.subtree_control </span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat ./cgroup/cgroup.controllers</span></span><br><span class="line">cpuset cpu cpuacct memory devices freezer net_cls blkio perf_event net_prio hugetlb</span><br></pre></td></tr></table></figure></div>
+<p>我们可以看到有四个文件，然后，你在这里mkdir一个子目录，里面也会有这四个文件。上级的cgroup.subtree_control控制下级的cgroup.controllers。</p>
+<p>举个例子：假设我们有以下的目录结构，b代表blkio，m代码memory，其中，A是root，包括所有的子系统（）。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> A(b,m) - B(b,m) - C (b)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">               \ - D (b) - E</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 下面的命令中， +表示<span class="built_in">enable</span>， -表示<span class="built_in">disable</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在B上的<span class="built_in">enable</span> blkio</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> +blkio &gt; A/cgroup.subtree_control</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在C和D上<span class="built_in">enable</span> blkio</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> +blkio &gt; A/B/cgroup.subtree_control</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在B上<span class="built_in">enable</span> memory</span>  </span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> +memory &gt; A/cgroup.subtree_control</span></span><br></pre></td></tr></table></figure></div>
+<p>在上述的结构中，</p>
+<ul>
+<li>cgroup只有上线控制下级，无法传递到下下级。所以，C和D中没有memory的限制，E中没有blkio和memory的限制。而本层的cgroup.controllers文件是个只读的，其中的内容就看上级的subtree_control里有什么了。</li>
+<li>任何被配置过subtree_control的目录都不能绑定进程，根结点除外。所以，A,C,D,E可以绑上进程，但是B不行。<br>我们可以看到，这种方式干净的区分开了两个事，一个是进程的分组，一个是对分组的资源控制（以前这两个事完全混在一起），在目录继承上增加了些限制，这样可以避免一些模棱两可的情况。</li>
+</ul>
+<p>当然，这个事还在演化中，cgroup的这些问题这个事目前由cgroup的吐槽人Tejun Heo和华为的Li Zefan同学负责解决中。总之，这是一个系统管理上的问题，而且改变会影响很多东西，但一旦方案确定，老的cgroup方式将一去不复返。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Docker/" rel="tag">#Docker</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" rel="next" title="云原生基础系列之docker(三)docker基础技术:linux namespace">
+                <i class="fa fa-chevron-left"></i> 云原生基础系列之docker(三)docker基础技术:linux namespace
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">36</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-%E9%99%90%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">CPU 限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">内存使用限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98I-O%E9%99%90%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">磁盘I&#x2F;O限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CGroup%E7%9A%84%E5%AD%90%E7%B3%BB%E7%BB%9F"><span class="nav-number">5.</span> <span class="nav-text">CGroup的子系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CGroup%E7%9A%84%E6%9C%AF%E8%AF%AD"><span class="nav-number">6.</span> <span class="nav-text">CGroup的术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E4%BB%A3%E7%9A%84CGroup"><span class="nav-number">7.</span> <span class="nav-text">下一代的CGroup</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
