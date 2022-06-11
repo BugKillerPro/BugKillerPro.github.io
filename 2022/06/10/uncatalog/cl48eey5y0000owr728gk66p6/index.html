@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="云原生基础系列,Kubernetes," />
+  <meta name="keywords" content="读书笔记,云原生基础系列,Kubernetes," />
 
 
 
@@ -46,21 +46,23 @@
 
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="云原生基础系列之Kubernetes(一)Kubernetes介绍">
-<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/index.html">
+<meta property="og:title" content="kubernetes读书笔记">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/index.html">
 <meta property="og:site_name" content="BugKillerPro">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200505183738289.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200524150339551.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200406232838722.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200406184656917.png">
-<meta property="article:published_time" content="2022-06-09T03:18:51.123Z">
-<meta property="article:modified_time" content="2022-06-10T11:42:28.175Z">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/1.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/5.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/6.jpg">
+<meta property="article:published_time" content="2022-06-10T11:50:54.597Z">
+<meta property="article:modified_time" content="2022-06-11T08:18:59.682Z">
 <meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="读书笔记">
 <meta property="article:tag" content="云原生基础系列">
 <meta property="article:tag" content="Kubernetes">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200505183738289.png">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/1.jpg">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -72,7 +74,7 @@
 
 
 
-  <title> 云原生基础系列之Kubernetes(一)Kubernetes介绍 | BugKillerPro </title>
+  <title> kubernetes读书笔记 | BugKillerPro </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -187,7 +189,7 @@
             
             
               
-                云原生基础系列之Kubernetes(一)Kubernetes介绍
+                kubernetes读书笔记
               
             
           </h1>
@@ -244,7 +246,7 @@
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
 </ul>
-<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发、service mesh和其他CNCF相关的内容，面向云原生开发人员。将包括以下部分：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
 </ul>
@@ -252,93 +254,40 @@
 
 
 <hr>
-<h3 id="1-Kubernetes介绍"><a href="#1-Kubernetes介绍" class="headerlink" title="1. Kubernetes介绍"></a>1. Kubernetes介绍</h3><h4 id="1-1-应用部署方式演变"><a href="#1-1-应用部署方式演变" class="headerlink" title="1.1 应用部署方式演变"></a>1.1 应用部署方式演变</h4><p>在部署应用程序的方式上，主要经历了三个时代：</p>
+<h3 id="What-is-Kubernetes"><a href="#What-is-Kubernetes" class="headerlink" title="What is Kubernetes?"></a>What is Kubernetes?</h3><p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/">官方解释</a>： </p>
+<blockquote>
+<p>Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.<br>翻译成大白话就是：“K8S 负责自动化运维管理多个 Docker 程序的集群”。</p>
+</blockquote>
+<h3 id="Why-is-Kubernetes"><a href="#Why-is-Kubernetes" class="headerlink" title="Why is Kubernetes?"></a>Why is Kubernetes?</h3><p>试想下传统的后端部署办法：把程序包（包括可执行二进制文件、配置文件等）放到服务器上，接着运行启动脚本把程序跑起来，同时启动守护脚本定期检查程序运行状态、必要的话重新拉起程序。<br>有问题吗？显然有！最大的一个问题在于：<strong>如果服务的请求量上来，已部署的服务响应不过来怎么办？</strong>传统的做法往往是，如果请求量、内存、CPU 超过阈值做了告警，运维马上再加几台服务器，部署好服务之后，接入负载均衡来分担已有服务的压力。<br>问题出现了：从监控告警到部署服务，中间需要人力介入！那么，有没有办法自动完成服务的部署、更新、卸载和扩容、缩容呢？这，就是 K8S 要做的事情：自动化运维管理 Docker（容器化）程序。  </p>
+<p>软件开发70年历史，软件工程发展了近50年，互联网从出现到现在的蓬勃发展二十多年。软件开发的模型从最早的瀑布模型，到敏捷开发，再到现在的DevOps理念。软件的形态从物理扎线，到打孔编程，再到大机，到微机，到网络时代的C/S、B/S、再到移动互联网时代App。架构的演变经过几十年的进化，在硬件、网络、信息的认知、用户数等都达到条件后，再才发展出了微服务，然后进而才出现了Kubernetes的框架。</p>
+<p>绝大部分的人认为Kubernetes只是一个基础平台。但实际大部分人都想不明白，为什么为出现Kubernetes这样的平台。物理机不能跑微服务吗，虚拟机不能跑微服务吗？你想不明白这个问题，你就没法入门Kubernetes，遗憾的是，这一点也是绝大多数Kubernetes所没有关注到的。</p>
+<p>Kubernetes的出现是大型互联网公司（Google）在非常庞大的微服务体系下，为了降低维护成本，为了提高维护效率，提高交付效率，更重要是为了服务自治不断思考和实践才开发出来的。IT行业的技术革新，总是会有先驱者为我们艰辛的躺平道路，然后我们再站在巨人的肩膀上借得更高的视野，但是现在很多人都被眼前的树叶给遮挡了，比如目前互联网浮躁的就业环境。</p>
+<h3 id="正题：Kubernetes读书笔记"><a href="#正题：Kubernetes读书笔记" class="headerlink" title="正题：Kubernetes读书笔记"></a>正题：Kubernetes读书笔记</h3><blockquote>
+<p>以下书籍/课程，笔记和内容质量无关</p>
+</blockquote>
+<h3 id="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"><a href="#1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》" class="headerlink" title="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"></a>1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/1.jpg" alt="1.jpg"><br>这本书或者说Kubernetes,对于当时的我来说，非常的有魔力，现在回想起来，也能不禁笑出声来。<br><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/2.png" alt="2.png"><br>非常适合小白入门，但是也仅限于入门，与其说是权威指南，不如说是入门指南。<br>里面的内容，几乎涵盖了Kubernetes运维相关的的方方面面，广度有余，而深度不足。</p>
+<p>或许是因为书名起的调太高，亦或是Kubernetes涉及的知识点过于庞杂，导致内容的翔实层度以及前置知识对于小白的友好程度，并不能十分匹配<strong>权威</strong>二字。<br>虽然如此，但是我还是非常推荐选择这本书作为入门教材。<br>但是，如果想仅凭这本书就入门Kubernetes的话，你至少还需要以下前置知识：</p>
 <ul>
-<li><p><strong>传统部署</strong>：互联网早期，会直接将应用程序部署在物理机上</p>
-<blockquote>
-<p>优点：简单，不需要其它技术的参与</p>
-<p>缺点：不能为应用程序定义资源使用边界，很难合理地分配计算资源，而且程序之间容易产生影响</p>
-</blockquote>
-</li>
-<li><p><strong>虚拟化部署</strong>：可以在一台物理机上运行多个虚拟机，每个虚拟机都是独立的一个环境</p>
-<blockquote>
-<p>优点：程序环境不会相互产生影响，提供了一定程度的安全性</p>
-<p>缺点：增加了操作系统，浪费了部分资源</p>
-</blockquote>
-</li>
-<li><p><strong>容器化部署</strong>：与虚拟化类似，但是共享了操作系统</p>
-<blockquote>
-<p>优点：</p>
-<p>可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等</p>
-<p>运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦</p>
-<p>容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署</p>
-</blockquote>
-</li>
+<li>微服务架构，及微服务能解决的问题</li>
+<li>对应微服务的语言生态，如JAVA、GO、Python等</li>
+<li>基础的软件配置管理，如代码管理、CI/CD、版本管理</li>
+<li>基础的生产维护管理，如变更管理、流程管理、监控、成本管理等</li>
+<li>其它运维知识，如基础网络、中间件、运维工具等<center> 看山是山，看水是水 </center>
+如果没有足够上述前置知识，读第一遍，对所有Kubernetes涉及到概念的理解，只会停留在表面。同时，有心的读者还会配合B站上相关的X天入门k8s的教程食用，学完之后会有一种，原来Kubernetes就是这啊，已被我拿下的错觉。
+<center> 看山不是山，看水不是水 </center>
+读第二遍，你会发现，已经不仅仅是温故而知新了，原来你发现了很多第一遍没有关注到的知识点，当时根本没有深入的思考，于是，第二遍读完之后，你会有种Kubernetes到底是个啥的困惑，这种困惑甚至会让你对自己产生怀疑。
+<center> 看山还是山，看水还是水 </center>
+如果，第二遍的困惑能激发你的求知欲，带着问题去由点到面的去完成各个支线任务，那么，再回来读第三遍，你会发现:</li>
 </ul>
-<p><img src="/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200505183738289.png" alt="image-20200505183738289"></p>
-<p>容器化部署方式给带来很多的便利，但是也会出现一些问题，比如说：</p>
-<ul>
-<li>一个容器故障停机了，怎么样让另外一个容器立刻启动去替补停机的容器</li>
-<li>当并发访问量变大的时候，怎么样做到横向扩展容器数量</li>
-</ul>
-<p>这些容器管理的问题统称为<strong>容器编排</strong>问题，为了解决这些容器编排问题，就产生了一些容器编排的软件：</p>
-<ul>
-<li><strong>Swarm</strong>：Docker自己的容器编排工具</li>
-<li><strong>Mesos</strong>：Apache的一个资源统一管控的工具，需要和Marathon结合使用</li>
-<li><strong>Kubernetes</strong>：Google开源的的容器编排工具</li>
-</ul>
-<p><img src="/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200524150339551.png" alt="image-20200524150339551"></p>
-<h4 id="1-2-kubernetes简介"><a href="#1-2-kubernetes简介" class="headerlink" title="1.2 kubernetes简介"></a>1.2 kubernetes简介</h4><p><img src="/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200406232838722.png" alt="image-20200406232838722"></p>
-<p>kubernetes，是一个全新的基于容器技术的分布式架构领先方案，是谷歌严格保密十几年的秘密武器—-Borg系统的一个开源版本，于2014年9月发布第一个版本，2015年7月发布第一个正式版本。</p>
-<p>kubernetes的本质是<strong>一组服务器集群</strong>，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：</p>
-<ul>
-<li><strong>自我修复</strong>：一旦某一个容器崩溃，能够在1秒中左右迅速启动新的容器</li>
-<li><strong>弹性伸缩</strong>：可以根据需要，自动对集群中正在运行的容器数量进行调整</li>
-<li><strong>服务发现</strong>：服务可以通过自动发现的形式找到它所依赖的服务</li>
-<li><strong>负载均衡</strong>：如果一个服务起动了多个容器，能够自动实现请求的负载均衡</li>
-<li><strong>版本回退</strong>：如果发现新发布的程序版本有问题，可以立即回退到原来的版本</li>
-<li><strong>存储编排</strong>：可以根据容器自身的需求自动创建存储卷</li>
-</ul>
-<h4 id="1-3-kubernetes组件"><a href="#1-3-kubernetes组件" class="headerlink" title="1.3 kubernetes组件"></a>1.3 kubernetes组件</h4><p>一个kubernetes集群主要是由**控制节点(master)<strong>、</strong>工作节点(node)**构成，每个节点上都会安装不同的组件。</p>
-<p><strong>master：集群的控制平面，负责集群的决策 ( 管理 )</strong></p>
 <blockquote>
-<p><strong>ApiServer</strong> : 资源操作的唯一入口，接收用户输入的命令，提供认证、授权、API注册和发现等机制</p>
-<p><strong>Scheduler</strong> : 负责集群资源调度，按照预定的调度策略将Pod调度到相应的node节点上</p>
-<p><strong>ControllerManager</strong> : 负责维护集群的状态，比如程序部署安排、故障检测、自动扩展、滚动更新等</p>
-<p><strong>Etcd</strong> ：负责存储集群中各种资源对象的信息</p>
+<p>Kubernetes是什么？它不是简单的master/worker，controller/apiserver/etcd/scheduler等等一些二进制及配置文件。<br>也不仅仅是pod/deployment/service/daemonset等等一些部署单元，也更不是一个简单的PAAS平台。<br>它是一个体系，包含了软件工程管理、软件开发模型和理念、项目管理、架构设计、运维管理、交付管理等等，除此之外才是一个类PAAS平台。</p>
 </blockquote>
-<p><strong>node：集群的数据平面，负责为容器提供运行环境 ( 干活 )</strong></p>
-<blockquote>
-<p><strong>Kubelet</strong> : 负责维护容器的生命周期，即通过控制docker，来创建、更新、销毁容器</p>
-<p><strong>KubeProxy</strong> : 负责提供集群内部的服务发现和负载均衡</p>
-<p><strong>Docker</strong> : 负责节点上容器的各种操作</p>
-</blockquote>
-<p><img src="/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/image-20200406184656917.png" alt="image-20200406184656917"></p>
-<p>下面，以部署一个nginx服务来说明kubernetes系统各个组件调用关系：</p>
-<ol>
-<li><p>首先要明确，一旦kubernetes环境启动之后，master和node都会将自身的信息存储到etcd数据库中</p>
-</li>
-<li><p>一个nginx服务的安装请求会首先被发送到master节点的apiServer组件</p>
-</li>
-<li><p>apiServer组件会调用scheduler组件来决定到底应该把这个服务安装到哪个node节点上</p>
-<p>在此时，它会从etcd中读取各个node节点的信息，然后按照一定的算法进行选择，并将结果告知apiServer</p>
-</li>
-<li><p>apiServer调用controller-manager去调度Node节点安装nginx服务</p>
-</li>
-<li><p>kubelet接收到指令后，会通知docker，然后由docker来启动一个nginx的pod</p>
-<p>pod是kubernetes的最小操作单元，容器必须跑在pod中至此，</p>
-</li>
-<li><p>一个nginx服务就运行了，如果需要访问nginx，就需要通过kube-proxy来对pod产生访问的代理</p>
-</li>
-</ol>
-<p>这样，外界用户就可以访问集群中的nginx服务了</p>
-<h4 id="1-4-kubernetes概念"><a href="#1-4-kubernetes概念" class="headerlink" title="1.4 kubernetes概念"></a>1.4 kubernetes概念</h4><p><strong>Master</strong>：集群控制节点，每个集群需要至少一个master节点负责集群的管控</p>
-<p><strong>Node</strong>：工作负载节点，由master分配容器到这些node工作节点上，然后node节点上的docker负责容器的运行</p>
-<p><strong>Pod</strong>：kubernetes的最小控制单元，容器都是运行在pod中的，一个pod中可以有1个或者多个容器</p>
-<p><strong>Controller</strong>：控制器，通过它来实现对pod的管理，比如启动pod、停止pod、伸缩pod的数量等等</p>
-<p><strong>Service</strong>：pod对外服务的统一入口，下面可以维护者同一类的多个pod</p>
-<p><strong>Label</strong>：标签，用于对pod进行分类，同一类pod会拥有相同的标签</p>
-<p><strong>NameSpace</strong>：命名空间，用来隔离pod的运行环境</p>
+<p>原来，Kubernetes确实就像它的简介那样，直接，神奇，而又令人兴奋。</p>
+<p>对于运维而言，这本书涉及到的内容，入门已经够了，然而在实际的维护过程中只能算一个操作工，必须参照手册或者由高级工程师指导才能干活。<br>除此之外，对于开发而言，还远远不够，甚至连入门都算不上。<br>正是由于以上这些原因，很多公司并没有足够的技术和人员储备，所以，对上Kubernetes显得尤为谨慎，甚至有些谈K色变。</p>
+<h3 id="2，《Kubernetes网络权威指南：基础、原理与实践》"><a href="#2，《Kubernetes网络权威指南：基础、原理与实践》" class="headerlink" title="2，《Kubernetes网络权威指南：基础、原理与实践》"></a>2，《Kubernetes网络权威指南：基础、原理与实践》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/3.png" alt="3.png"><br>这本书也带有<strong>权威</strong>二字，如果说上一本书<strong>权威</strong>层色不足的话，那这本书就完全是有辱<strong>权威</strong>二字了。<br>云计算的世界里，计算最基础，存储最重要，网络最复杂。对于这么复杂的一个领域，输出一本错误百出、大面积抄袭博客的书籍，实在是对读者的不负责。<br>如果你有Kubernetes网络方面的疑惑，建议你有一定的甄别能力之后，再来读这本书，只有这样，才能去糟取精。</p>
+<h3 id="3，《深入剖析Kubernetes》"><a href="#3，《深入剖析Kubernetes》" class="headerlink" title="3，《深入剖析Kubernetes》"></a>3，《深入剖析Kubernetes》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/5.jpg" alt="5.jpg"><br>这本书我没有读过，但是这本书的内容取自同一作者的极客时间的《深入剖析Kubernetes》课程，这个课程我是读过的，作者是张磊，2021年CNCF基金会TOC名单中国内唯一的入选者。CNCF基金会TOC名单，基本上就已经决定了这本书的含金量，<br>唯一的不足，可能是重理论而缺少实践，对于还没有入门的读者来说，非常的不友好。</p>
+<h3 id="4，《Kubernetes生产化实践之路》"><a href="#4，《Kubernetes生产化实践之路》" class="headerlink" title="4，《Kubernetes生产化实践之路》"></a>4，《Kubernetes生产化实践之路》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/6.jpg" alt="6.jpeg"></p>
+<p>未完，待续…</p>
 </span>
       
     </div>
@@ -346,6 +295,8 @@
     <footer class="post-footer">
       
         <div class="post-tags">
+          
+            <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag">#读书笔记</a>
           
             <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
           
@@ -358,17 +309,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/" rel="next" title="k8s集群搭建">
-                <i class="fa fa-chevron-left"></i> k8s集群搭建
+              <a href="/2022/06/10/uncatalog/cl48bverj000054r77iq83ab9/" rel="next" title="Kubernetes网络系列之(一)网络是怎么连通的">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(一)网络是怎么连通的
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" rel="prev" title="云原生基础系列之Kubernetes(二)集群环境搭建">
-                云原生基础系列之Kubernetes(二)集群环境搭建 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -475,7 +422,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Kubernetes%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">1. Kubernetes介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2%E6%96%B9%E5%BC%8F%E6%BC%94%E5%8F%98"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 应用部署方式演变</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-kubernetes%E7%AE%80%E4%BB%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 kubernetes简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-kubernetes%E7%BB%84%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 kubernetes组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-kubernetes%E6%A6%82%E5%BF%B5"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 kubernetes概念</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-Kubernetes"><span class="nav-number">1.</span> <span class="nav-text">What is Kubernetes?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-is-Kubernetes"><span class="nav-number">2.</span> <span class="nav-text">Why is Kubernetes?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E9%A2%98%EF%BC%9AKubernetes%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">正题：Kubernetes读书笔记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%8C%E3%80%8AKubernetes%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8EDocker%E5%88%B0Kubernetes%E5%AE%9E%E8%B7%B5%E5%85%A8%E6%8E%A5%E8%A7%A6%EF%BC%88%E7%AC%AC5%E7%89%88%EF%BC%89%E3%80%8B"><span class="nav-number">4.</span> <span class="nav-text">1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%8C%E3%80%8AKubernetes%E7%BD%91%E7%BB%9C%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E3%80%81%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B"><span class="nav-number">5.</span> <span class="nav-text">2，《Kubernetes网络权威指南：基础、原理与实践》</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%8C%E3%80%8A%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90Kubernetes%E3%80%8B"><span class="nav-number">6.</span> <span class="nav-text">3，《深入剖析Kubernetes》</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%EF%BC%8C%E3%80%8AKubernetes%E7%94%9F%E4%BA%A7%E5%8C%96%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF%E3%80%8B"><span class="nav-number">7.</span> <span class="nav-text">4，《Kubernetes生产化实践之路》</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
