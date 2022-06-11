@@ -1,0 +1,744 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(十九)CloudFoundry网络实现">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/8.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/9.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/11.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/17.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/12.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/13.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/14.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/15.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/16.png">
+<meta property="article:published_time" content="2022-06-11T13:33:54.695Z">
+<meta property="article:modified_time" content="2022-06-11T13:40:08.335Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(十九)CloudFoundry网络实现 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(十九)CloudFoundry网络实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括Docker概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/" title="Front-end web development">docker基础技术之linux cgroup</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
+</ul>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+
+<hr>
+<blockquote>
+<p>在K8s独霸天下之前，CloudFoundry才是那时的PaaS平台一哥呢。虽然你之前可能没了解过CloudFoundry是什么，不过今天，我们可以来回顾一下当年老PaaS是如何实现容器集群中网络分发的，也许还能顺道看下这家伙是如何被后浪拍死在沙滩上的</p>
+</blockquote>
+<h3 id="简单介绍下CloudFoundry"><a href="#简单介绍下CloudFoundry" class="headerlink" title="简单介绍下CloudFoundry"></a>简单介绍下CloudFoundry</h3><p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/1.png" alt="image"></p>
+<p>Docker解决了单机上面的容器管理，当在大规模集群上面管理容器集群时，则需要依赖PaaS平台。CloudFoundry就是业界首个开源的PaaS平台，那在当年（大概2013~2015）可是叱咤风云，一时风光无限。</p>
+<p>后来的故事大家基本也看到了，几个比较有名的PaaS平台起来，然后就是K8s一家独大，然后就没有然后了。（可参考唐老师的《K8S前世今生》文章）</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/2.png" alt="image"></p>
+<p>这里提一下，当年的CF用的容器技术，还不是Docker，而是自创的一个叫做Warden的容器技术（原理和Docker差不多，但是没有镜像管理这个功能，所以后面被Docker碾压了）。后来Docker实在太火，CF把底层的容器换成了Docker，不过也来不及了。</p>
+<p>2      集群中容器网络怎么打通<br>要访问容器，有2种场景： （1）容器间互相访问。（2）PaaS平台外部访问容器。</p>
+<p>CF基本没怎么考虑第（1）种场景，只是对第（2）种场景做了较好的处理。所以我们详细介绍下第（2）种场景：PaaS外部怎么访问容器。</p>
+<p>为了从外部可以访问容器，CF新增了一个叫做GoRouter的组件，你就理解成一个自己实现的定制版Nginx。</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/3.png" alt="image"></p>
+<p>PaaS集群外部，访问集群里面的容器，都需要一个这样的LB的。定制也好，取第三方也罢。 比如作为后来者，K8s为了偷懒，实现弯道超车CF，直接只做控制逻辑（还取个好听的名字叫Ingress），具体转发动作交给Nginx这种第三方工具去实现了。</p>
+<p>回到CF，那我们就详细看下报文是怎么经过GoRouter，到达容器的。</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/4.png" alt="image"></p>
+<p>（1）       首先，GoRouter 和 容器所在的节点（DEA），是局域网的VM，互相连通。</p>
+<p>（2）       GoRouter记录URL和容器endpoint的映射关系。</p>
+<p>（3）       收到请求，将报文转给对应的容器Host节点。这个和K8s是一样的。</p>
+<p>2.1      Host节点的容器网络<br>Warden容器出现的比Docker容器早，所以网络模型，也更简单。具体来讲，就是没Bridge网桥，报文直接靠Host路由导入容器。</p>
+<p>l  在DEA上运行ifconfig看到的结果：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/5.png" alt="image"></p>
+<p>w-开头的 就是 Veth-pair 网线，没有Bridge网桥。</p>
+<p>l  在容器内运行ifconfig看到的结果：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/6.png" alt="image"></p>
+<p>可以看到，warden容器内只有一个接口，就是Veth的另一头。在warden容器中运行的app也只能看到这一个接口。</p>
+<p>所以CF为每个容器，创建了一根Veth网线，一头在Host主机（DEA）中，一头在Warden容器中，如下图：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/7.png" alt="image"></p>
+<p>l  DEA如何把app请求交给Warden容器内</p>
+<p>前面提到GoRouter转发过来的请求，目的IP都是DEA的，那么DEA是怎么区分请求是给哪个warden容器的呢？ 答案是端口映射（目的IP都一样，不是还有端口不同么）。是的，DEA通过端口来区分不同的warden容器，从而交给不同的app。</p>
+<p>DEA做的端口转warden容器IP工作是交给Host的iptables规则来完成的（跟Docker一样）：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/8.png" alt="image"></p>
+<p>所以，之前提到的路由组件（GoRouter）不关心容器（Warden）里面的实际IP，只记录容器所在主机（DEA）的IP就够了。Warden容器之间网络彼此隔离，所以这个Warden容器内部的IP其实并不重要，随机都可以，只要保证所有虚拟Veth网线的IP不重复就能区分不同的Warden容器。</p>
+<p>2.2      容器内部网络<br>从容器角度来看，它自己肯定认为自己是完整的世界，所以我们只需要把容器当作普通的主机就行。（容器还是为了模拟出一个“真实”的运行环境）。</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/9.png" alt="image"></p>
+<p>对于warden容器内部来说，与外界通信的唯一途径就那根Veth网线，网线的对端就是它的网关（即容器所在的主机），再外部的网络它就一点都不知道了。在这个虚拟世界中（warden容器中）运行的app所看到的网络也是这么的简单：我的世界只有一个网卡，路由也只有一条：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/10.png" alt="image"></p>
+<p>2.3      报文从客户端到达容器<br>这一章节，是上述章节的细化版，有兴趣的看看就行了。</p>
+<p>2.3.1        客户端到CF的GoRouter<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/11.png" alt="image"></p>
+<ol>
+<li><p>首先客户端知道app的URL网址。so会先去查询DNS，DNS返回的IP是GoRouter的外部IP（即EIP啦）。</p>
+</li>
+<li><p>接着客户端访问刚查到的GoRouter的外部EIP（实际就是Openstack的网络节点，IaaS报文都是通过网络节点，转给内部的VM的。）。</p>
+</li>
+<li><p>Openstack网络节点将外部IP通过NAT转换成内部的IP，交给对应的VM。这里也就是GoRouter所在的节点了。</p>
+</li>
+</ol>
+<p>Ps：因为NAT对客户端用户来说是不感知的，客户端会认为用EIP就是接与GoRouter通信了。</p>
+<p>2.3.2        Router到DEA（App所在的VM）<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/17.png" alt="image"></p>
+<ol start="4">
+<li><p>路由组件GoRouter执行L7层终结模式。即先和客户端正常TCP建链，这时还不跟任何后端容器连接通信。等到客户端发起GET的时候，会根据客户端请求的URL，找到“url-app”的关联映射记录，找出是访问哪个app，然后才向目标app发起syn建链。注意这里向容器中的app发起请求时的目的端口已经换了，不再是http默认端口80。</p>
+</li>
+<li><p>“url-app”记录中app的地址是容器所在的节点（即：目的IP是DEA）。所以GoRouter把报文丢给DEA，其实也是一个VM。</p>
+</li>
+</ol>
+<p>2.3.3        DEA收到的报文<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/12.png" alt="image"></p>
+<ol start="6">
+<li>可以看到GoRouter发其建链报文到达容器所在的Host节点。</li>
+</ol>
+<p>2.3.4        DEA转发进入容器（App所在的运行环境）<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/13.png" alt="image"></p>
+<p>dea执行nat，把报文转入到容器里面。</p>
+<ol start="7">
+<li> DEA根据报文的目的端口，注意是端口，执行NAT动作，将目的IP改成内部容器的IP，交给APP。</li>
+</ol>
+<p>2.3.5        最终App看的请求<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/14.png" alt="image"></p>
+<p>app看到的抓包</p>
+<p>8 还是一样，NAT行为对客户端来说是不感知的，于是GoRouter路由组件以为自己直接跟容器App通信了。它继续开心的认为“url-app”的映射关系是正确的：</p>
+<p><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/15.png" alt="image"></p>
+<p>2.3.6        整体图<br><img src="/2022/06/11/uncatalog/cl49x52lf001hlwr7g9qrfjev/16.png" alt="image"></p>
+<p>3      总结<br>CF的容器网络实现，和K8s主要3个地方稍有区别。</p>
+<p>（1）       K8s用Service概念搞定容器间如何互访问题，CF未考虑容器如何互访。</p>
+<p>（2）       外部路由转发的实现，K8s借助第三方组件，CF自己上阵</p>
+<p>（3）       容器所在Host组网，Docker带Bridge，CF不带Bridge</p>
+<p>第一点：K8s精明的地方，也是一把直接站在了CF的肩膀上。</p>
+<p>第二点：App网络主要考虑了集群外部，如何访问容器，即K8s中的Ingress部分。跟K8s-Ingress中只定义“URL-&gt;容器”映射规则，转发则交给Nginx不一样的是。CF搞了个GoRouter路由组件，除了定义映射关系，自己上手做了转发动作。</p>
+<p>第三点：容器有没有接入Bridge网桥，其实没太大区别，这个本身还是Docker和Warden的差异。Docker比Warden更通用一些，场景考虑的更周到，所以和K8s时代盖住了CF一样，Warden这种容器，也被Docker盖的死死的。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49wrxfs001elwr7evfs8y08/" rel="next" title="Kubernetes网络系列之(十八)Docker网络实现">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(十八)Docker网络实现
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49xdzwo001klwr71pcl8mu0/" rel="prev" title="Kubernetes网络系列之(二十)Kubernetes网络实现">
+                Kubernetes网络系列之(二十)Kubernetes网络实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%8BCloudFoundry"><span class="nav-number">1.</span> <span class="nav-text">简单介绍下CloudFoundry</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

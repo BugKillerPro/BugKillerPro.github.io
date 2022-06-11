@@ -1,0 +1,730 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(十一)什么是VLAN和VXLAN">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/3.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/17.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/8.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/9.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/11.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/12.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/13.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/14.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/15.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/16.png">
+<meta property="article:published_time" content="2022-06-11T11:10:26.033Z">
+<meta property="article:modified_time" content="2022-06-11T11:30:48.968Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(十一)什么是VLAN和VXLAN | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(十一)什么是VLAN和VXLAN
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括Docker概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/" title="Front-end web development">docker基础技术之linux cgroup</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
+</ul>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+
+<hr>
+<blockquote>
+<p>一、背景敲黑板： VLAN是你理解云网络的门槛石，要想通往云网络的世界，这一扇大门一定得理解透彻。二、为什么需要VLAN在前面的课程里面，我们知道了局域网的概念。一个局域网里面有N台电脑互相通信，ARP广播通知到各家各户。把你想象为村里的一户人家，平时送快递收快递，偶尔村里广播找人，派个人到你家询问询问情况，整体看似挺和谐的。 但是这里注意了哦，广播找人，那可一定是全村每家每户都派人通知到的…</p>
+</blockquote>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>敲黑板： VLAN是你理解云网络的门槛石，要想通往云网络的世界，这一扇大门一定得理解透彻。</p>
+<h3 id="为什么需要VLAN"><a href="#为什么需要VLAN" class="headerlink" title="为什么需要VLAN"></a>为什么需要VLAN</h3><p>在前面的课程里面，我们知道了局域网的概念。一个局域网里面有N台电脑互相通信，ARP广播通知到各家各户。把你想象为村里的一户人家，平时送快递收快递，偶尔村里广播找人，派个人到你家询问询问情况，整体看似挺和谐的。 但是这里注意了哦，广播找人，那可一定是全村每家每户都派人通知到的。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/1.png" alt="image"></p>
+<p>然而当村子大了，问题就出来了： 就是这个各路的广播通知的大使啊，不停的往你家门口赶啊，一个又一个，无尽的骚扰着你家，已经困扰到你正常的作息了。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/2.png" alt="image"></p>
+<p>那你可能好奇，一个村里面，这个广播大使能有这么多吗？ 嗯，大概你门口就这么多吧（夸张手法）</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/3.jpg" alt="image"></p>
+<p>所以这个村子也得分分组了：上半村，下半村。上半村的事情，广播大使，你别来下半村咨询了，上半村跑完了就噢了。</p>
+<p>因此，一个局域网里面的电脑的分组需求就开始了。一个物理世界的人，实际上又分成了各个门派，门派之间各不相干。这种抽象决定了你虽然和邻居很近，然而你们互相不认识，也不通信。</p>
+<p>VLAN就是用来给村里人分组用的，每个人贴个标签。代表了你是哪个门派。</p>
+<h3 id="如何理解VLAN"><a href="#如何理解VLAN" class="headerlink" title="如何理解VLAN"></a>如何理解VLAN</h3><p>站在网络报文的角度，我们重新梳理一下这个里面分组的道道。</p>
+<p>最开始，一个网线上面跑着很多运输车(IP报文)，到达目的地后，把IP头去掉，剩下货物交给对方，就像这样：</p>
+<p>在对通知大使分组之后，这些报文可就带了标记了，一眼就看出来，这是不同门派的报文。就像这样：</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/4.png" alt="image"></p>
+<p>这样一来，每一台机器，只会收到自己门派的报文，不会受到另一个门派的骚扰。一个局域网就这样根据报文的标记，分裂为多个不同的门派。找其中一个门派单独看，它又像是是一个更小的局域网，因为它们只与同一门派的人通信。所以单独的一个门派又叫做“虚拟的”局域网。英文Virtual LAN（也就是VLAN）。</p>
+<p>下图显示一个局域网，分裂为两个虚拟的局域网。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/17.png" alt="image"></p>
+<p>那么怎么来给报文打标签区分类别呢？ 搞报文协议的前辈，掐指一算。算了，就给报文头里面加个字段吧，用来写门派号。<br><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/5.png" alt="image"></p>
+<p>注意这里VID留了12bit位，也就是最大4095个门派。 搞协议的人觉得，一个局域网里面的电脑嘛，搞那么多门派干嘛，分组数量绝对够了啊。呵呵~都是坑，跟IPV4一样一样的。</p>
+<p>带了VLAN头的报文，我们叫VLAN标签。它是一个长得不太一样的报文。</p>
+<h3 id="交换机的VLAN口"><a href="#交换机的VLAN口" class="headerlink" title="交换机的VLAN口"></a>交换机的VLAN口</h3><p>在一个局域网里面，分组这件事，你可以任性的随机选电脑分一个组，更多的是按照位置和属性分组。一般为了方便管理，都将一个“虚拟局域网”的电脑放在一起。把它们接入一个交换机的一个网口上面，这个网口对应的下属电脑，属于同一个“虚拟局域网”。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/6.png" alt="image"></p>
+<p>在图上可以看到，一个交换机端口可以设置VLAN属性，代表允许的报文类型(门派)。 那这里有一个深层次的概念：一个端口，报文有进，有出的。分别怎么处理的呢？</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/7.png" alt="image"></p>
+<p>这种打上标签，和去除标签的功能，是一个带VLAN功能的常见情况。也就是tag，untag的实际含义。因为也有端口是需要在收到报文的时候untag的，所以这个打标签的活需要注意，门派理清楚。</p>
+<h3 id="Trunk又是什么鬼？"><a href="#Trunk又是什么鬼？" class="headerlink" title="Trunk又是什么鬼？"></a>Trunk又是什么鬼？</h3><p>一般情况，一个交换机端口，都是设置为只允许一种VLAN报文通过，这样比较好理解。但是有时候，我们需要设置一个端口，允许N种VLAN报文，都可以通过。</p>
+<p>比如：</p>
+<p>在一个大的局域网里面（比如学校），我们需要将两个位置的（比例两幢楼）的VLAN电脑通连起来，字母派一个组，数字派一个组。类似图示这样：</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/8.png" alt="image"></p>
+<p>这种情况下，如果按照一个端口设置一个VLAN的原则，只需要在两个交换机之间，接额外2根线就行了。像这样：</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/9.png" alt="image"></p>
+<p>由于带了VLAN标签的报文，只能通过对于的VLAN端口，所以两个“虚拟局域网”互相不干扰。但是如果门派变多了呢？？</p>
+<p>难道每增加一个门派，两个交换机之间就得加一根网线？？</p>
+<p>所以聪明的我们就想出来，一个端口允许N种VLAN标签不就行了。意思是各门派均可通过~</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/10.png" alt="image"></p>
+<p>这个就是Trunk端口了。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/11.png" alt="image"></p>
+<h3 id="VLAN的不足，大哥VXLAN来帮忙"><a href="#VLAN的不足，大哥VXLAN来帮忙" class="headerlink" title="VLAN的不足，大哥VXLAN来帮忙"></a>VLAN的不足，大哥VXLAN来帮忙</h3><p>之前提过，第一个想出门派的VLAN协议设计者，觉得12bit的标记，也就是4千多种门派就够了。实际情况是，这玩意很好用啊，特别是这种“虚拟的局域网”概念，可以模拟出很多“虚拟的网络”出来给用户使用，特别适合云计算这种一个用户需要自己独立的网络这种场景，所以使用的越来也多，需求量超大。</p>
+<p>表面上一根物理网线，可以虚拟出N根“虚拟网线”的效果。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/12.png" alt="image"></p>
+<p>所以结果就是：VLAN这种分出来门派的数量完全不够用啊！ 因为需求量可能比下面的还要多：</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/13.png" alt="image"></p>
+<p>所以，一种新的区分报文门派的方法需要出来。所以人们就想方法，最终有两个方法出来：一种就是 VXLAN，X就是扩展的意思； 还有一种是GRE网络。</p>
+<p>这两种分门派的方法有一个共同点，就是在小货车运输的货物上打标签。而不再是对货车分类（因为IP报文头已经没有多余字段可用来发挥作用了）。</p>
+<ol>
+<li>VXLAN分门派方法：</li>
+</ol>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/14.png" alt="image"></p>
+<ol start="2">
+<li>GRE分门派方法：</li>
+</ol>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/15.png" alt="image"></p>
+<h3 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h3><p>因为VLAN技术的出现，使得同一根物理线路上，同时传递2种完全相互隔离的信息。效果看上去似乎是2条独立的线路分别在传递信息。</p>
+<p>所以再进一步想象下：抽象的云计算里面的虚拟机，其实就是这种情况，两台虚拟机可能挨很近（运行在同一台物理机上），然而它们之间是完全没关系的，因为是分别被两个不同的人购买的。</p>
+<p><img src="/2022/06/11/uncatalog/cl49s0k3u000tlwr77i2gctw9/16.png" alt="image"></p>
+<p>云网络的雏形就这样长出来了。敲黑板~</p>
+<p>附录：</p>
+<p>要是想要深入搞这个VLAN技术，可以看看这篇文章<a target="_blank" rel="noopener" href="https://network.51cto.com/article/450885.html">小白都能看明白的VLAN原理解释</a>。仅了解概念，看本文就够了。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49r8bkh000qlwr7dta2fv8f/" rel="next" title="Kubernetes网络系列之(十)iptables-nat穿越功能">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(十)iptables-nat穿越功能
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49ss3al000wlwr78qw42gtt/" rel="prev" title="Kubernetes网络系列之(十二)GRE">
+                Kubernetes网络系列之(十二)GRE <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81VLAN"><span class="nav-number">2.</span> <span class="nav-text">为什么需要VLAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3VLAN"><span class="nav-number">3.</span> <span class="nav-text">如何理解VLAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84VLAN%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text">交换机的VLAN口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trunk%E5%8F%88%E6%98%AF%E4%BB%80%E4%B9%88%E9%AC%BC%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">Trunk又是什么鬼？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VLAN%E7%9A%84%E4%B8%8D%E8%B6%B3%EF%BC%8C%E5%A4%A7%E5%93%A5VXLAN%E6%9D%A5%E5%B8%AE%E5%BF%99"><span class="nav-number">6.</span> <span class="nav-text">VLAN的不足，大哥VXLAN来帮忙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9D%9F"><span class="nav-number">7.</span> <span class="nav-text">结束</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

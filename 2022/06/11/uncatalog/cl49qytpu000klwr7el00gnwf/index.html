@@ -1,0 +1,725 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(八)iptables-filter过滤功能">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/6.png">
+<meta property="article:published_time" content="2022-06-11T10:41:05.561Z">
+<meta property="article:modified_time" content="2022-06-11T10:44:42.752Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(八)iptables-filter过滤功能 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(八)iptables-filter过滤功能
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括Docker概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/" title="Front-end web development">docker基础技术之linux cgroup</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
+</ul>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+
+<hr>
+<blockquote>
+<p>前面的各种协议已经可以把基本可用的物理网络世界给形成了，在正常情况下，它可以玩的很溜。比如组个局域网办公，或者打个联机魔兽争霸，都没有什么问题。</p>
+</blockquote>
+<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>前面的各种协议已经可以把基本可用的物理网络世界给形成了，在正常情况下，它可以玩的很溜。比如组个局域网办公，或者打个联机魔兽争霸，都没有什么问题。</p>
+<p>可是，网络世界中总是会有邪 恶的“人”出现，它就不按照大家约定好的规则来发送报文。比如扫描整个网络中的开放端口，扒取各种可能的网页/网络信息，发送大量报文进行冲击。仅仅依靠单纯而美好的协议世界无法阻止这种不按约定而来的行为。</p>
+<p>还记得我们最开始的网络概念么？</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/1.png" alt="image"></p>
+<p>理想单纯而美好，可是“邪 恶”的报文如入无人之境。无奈诚实的人为了对付恶势力也得武装自己，在大门的入口装起了大量的机关，用来抵抗那些非法的坏报文。</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/2.png" alt="image"></p>
+<p>看上去这是一种不错的方式，守住大门总能防住无理的窥探。这里这个“复杂的机关阵”有个不错的名字，叫做iptables，这也就是它由来的原因，恩，如果不是因为时间关系，我还能继续掰下去。。。 :-)</p>
+<h3 id="iptables表"><a href="#iptables表" class="headerlink" title="iptables表"></a>iptables表</h3><p>既然要设计一套八卦阵，那必须看上去十分牛逼才行。先立几道屏障再说，每一个报文要想进来必须要经过这些屏障的严格筛选，才能成为真正的神选之报文。类似这样：</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/3.png" alt="image"></p>
+<p>这样的屏障式设计，就有了原型。</p>
+<p>然后在每一道屏障上面再设计很多的规则链，报文必须经过这些规则链的层层检查，有多严格呢？至少要比G20进地铁站还严吧。然后每一条规则链又由多个规则串起来。</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/4.png" alt="image"></p>
+<p>能经过这样子的五行八卦阵的报文，那么咱就勉强认为是良民了，可以被主机上的程序接受。</p>
+<p>（当然了，想要出去的报文也一样要经过严格控制，万一坏人已经跑到了内部，是吧）</p>
+<h3 id="表和规则链"><a href="#表和规则链" class="headerlink" title="表和规则链"></a>表和规则链</h3><p>iptables一共有四张表(屏障)，但是一般只会用到两个，就是：过滤表-filter，改地址表-nat。这两个记住就行了。</p>
+<p>iptables一共有五条基本的规则链： 接收预处理-prerouting，接收-input，转发-forward，发送-output，出口后处理-postrouting。记住名字就行。</p>
+<p>这些表和这些链的组合，并不是每张表里面都有5条链的。有些规则链只存在特定的表中。</p>
+<p>由于设计者可能比较喜欢爱马仕的关系，他设计的组合方式就是一个大写的字母H。所以倒也比较好记，出去&amp;进来一共4个角，中间一个转发小横杠。如下。</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/5.png" alt="image"></p>
+<p>关于在经过“接收预处理-prerouting”环节后，是进入forward，还是进入input，这个问题。上一章节其实提到过。世界上有两种报文，发给我的，和不是发给我的。（判断是不是自己的报文，就看目的地址是不是本机的就行）。如果不是给我的，那就帮忙转发，走forward。是给自己的，那就走input。</p>
+<h3 id="规则链"><a href="#规则链" class="headerlink" title="规则链"></a>规则链</h3><p>用户可以在一张表中任意增加规则链，规则链上面的某个规则如果命中，那么可以要求命中的报文进入到另外的规则链中继续处理。基本长这个样子：</p>
+<p><img src="/2022/06/11/uncatalog/cl49qytpu000klwr7el00gnwf/6.png" alt="image"></p>
+<p>基本套路如下：条件 + 命中 + 动作， 动作也就是那么几个：</p>
+<p>（注意：一旦执行完规则的动作，就结束整个规则链的匹配，不继续往下匹配其他规则了。）</p>
+<ol>
+<li><p>Accept：接受报文</p>
+</li>
+<li><p>Drop：丢弃报文</p>
+</li>
+<li><p>SNAT：把报文的源地址改掉 （需要指定改为什么IP）</p>
+</li>
+<li><p>DNAT：把报文的目的地址改掉</p>
+</li>
+<li><p>Masquerade：高级版的SNAT，把报文的源地址改掉，改为发送网卡的IP地址（自动识别改成什么IP）</p>
+</li>
+<li><p>Redirect：高级版的DNAT，把报文的目的地址改为接收网卡的IP地址。同时可以修改目的端口（其实就是重定向给本机的某个端口）</p>
+</li>
+<li><p>其他名字：那就代表跳转到另外一条规则链继续匹配。。。（这里的名字就等于指定的目标规则链的名字）</p>
+</li>
+</ol>
+<p>其他高级动作？ 骚年，其他动作解锁靠你自己啦 ：-）</p>
+<h3 id="iptables命令"><a href="#iptables命令" class="headerlink" title="iptables命令"></a>iptables命令</h3><p>额，说了这么久，貌似还没提到iptables命令怎么用。一般情况有两种方式查看当前的iptables规则：</p>
+<ol>
+<li><h1 id="iptables-nL-（或者-iptables-t-nat-nL）"><a href="#iptables-nL-（或者-iptables-t-nat-nL）" class="headerlink" title="iptables -nL （或者 # iptables -t nat -nL）"></a>iptables -nL （或者 # iptables -t nat -nL）</h1></li>
+</ol>
+<p>列出当前表的所有规则链。</p>
+<p>其实一个-L参数就行，但是记得我说过，网络相关的命令最好都加一个“-n”么？是的，-n让它不用做DNS翻译，也就是不要把IP地址翻译为主机名。</p>
+<p>-L参数：</p>
+<p>列出当前表的所有规则链。注意是大写的L。</p>
+<p>-n参数：</p>
+<p>不要把IP翻译为主机名</p>
+<p>-t参数：</p>
+<p>指定要查看的表名。不指定的话，默认查询filter表。</p>
+<p>-v参数：</p>
+<p>如果要定位查询规则命中的次数，可以加个-v参数，这样子输入：</p>
+<h1 id="iptables-nvL-（或者-iptables-t-nat-nvL）"><a href="#iptables-nvL-（或者-iptables-t-nat-nvL）" class="headerlink" title="iptables -nvL （或者 # iptables -t nat -nvL）"></a>iptables -nvL （或者 # iptables -t nat -nvL）</h1><p>一般查看命中次数都要先清空计数，然后再查看，所以清空规则命中计数也要学一下</p>
+<p>-Z参数：</p>
+<p>可以使用-Z参数清空命中统计次数。注意是大写的Z。</p>
+<h1 id="iptables-Z-（或者-iptables-t-nat-Z）"><a href="#iptables-Z-（或者-iptables-t-nat-Z）" class="headerlink" title="iptables -Z （或者 # iptables -t nat -Z）"></a>iptables -Z （或者 # iptables -t nat -Z）</h1><ol start="2">
+<li><h1 id="iptables-S-（或者-iptables-t-nat-S）"><a href="#iptables-S-（或者-iptables-t-nat-S）" class="headerlink" title="iptables -S （或者 # iptables -t nat -S）"></a>iptables -S （或者 # iptables -t nat -S）</h1></li>
+</ol>
+<p>使用编辑模式查询当前表中的规则。恩，也就是看看当前表里面的这些规则是怎么插 入的。</p>
+<p>列出来的每一行都是修改iptables的一条记录，这个在要修改iptables规则的时候特别有用。</p>
+<p>具体怎么看显示的结果，下一节的iptables nat再细说~</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49qvoa2000hlwr7bjyn3m3x/" rel="next" title="Kubernetes网络系列之(七)Tcpdump大杀器抓包">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(七)Tcpdump大杀器抓包
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49r424d000nlwr732iq6tli/" rel="prev" title="Kubernetes网络系列之(九)网络骗子">
+                Kubernetes网络系列之(九)网络骗子 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">iptables表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%92%8C%E8%A7%84%E5%88%99%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">表和规则链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E9%93%BE"><span class="nav-number">4.</span> <span class="nav-text">规则链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">iptables命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iptables-nL-%EF%BC%88%E6%88%96%E8%80%85-iptables-t-nat-nL%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">iptables -nL （或者 # iptables -t nat -nL）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iptables-nvL-%EF%BC%88%E6%88%96%E8%80%85-iptables-t-nat-nvL%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">iptables -nvL （或者 # iptables -t nat -nvL）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iptables-Z-%EF%BC%88%E6%88%96%E8%80%85-iptables-t-nat-Z%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">iptables -Z （或者 # iptables -t nat -Z）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iptables-S-%EF%BC%88%E6%88%96%E8%80%85-iptables-t-nat-S%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">iptables -S （或者 # iptables -t nat -S）</span></a></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

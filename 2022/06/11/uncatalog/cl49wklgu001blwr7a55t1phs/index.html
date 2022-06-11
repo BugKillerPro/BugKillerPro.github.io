@@ -1,0 +1,714 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(十七)Bridge网桥">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/1.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/2.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/3.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/4.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/5.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/6.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/7.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/8.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/9.jpg">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/11.png">
+<meta property="article:published_time" content="2022-06-11T13:17:59.377Z">
+<meta property="article:modified_time" content="2022-06-11T13:22:44.994Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/1.jpg">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(十七)Bridge网桥 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(十七)Bridge网桥
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括Docker概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/" title="Front-end web development">docker基础技术之linux cgroup</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
+</ul>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+
+<hr>
+<blockquote>
+<p>已经进入到虚拟化的世界啦。Bridge是网络虚拟化中非常重要的一种设备，快来一起学习Linux-Bridge的作用吧。</p>
+</blockquote>
+<h3 id="什么是Linux-Bridge"><a href="#什么是Linux-Bridge" class="headerlink" title="什么是Linux-Bridge"></a>什么是Linux-Bridge</h3><p>咱们直接说人话：跟tap/tun、veth-pair是模拟网线的类似，Bridge也是照着物理设备的样子，在Linux系统里面虚拟出来的一种网络设备。</p>
+<p>因为它也是网络设备，所以可以配置 IP、MAC 等。然后它模拟的物理设备叫Hub（集线器）。</p>
+<p>1.1      物理集线器Hub<br>很多小伙可能没有见过，咱们直接上图：</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/1.jpg" alt="image"></p>
+<p>上面这个东西没见过，可以参考下面这个，原理是一样一样的。</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/2.jpg" alt="image"></p>
+<p>Hub的效果类似于把所有网线都焊在一起的感觉：</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/3.jpg" alt="image"></p>
+<p>也就是不管信号从哪个口子进来，其他口子都能收到。“大喇叭”，“广播桶”，可以这么理解Hub。</p>
+<pre><code>我们以前寝室里面打小组游戏，就是大家把网线往集线器一插，然后就是一个mini小局域网了。
+</code></pre>
+<p>1.2      虚拟集线器Bridge<br>所以呢，Linux里面虚拟出来的这个Bridge也是这个效果。用户可以把很多网卡，插到这个Bridge上面，然后互相之间就能连通了，于是往Bridge发报文，所有插在上面的网卡全都收到这个报文。（目的比较单纯，就是把大家连在一起）</p>
+<p>一般用来把 tap/tun、veth-pair网线连到Bridge上面，这样可以把一组容器，或者一组虚机连在一起。比如著名的Docker就是用Bridge把Host里面的容器都连在一起，使得这些容器可以互相访问。也可以把Host上面的物理网卡也加入到Bridge，这样主机的VM就可以和外界通信了。</p>
+<p>2      容器使用Bridge<br><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/4.jpg" alt="image"></p>
+<p>按照Docker容器举例，这里会把多个容器的veth网线的一头，插入到Bridge，使得所有容器相当于焊在一起。同时在主机上，我们可以看到的网卡会多1个叫docker0的网卡（docker0就是Bridge网桥）：</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/5.jpg" alt="image"></p>
+<p>Ps：这里有个有意思的地方是，没有把主机上原有的那个eth0也加入到Bridge。而虚机使用Bridge，一般会把原来Host上面的网卡加入到Bridge。（容器不加入，一是因为大量容器的IP，可能会和Host所在网络上，它那些兄弟VM们的IP冲突。二还有容器网络模式可以多种模式选择，保留灵活性。）。</p>
+<pre><code>至于容器怎么通过Bridge和外面的世界进行通信，这个咱们在后续的《Docker网络实战》里面详解。
+</code></pre>
+<p>3      虚机使用Bridge<br><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/6.jpg" alt="image"></p>
+<p>虚机这里不一样的是，一般会把Host自己原来的eth0网卡，也一块加入到Bridge（如果虚机想要联网的话）。相当于上面4个“人”都是兄弟了，大家在一个局域网。</p>
+<p>通过Bridge，可以把所有的虚拟机网络连在一起。</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/7.jpg" alt="image"></p>
+<p>上面这些VM以为自己的世界：</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/8.jpg" alt="image"></p>
+<p>后面你可以回到原来物理网络的视角去理解更高级的怎么给VM分组问题（不明白的可以回顾早期课程）。要给VM分帮派，或者说给这些VM们分不同的子网，就需要能给这些VM打VLAN的tag的功能，这个功能Bridge（集线器）就搞不定了，需要引入更高级的“路由器”。</p>
+<p>Ps：物理世界也差不多，集线器的价格很便宜，和路由器的价格不是一个档次的。路由器可以设置每个端口的VLAN标记等高级功能。也就是咱们下一期的OVS（Open vSwitch）课程了。</p>
+<p>4      怎么查看Bridge信息<br>一般我都用 brctl 这个命令行（ip命令也可以用，但是我感觉brctl更直接），比较方便：</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/9.jpg" alt="image"></p>
+<p>4.1      查询Bridge信息<br>用的最多的就是，查询一个Bridge上面插了哪些网卡：也就是show这个子命令</p>
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/10.png" alt="image"></p>
+<p>上面这个可以看到，有四个veth网卡插在名字为docker0的Bridge网桥上面（其实就是有4个容器连在一起）。</p>
+<p>4.2      网卡插入Bridge<br>用的第二多的就是 把一个网卡插入一个Bridge里面。即：addif 子命令</p>
+<p>我们可以试一下，先创建一根“网线”</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip link add tsj-0 type veth peer name tsj-1</span><br></pre></td></tr></table></figure></div>
+
+
+<p>然后创建一个Bridge</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr tsj-br</span><br></pre></td></tr></table></figure></div>
+
+<p>然后把网线一头插入这个Bridge。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brctl addif tsj-br tsj-0</span><br></pre></td></tr></table></figure></div>
+
+<p>查询结果：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brctl show tsj-br</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="/2022/06/11/uncatalog/cl49wklgu001blwr7a55t1phs/11.png" alt="image"></p>
+<p>额，其实“容器世界”也是这么创建出来的</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49wfzo90018lwr70q7u4yf0/" rel="next" title="Kubernetes网络系列之(十六)TUN/TAP网线">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(十六)TUN/TAP网线
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49wrxfs001elwr7evfs8y08/" rel="prev" title="Kubernetes网络系列之(十八)Docker网络实现">
+                Kubernetes网络系列之(十八)Docker网络实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLinux-Bridge"><span class="nav-number">1.</span> <span class="nav-text">什么是Linux-Bridge</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

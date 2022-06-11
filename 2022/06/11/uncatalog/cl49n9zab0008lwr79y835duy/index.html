@@ -1,0 +1,767 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(四)router路咋走啊">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/5.png">
+<meta property="article:published_time" content="2022-06-11T08:57:47.529Z">
+<meta property="article:modified_time" content="2022-06-11T09:07:51.968Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(四)router路咋走啊 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(四)router路咋走啊
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<font size="1">
+
+<blockquote>
+<p>在Kubernetes已经成为云原生代名词的今天，市面上介绍Kubernetes的书籍已经很多，然而限于篇幅、 术业有专攻和Kubernetes涉及知识面过于庞大等诸多主客观因素，<br>包括《Kubernetes权威指南：从Docker到Kubernetes实践全接触》在内，至今没有出现一套或者一系列能够让初学者，特别是云原生开发者，从入门到进阶再到入土的教程，这就造成了<br>众多初学者，在查找资料由点到面的学习过程中走上了从入门到放弃的道路。<br>对于以上现象，并不是一个人所能改变的，所以我把自己的云原生求索过程记录一下，希望能够帮到其他人省下查找资料的时间，如果还能够起到少走弯路的作用，那就再好不过了。</p>
+</blockquote>
+<p><strong>云原生基础系列之Docker系列</strong>主要包括Docker概念的介绍、理解和实践，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl483pse2000038r7fnpqhzig/" title="Front-end web development">docker基础技术之linux namespace</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/10/uncatalog/cl4884cmp000060r7fhji6teg/" title="Front-end web development">docker基础技术之linux cgroup</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbgi6000y7or7g7cnd6w6/" title="Front-end web development">docker基础</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zffyz00127or72j1r80ti/" title="Front-end web development">docker进阶</a></li>
+</ul>
+<p><strong>云原生基础系列之Kubernetes</strong>内容风格和《Kubernetes权威指南：从Docker到Kubernetes实践全接触》类似，将包括以下部分：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zoo76000028r79whb5rff/" title="Front-end web development">Kubernetes介绍</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zkqb400157or761km2b46/" title="Front-end web development">集群环境搭建</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxk00017or7fpbp30br/" title="Front-end web development">资源管理</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayd000p7or77mughk0e/" title="Front-end web development">实战入门</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbayg000v7or7a4o0f4yd/" title="Front-end web development">Pod详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaye000q7or7bx6mhrl3/" title="Front-end web development">Pod控制器详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000j7or7b2e4b2pr/" title="Front-end web development">Service详解</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbay9000k7or71j4vcb8a/" title="Front-end web development">数据存储</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxw00037or72v2f9efa/" title="Front-end web development">安全认证</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/06/09/uncatalog/cl46zbaxy00047or77oe22gjt/" title="Front-end web development">DashBoard</a></li>
+</ul>
+<p><strong>Kubernetes网络系列</strong>云计算的世界里，计算最基础，存储最重要，网络最复杂。 所以将网络部分的一些内容单独拿出来作为一个系列，将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">网络是怎么连通的</a></li>
+</ul>
+<p><strong>云原生进阶系列</strong>云主要包括云原生开发相关的内容，面向云原生开发人员。将包括以下部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.google.com/" title="Front-end web development">待更新</a></li>
+</ul>
+</font>
+
+
+<hr>
+<blockquote>
+<p>好了，到这里至少你应该能看懂路由表信息了。给你一个目的IP，你也应该知道它会使用哪一条路由了。 路怎么走就看骚年你了~</p>
+</blockquote>
+<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><p>其实关于网络大家遇到最多的问题就是：卧 槽，为什么不通啊！</p>
+<p>比这个运气好一点的：卧 槽，过去通，回来不通啊！</p>
+<p>不慌，看完这一章节，这种问题下次碰到基本自己就能搞定。首先我们希望两台机子能通，那你得知道通是怎么通的，也就是通的时候，路是怎么走的。</p>
+<p>大多数情况你（这里的你是指你的报文）走过去的路，跟走回来的路是一样的。</p>
+<p>少数情况下，你走大路过去，然后绕小路回来。这个都不影响找路的原理。</p>
+<p>举个栗子：当你在杭州，想去黑龙江，应该往北走。一般情况你不会从深圳绕一把。万一线路中断，你从西安绕一下也行。</p>
+<p>整体而言：具体报文怎么走，就是路由的问题了。</p>
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>如果有你想要懂网络，这张表是一定要看懂的。</p>
+<p>找台Linux主机，输入#route -n</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway    Genmask      Flags  Metric  Ref  Use Iface</span><br><span class="line">0.0.0.0      10.120.174.1  0.0.0.0       UG     0   0   0  eth0</span><br><span class="line">10.120.174.0    0.0.0.0    255.255.254.0    U     0   0   0  eth0</span><br><span class="line">172.17.0.0     0.0.0.0    255.255.0.0     U     0   0   0  docker0</span><br></pre></td></tr></table></figure></div>
+
+<p>注意，这里的-n参数不是必须的，但是建议带上，其他很多网络相关的命令，也都建议带-n参数。</p>
+<p>（原因：route命令，默认会把IP地址翻译为hostname，但是IP-&gt;Hostname这个动作，就会去查DNS，有时候DNS配置的不好，例如查不通，那么route命令就会感觉卡住了一样。）</p>
+<p>这个表的第一行：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Destination        Gateway         Genmask    Flags    Metric    Ref     Use    Iface</span><br></pre></td></tr></table></figure></div>
+
+<p>红色部分是基础，含义分别为：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Destination</th>
+<th align="left">Gateway</th>
+<th align="left">Genmask</th>
+<th align="left">Iface</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">目的IP</td>
+<td align="left">网关</td>
+<td align="left">掩码</td>
+<td align="left">网卡</td>
+</tr>
+<tr>
+<td align="left">目的地</td>
+<td align="left">中转站</td>
+<td align="left">目的地范围</td>
+<td align="left">哪个门出发</td>
+</tr>
+</tbody></table>
+<p>先看中间一条路由记录</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">目的地     中转站     目的地范围，   哪个门出发</span><br><span class="line">10.120.174.0    0.0.0.0         255.255.254.0     eth0</span><br></pre></td></tr></table></figure></div>
+<p>首先，目的地址是 10.120.174.0，范围是 255.255.254.0</p>
+<p>根据上节的掩码原理，我们知道掩码是23位的，也就是只有前面23不动，只有最后9位可以动。</p>
+<p>两者一结合（与），就知道了网络目的范围：<br><img src="/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/1.png" alt="image"></p>
+<p>（图：目的地址）</p>
+<p><img src="/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/2.png" alt="image"></p>
+<p>（图：目的地范围）</p>
+<p>两者结合的范围为：10.120.174.0（可变部分全为0）~ 10.120.175.255（可变部分全为1），总共512个目的地址（IP）。</p>
+<p>也就是所有这些目的IP地址在这个范围内的，在选择路由时，都匹配这条路由记录。</p>
+<p>那这条记录是这么说的：当匹配到这条记录时，中转站不需要（gateway为0），只管把报文往eth0这个门扔出去就行了（Iface为eth0）。</p>
+<p>这是什么意思呢？就是这个IP范围的大家都在一个小的局域网络里面，你喊一声，大家都能知道，不需要中转。</p>
+<p><img src="/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/3.png" alt="image"></p>
+<p>再看最后一条路由记录</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">目的地     中转站     目的地范围，   哪个门出发</span><br><span class="line">172.17.0.0   0.0.0.0    255.255.0.0    docker0</span><br></pre></td></tr></table></figure></div>
+<p>这条记录跟上面一条基本一样含义，目的地址 &amp; 目的地范围，结合后得出：</p>
+<p>目标地址为 172.17.0.0~172.17.255.255的报文只管往网卡docker0上面扔就是了。</p>
+<p><img src="/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/4.png" alt="image"></p>
+<p>最后看第一条路由记录</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">目的地     中转站     目的地范围，   哪个门出发</span><br><span class="line">0.0.0.0         10.120.174.1    0.0.0.0           eth0</span><br></pre></td></tr></table></figure></div>
+<p>这里目的地址为0，表示default默认路由，意思是：当你的目的地址实在是找不到其他能够匹配的路由记录时，就用这一条吧。</p>
+<p>而这一条默认的规则的意思是：往eth0网卡丢，先送到中转站 10.120.174.1。 后面的事情你不用管了（意思是让中转站去解决后面的路由）</p>
+<p>比如我想要：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 10.184.43.7</span><br></pre></td></tr></table></figure></div>
+
+<p>的时侯，这个目的IP，明显即不符合中间那条记录的范围，也不符合最后一条记录的范围。怎么只能使用这一条默认记录了。</p>
+<p>再来细看这条默认路由记录：</p>
+<p>这条记录说：当匹配到这条记录时，中转站要设置为10.120.174.1，并且报文要往eth0这个门扔出去（Iface为eth0）。</p>
+<p>这里隐含的表示了，中转站你必须能到达，否则网络会不通。</p>
+<p><em><strong>报文如何导到中转站</strong></em></p>
+<p>好了，那我们来看看报文是怎么与中转站通的。 这里中转站IP为10.120.174.1，要想把报文送到这里去，我们应该怎么走？</p>
+<p>咦，又是路怎么走的问题，这不是上面刚学的嘛。</p>
+<p>来，跟我一起匹配，第三条行不行？不行。</p>
+<p>第二条行不行，行！</p>
+<p>刚好是第二条路由记录的范围（10.120.174.0~10.120.175.255），那就用第二条路由指定的方式发送（报文从eth0扔出去就行了）。</p>
+<p>很明显的是在递归查找路由表。同时，这也说明中转站就在同一个局域网内嘛。</p>
+<p>即报文送到网关，也是要查找路由表的。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>通过把所有的路由表都匹配一遍，你会发现，任意的目的IP，都能匹配到路由表中的一条（因为你有一个default规则）。</p>
+<p>匹配的过程你就当做是“人工”一个一个的查。如果你连路怎么走都没有设置好，网络又怎么能通呢？</p>
+<h3 id="本机IP地址对路由的影响"><a href="#本机IP地址对路由的影响" class="headerlink" title="本机IP地址对路由的影响"></a>本机IP地址对路由的影响</h3><p>先看一下本机的IP信息：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ifconfig</span></span><br><span class="line">docker0   Link encap:Ethernet  HWaddr 02:42:e6:07:93:34  </span><br><span class="line">inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0</span><br><span class="line">eth0     Link encap:Ethernet  HWaddr 28:6e:d4:88:f8:64  </span><br><span class="line">inet addr:10.120.175.166  Bcast:10.120.175.255  Mask:255.255.254.0</span><br><span class="line">lo      Link encap:Local Loopback  </span><br><span class="line">inet addr:127.0.0.1  Mask:255.0.0.0</span><br></pre></td></tr></table></figure></div>
+
+
+<p>你会发现，每个网卡如果有IP，就会在路由表里面增加一条路由记录。比如你把一个网卡down掉，再看route表，就会发现少了一条路由记录。再次up这个网卡的时候，路由记录又回来了。</p>
+<p>并且，这条路由的Destination（目的地范围）和你设置的这个IP的掩码是一致的。例如这里，我本机ip为10.120.175.166，掩码为255.255.254.0。所以路由就是IP&amp;掩码=10.120.174.0。</p>
+<p>为什么？这个不是很明显么，你新加了一个网卡，插上了网线，还拿到了新IP，说明你这个网卡接入了一个新的局域网啊，你当然多了一条新的路可以走了。</p>
+<h3 id="包含问题"><a href="#包含问题" class="headerlink" title="包含问题"></a>包含问题</h3><p>当两条路由记录互相包含时怎么办？</p>
+<p>比如：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">172.0.0.0       0.0.0.0         255.0.0.0      U     0      0        0 eth0</span><br><span class="line">172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0</span><br></pre></td></tr></table></figure></div>
+
+<p>这个时候，如果想要</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 172.17.0.2</span><br></pre></td></tr></table></figure></div>
+
+<p>是用哪条路由记录呢？</p>
+<p>首先，如果你之前的课有认真学习，那么你会知道，这里不同的掩码，就代表了不同的网络。这时脑海中应该会展现两条不同的路。选哪条路，当然是选择最匹配的那一条了 :-)</p>
+<p>（例如default记录，其实任意目的IP都能匹配，但它不是最精准匹配的）</p>
+<p>其次，如果出现这种情况，说明你的网络规格有待改进，虽然这不会出问题，但是由于会影响人的理解，所以建议不要这样子设置。</p>
+<p>除非你非常明确地故意这么规划，例如flannel的网络设置：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-node1:~# route -n</span><br><span class="line">Destination   Gateway    Genmask     Flags Metric Ref  Use   Iface</span><br><span class="line">10.1.0.0    0.0.0.0   255.255.0.0    U    0    0   0   flannel0  // 跨节点容器的包</span><br><span class="line">10.1.15.0    0.0.0.0   255.255.255.0   U    0    0   0   docker0   // 本节点容器的包</span><br></pre></td></tr></table></figure></div>
+
+
+<p>为了将所有的容器（容器也可以看作一个独立的主机，后面章节会介绍）连在一起，首先把所有主机上面的容器作为大的网络一部分，然后每台互相独立的主机里面的容器又单独划分小的网络。且任意两个单独的小子网不重复。</p>
+<p>注意站在本机的角度看来，这是两个独立网络，只是在管理员视角看大家在一个大的网络内。</p>
+<p><img src="/2022/06/11/uncatalog/cl49n9zab0008lwr79y835duy/5.png" alt="image"></p>
+<p>主机对待报文，是作完全独立的判断：是本机的 or 不是本机的。</p>
+<p>所以发给容器的报文，都符合：不是本机的。 那么就要开始匹配路由表啦。匹配过程见上面的课程。</p>
+<p>好了，到这里至少你应该能看懂路由表信息了。给你一个目的IP，你也应该知道它会使用哪一条路由了。</p>
+<p>路怎么走就看骚年你了~</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49muw310005lwr7dukkfz6m/" rel="next" title="Kubernetes网络系列之(三)IP和掩码">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(三)IP和掩码
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/11/uncatalog/cl49np026000blwr7c4y2ebgu/" rel="prev" title="Kubernetes网络系列之(五)Ping报文">
+                Kubernetes网络系列之(五)Ping报文 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">56</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="nav-number">1.</span> <span class="nav-text">路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">路由表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.1.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80%E5%AF%B9%E8%B7%AF%E7%94%B1%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">3.</span> <span class="nav-text">本机IP地址对路由的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%85%E5%90%AB%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">包含问题</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
