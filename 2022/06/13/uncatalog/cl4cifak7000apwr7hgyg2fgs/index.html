@@ -1,0 +1,662 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/8.png">
+<meta property="article:published_time" content="2022-06-13T08:08:36.267Z">
+<meta property="article:modified_time" content="2022-06-13T08:14:39.054Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+
+<hr>
+<p>前文中总结了iptables的tcp扩展模块，此处，我们来总结一下另外两个跟协议有关的常用的扩展模块，udp扩展与icmp扩展。</p>
+<h3 id="udp扩展"><a href="#udp扩展" class="headerlink" title="udp扩展"></a>udp扩展</h3><p>我们先来说说udp扩展模块，这个扩展模块中能用的匹配条件比较少，只有两个，就是–sport与–dport，即匹配报文的源端口与目标端口。</p>
+<p>没错，tcp模块中也有这两个选项，名称都一模一样。</p>
+<p>只不过udp扩展模块的–sport与–dport是用于匹配UDP协议报文的源端口与目标端口，比如，放行samba服务的137与138这两个UDP端口，示例如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png" alt="image"></p>
+<p>前文说明过，当使用扩展匹配条件时，如果未指定扩展模块，iptables会默认调用与”-p”对应的协议名称相同的模块，所以，当使用”-p udp”时，可以省略”-m udp”，示例如下。</p>
+<p>udp扩展中的–sport与–dport同样支持指定一个连续的端口范围，示例如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/2.png" alt="image"></p>
+<p>上图中的配置表示137到157之间的所有udp端口全部对外开放，其实与tcp扩展中的使用方法相同。<br><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/3.png" alt="image"><br>但是udp中的–sport与–dport也只能指定连续的端口范围，并不能一次性指定多个离散的端口，没错，聪明如你一定想到，使用之前总结过的multiport扩展模块，即可指定多个离散的UDP端口，如果你忘了multiport模块怎样使用，请回顾前文。</p>
+<p>总之有了前文的基础，再理解上述示例就容易多了，此处不再对udp模块的–sport与–dport进行赘述。</p>
+<h3 id="icmp扩展"><a href="#icmp扩展" class="headerlink" title="icmp扩展"></a>icmp扩展</h3><p>最常用的tcp扩展、udp扩展已经总结完毕，现在聊聊icmp扩展，没错，看到icmp，你肯定就想到了ping命令，因为ping命令使用的就是icmp协议。</p>
+<p>ICMP协议的全称为Internet Control Message Protocol，翻译为互联网控制报文协议，它主要用于探测网络上的主机是否可用，目标是否可达，网络是否通畅，路由是否可用等。</p>
+<p>我们平常使用ping命令ping某主机时，如果主机可达，对应主机会对我们的ping请求做出回应（此处不考虑禁ping等情况），也就是说，我们发出ping请求，对方回应ping请求，虽然ping请求报文与ping回应报文都属于ICMP类型的报文，但是如果在概念上细分的话，它们所属的类型还是不同的，我们发出的ping请求属于类型8的icmp报文，而对方主机的ping回应报文则属于类型0的icmp报文，根据应用场景的不同，icmp报文被细分为如下各种类型。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/4.png" alt="image"></p>
+<p>从上图可以看出，所有表示”目标不可达”的icmp报文的type码为3，而”目标不可达”又可以细分为多种情况，是网络不可达呢？还是主机不可达呢？再或者是端口不可达呢？所以，为了更加细化的区分它们，icmp对每种type又细分了对应的code，用不同的code对应具体的场景，  所以，我们可以使用type/code去匹配具体类型的ICMP报文，比如可以使用”3/1″表示主机不可达的icmp报文。</p>
+<p>上图中的第一行就表示ping回应报文，它的type为0，code也为0，从上图可以看出，ping回应报文属于查询类（query）的ICMP报文，从大类上分，ICMP报文还能分为查询类与错误类两大类，目标不可达类的icmp报文则属于错误类报文。</p>
+<p>而我们发出的ping请求报文对应的type为8，code为0。</p>
+<p>了解完上述概念，就好办了，我们来看一些应用场景。</p>
+<p>假设，我们现在想要禁止所有icmp类型的报文进入本机，那么我们可以进行如下设置。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/5.png" alt="image"><br>上例中，我们并没有使用任何扩展匹配条件，我们只是使用”-p icmp”匹配了所有icmp协议类型的报文。</p>
+<p>如果进行了上述设置，别的主机向我们发送的ping请求报文无法进入防火墙，我们向别人发送的ping请求对应的回应报文也无法进入防火墙。所以，我们既无法ping通别人，别人也无法ping通我们。</p>
+<p>假设，此刻需求有变，我们只想要ping通别人，但是不想让别人ping通我们，刚才的配置就不能满足我们了，我们则可以进行如下设置（此处不考虑禁ping的情况）</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/6.png" alt="image"><br>上图中，使用”-m icmp”表示使用icmp扩展，因为上例中使用了”-p icmp”，所以”-m icmp”可以省略，使用”–icmp-type”选项表示根据具体的type与code去匹配对应的icmp报文，而上图中的”–icmp-type 8/0″表示icmp报文的type为8，code为0才会被匹配到，也就是只有ping请求类型的报文才能被匹配到，所以，别人对我们发起的ping请求将会被拒绝通过防火墙，而我们之所以能够ping通别人，是因为别人回应我们的报文的icmp type为0，code也为0，所以无法被上述规则匹配到，所以我们可以看到别人回应我们的信息。</p>
+<p>因为type为8的类型下只有一个code为0的类型，所以我们可以省略对应的code，示例如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/7.png" alt="image"></p>
+<p>除了能够使用对应type/code匹配到具体类型的icmp报文以外，我们还能用icmp报文的描述名称去匹配对应类型的报文，示例如下</p>
+<p>没错，上例中使用的 –icmp-type “echo-request”与 –icmp-type 8/0的效果完全相同，参考本文最上方的表格即可获取对应的icmp类型的描述名称。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/8.png" alt="image"><br>注意：名称中的”空格”需要替换为”-“。</p>
+<p>小结<br>udp扩展<br>常用的扩展匹配条件</p>
+<ul>
+<li><p>–sport：匹配udp报文的源地址</p>
+</li>
+<li><p>–dport：匹配udp报文的目标地址</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">示例</span></span><br><span class="line">iptables -t filter -I INPUT -p udp -m udp --dport 137 -j ACCEPT</span><br><span class="line">iptables -t filter -I INPUT -p udp -m udp --dport 137:157 -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash">可以结合multiport模块指定多个离散的端口</span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<p>icmp扩展<br>常用的扩展匹配条件</p>
+<p>–icmp-type：匹配icmp报文的具体类型</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">示例</span></span><br><span class="line">iptables -t filter -I INPUT -p icmp -m icmp --icmp-type 8/0 -j REJECT</span><br><span class="line">iptables -t filter -I INPUT -p icmp --icmp-type 8 -j REJECT</span><br><span class="line">iptables -t filter -I OUTPUT -p icmp -m icmp --icmp-type 0/0 -j REJECT</span><br><span class="line">iptables -t filter -I OUTPUT -p icmp --icmp-type 0 -j REJECT</span><br><span class="line">iptables -t filter -I INPUT -p icmp --icmp-type &quot;echo-request&quot; -j REJECT</span><br></pre></td></tr></table></figure></div></span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifakc000ipwr7bhs4dux2/" rel="next" title="Kubernetes网络系列之(二十六)iptables扩展匹配条件之[–tcp-flags]">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(二十六)iptables扩展匹配条件之[–tcp-flags]
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/" rel="prev" title="Kubernetes网络系列之(二十八)iptables扩展模块之state扩展">
+                Kubernetes网络系列之(二十八)iptables扩展模块之state扩展 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#udp%E6%89%A9%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">udp扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#icmp%E6%89%A9%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text">icmp扩展</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,739 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(三十一)iptables之网络防火墙">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/8.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/9.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/11.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/12.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/13.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/14.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/15.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/16.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/17.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/18.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/19.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/20.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/21.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/22.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/23.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/24.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/25.png">
+<meta property="article:published_time" content="2022-06-13T08:29:13.696Z">
+<meta property="article:modified_time" content="2022-06-13T08:43:24.755Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(三十一)iptables之网络防火墙 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(三十一)iptables之网络防火墙
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+
+<hr>
+<p>阅读这篇文章需要站在前文的基础之上，如果在阅读时遇到障碍，请回顾前文。</p>
+<p>我们一起来回顾一下之前的知识，在第一篇介绍iptables的文章中，我们就描述过防火墙的概念，我们说过，防火墙从逻辑上讲，可以分为主机防火墙与网络防火墙。</p>
+<p>主机防火墙：针对于单个主机进行防护。</p>
+<p>网络防火墙： 往往处于网络入口或边缘，针对于网络入口进行防护，服务于防火墙背后的本地局域网。</p>
+<p>在前文的举例中，iptables都是作为主机防火墙的角色出现的，那么，iptables怎样作为网络防火墙呢？这就是我们今天要聊的话题。</p>
+<p>回到刚才的概念，网络防火墙往往处于网络的入口或者边缘，那么，如果想要使用iptables充当网络防火墙，iptables所在的主机则需要处于网络入口处，示意图如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/1.png" alt="iamge"><br>上图中，橘黄色主机为iptables所在主机，此时iptables充当的角色即为网络防火墙，上图中的浅蓝色圆形表示网络防火墙所防护的网络区域，圆形内的蓝色矩形表示网络内的主机。</p>
+<p>当外部网络中的主机与网络内部主机通讯时，不管是由外部主机发往内部主机的报文，还是由内部主机发往外部主机的报文，都需要经过iptables所在的主机，由iptables所在的主机进行”过滤并转发”，所以，防火墙主机的主要工作就是”过滤并转发”，那么，说到这里，我们则不得不再次回顾之前的iptables报文流程图了，如下：</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/2.png" alt="iamge"></p>
+<p>前文中，iptables都是作为”主机防火墙”的角色出现的，所以我们举例时，只用到了上图中的INPUT链与OUTPUT链，因为拥有”过滤功能”的链只有3条，INPUT、OUTPUT、FORWARD，当报文发往本机时，如果想要过滤，只能在INPUT链与OUTPUT链中实现，而此时，iptables的角色发生了转变，我们想要将iptables所在的主机打造成”网络防火墙”，而刚才已经说过，网络防火墙的职责就是”过滤并转发”，要想”过滤”，只能在INPUT、OUTPUT、FORWARD三条链中实现，要想”转发”，报文则只会经过FORWARD链（发往本机的报文才会经过INPUT链），所以，综上所述，iptables的角色变为”网络防火墙”时，规则只能定义在FORWARD链中。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>那么为了能够进行实验，我们来设置一下实验场景，如下图所示（后面有对图的解释）</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/3.png" alt="iamge"></p>
+<p>我们假设，上图中圆形所示的网络为内部网络</p>
+<p>注：此处所描述的内网、外网与我们平常所说的公网、私网不同。</p>
+<p>此处描述的内外部网络你可以理解成两个网段，A网络与B网络，为了方便描述，我们把圆形内的主机称为内部主机，把上图中圆形所表示的网络称为内部网络，把圆形外的网络称为外部网络。</p>
+<p>假设，内部网络的网段为10.1.0.0/16，此内部网络中存在主机C，主机C的IP地址为10.1.0.1。</p>
+<p>上图中的主机B充当了网络防火墙的角色，主机B也属于内部网络，同时主机B也能与外部网络进行通讯，如上图所示，主机B有两块网卡，网卡1与网卡2，网卡1的IP地址为10.1.0.3，网卡2的IP地址为192.168.1.146，所以，防火墙主机在内部网络中的IP地址为10.1.0.3，防火墙主机与外部网络通讯的IP地址为192.168.1.146。</p>
+<p>上图中的主机A充当了”外部网络主机”的角色，A主机的IP地址为192.168.1.147，我们使用主机A访问内部网络中的主机C，但是需要主机B进行转发，主机B在转发报文时会进行过滤，以实现网络防火墙的功能。</p>
+<p>我已经准备了3台虚拟机，A、B、C</p>
+<p>虚拟机A与虚拟机B的网卡2都使用了桥接模式。</p>
+<p>为了能够尽量模拟内部网络的网络入口，我们将虚拟机B的网卡1与虚拟机C同时放在”仅主机模式”的虚拟网络中，虚拟机设置如下图所示</p>
+<p>点击vmware编辑菜单，打开虚拟网络编辑器，点击更改设置按钮，添加一个仅主机模式的虚拟网络，下图中的vmnet6为已经添加过的虚拟网络，此处不再重复添加。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/4.png" alt="iamge"></p>
+<p>由于B主机现在的角色是10.1.0.0中的”网络防火墙”，那么，我们直接将C主机的网关指向B主机的内部网络IP，如下图所示</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/5.png" alt="iamge"></p>
+<p>同时，为了尽量简化路由设置，我们直接将A主机访问10.1网络时的网关指向B主机的网卡2上的IP，如下图所示。</p>
+<p>注：route命令配置的路由条目在网络重启后将会失效</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/6.png" alt="iamge"></p>
+<p>现在A主机通往10.1网络的网关已经指向了B主机，那么，现在A主机能够达到10.1.0.0/16网络吗？我们来试试</p>
+<p>如下图所示，我们直接在A主机上向C主机发起ping请求，并没有得到任何回应。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/7.png" alt="iamge"></p>
+<p>那么，我们再来试试B主机上的内部网IP，如下图所示，直接在A主机上向B主机的内部网IP发起ping请求，发现是可以ping通的，这是为什么呢？<br><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/8.png" alt="iamge"></p>
+<p>按照道理来说，10.1.0.1与10.1.0.3都属于10.1.0.0/16网段，为什么B主机上的IP就能通，C主机上的IP却不通呢？</p>
+<p>咱们先来聊聊为什么10.1.0.1没有回应。</p>
+<p>A主机通过路由表得知，发往10.1.0.0/16网段的报文的网关为B主机，当报文达到B主机时，B主机发现A的目标为10.1.0.1，而自己的IP是10.1.0.3，这时，B主机则需要将这个报文转发给10.1.0.1（也就是C主机），但是，Linux主机在默认情况下，并不会转发报文，如果想要让Linux主机能够转发报文，需要额外的设置，这就是为什么10.1.0.1没有回应的原因，因为B主机压根就没有将A主机的ping请求转发给C主机，C主机压根就没有收到A的ping请求，所以A自然得不到回应。</p>
+<p>现在再来聊聊为什么10.1.0.3会回应。</p>
+<p>这是因为10.1.0.3这个IP与192.168.1.146这个IP都属于B主机，当A主机通过路由表将ping报文发送到B主机上时，B主机发现自己既是192.168.1.146又是10.1.0.3，所以，B主机就直接回应了A主机，并没有将报文转发给谁，所以A主机得到了10.1.0.3的回应。</p>
+<p>我想我应该说明白了，那么，我们应该怎样设置，才能让Linux主机转发报文呢？我们一起来设置一遍就好了。</p>
+<p>首先，我们可以查看/proc/sys/net/ipv4/ip_forward文件中的内容，如果文件内容为0，则表示当前主机不支持转发。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/9.png" alt="iamge"></p>
+<p>如果我们想要让当前主机支持核心转发功能，只需要将此文件中的值设置为1即可，示例如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/10.png" alt="iamge"></p>
+<p>好了，现在我们就开启了B主机的核心转发功能。</p>
+<p>除了上述方法，还能使用sysctl命令去设置是否开启核心转发，示例如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/11.png" alt="iamge"></p>
+<p>上述两种方法都能控制是否开启核心转发，但是通过上述两种方法设置后，只能临时生效，当重启网络服务以后，核心转发功能将会失效。</p>
+<p>如果想要永久生效，则需要设置/etc/sysctl.conf文件（centos7中配置/usr/lib/sysctl.d/00-system.conf文件），添加（或修改）配置项 net.ipv4.ip_forward = 1 即可，示例如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/12.png" alt="iamge"></p>
+<p>现在，B主机已经具备了核心转发功能，已经可以转发报文了，现在，我们再次回到A主机中，向C主机发起ping请求，如下图所示，已经可以ping通。</p>
+<p>注：如果你仍然无法ping通，可能是因为你使用route命令配置了C主机的默认网关，这种情况下，请查看C主机的路由配置是否自动消失了，如果没有对应的路由条目，请重新配置，同时，如果你的主机C如果有多块网卡，可以暂时禁用其他网卡试试</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/13.png" alt="iamge"><br>同时，从主机C向主机A发起ping请求，也可以ping通，如下图所示</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/14.png" alt="iamge"></p>
+<p>好了，我们的测试环境已经准备完毕，现在可以开始测试了。</p>
+<p>但是在开始之前，请确定主机A与主机C上没有对应的iptables规则，因为此处我们主要是用来测试”网络防火墙”的，为了减少主机防火墙带来的影响，我们直接将主机A与主机C上的规则清空。</p>
+<h3 id="网络防火墙测试"><a href="#网络防火墙测试" class="headerlink" title="网络防火墙测试"></a>网络防火墙测试</h3><p>之前说过，iptables作为网络防火墙时，主要负责”过滤与转发”，既然要过滤，则需配置filter表，既然要转发，则需在FORWAED链中定义规则，所以，我们应该在filter表中的FORWARD链中配置规则。</p>
+<p>那么，我们先来看看主机B上的filter表中是否已经存在规则，如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/15.png" alt="iamge"></p>
+<p>从上图可以看出，FORWARD链中没有任何规则，默认策略为ACCEPT，我们可以使用”白名单机制”（如果忘了请回顾前文：黑白名单机制）</p>
+<p>在主机B中FORWARD链的末端添加一条默认拒绝的规则，然后将”放行规则”设置在这条”默认拒绝规则”之前即可。</p>
+<p>示例如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/16.png" alt="iamge"></p>
+<p>好了，配置完上述规则后，主机A与主机C已经无法通讯了，因为它们之间如果想要通讯，则需要靠主机B进行转发，而上述规则设置完成后，所有报文都无法通过FORWARD链了，所以任何经过转发的报文在经过FORWARD链时都会被拒绝，外部主机的报文无法转发到内部主机中，内部网主机的报文也无法转发到外部主机中，因为主机B已经拒绝转发所有报文。</p>
+<p>现在，我们同时将A主机与C主机中的web服务启动，以便进行测试。</p>
+<p>首先，我们启动A主机的httpd服务</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/17.png" alt="iamge"></p>
+<p>同时，启动C主机的httpd服务</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/18.png" alt="iamge"></p>
+<p>由于刚才已经在主机B中设置了默认拒绝的规则，所以此刻，A主机无法访问C主机的web服务，C主机同样无法访问A主机的web服务。</p>
+<p>那么，如果我们想要使内部的主机能够访问外部主机的web服务，我们应该怎样做呢？没错，我们需要在FORWARD链中放行内部主机对外部主机的web请求，只需如下配置即可。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/19.png" alt="iamge"></p>
+<p>如上图所示，防火墙放行了内部主机的web请求，因为我们将来自内部网络中目标端口为80的报文都放行了，那么此时，我们在C主机上访问A主机的web服务试试</p>
+<p>此时，在主机C上访问主机A的web服务，如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/20.png" alt="iamge"><br>可以看到，主机C并无法访问到主机A上的web服务，这是为什么呢？</p>
+<p>聪明如你肯定已经想到了，我们只在主机B上放行了内部主机访问80端口的请求，但是并没有放行外部主机的回应报文，虽然内部主机的请求能够通过防火墙主机B转发出去，但是回应的报文则无法进入防火墙，所以，我们仍然需要在主机B上进行如下设置。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/21.png" alt="iamge"></p>
+<p>如上图所示，当外部主机中的web服务响应内部主机时，目标地址肯定为内部主机，所以，我们需要放行目标IP属于内部主机网段的报文，源端口为80，因为外部主机肯定会使用80端口进行回应。</p>
+<p>完成上述配置后，再次回到C主机上，访问A主机的web服务，可以看到，已经能够正常访问了。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/22.png" alt="iamge"></p>
+<p>从上述示例可以看出，当iptables作为”网络防火墙”时，在配置规则时，往往需要考虑”双向性”，也就是说，我们为了达成一个目的，往往需要两条规则才能完成。</p>
+<p>那么此时，A主机能够访问C主机中的web服务吗？我想你已经知道答案了，没错，A主机此时无法访问C主机中的web服务，因为B主机中并没有放行相关报文。</p>
+<p>结合之前的知识，我们可以将上述规则配置进行优化，比如，不管是由内而外，还是由外而内，只要是”响应报文”，我们统统放行，配置如下</p>
+<p>注：如果你没有明白如下配置的含义，请回顾之前的文章</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/23.png" alt="iamge"></p>
+<p>如上图所示，先将”web响应报文放行规则”删除，同时增加了上图中的规则，只需要在网络防火墙主机的FORWARD链中添加如上一条规则，就可以将绝大多数响应报文放行了，不管是外部响应内部，还是内部响应外部，一条规则就能搞定，当iptables作为网络防火墙时，每次配置规则时都要考虑”双向”的问题，但是配置完上述规则后，我们只要考虑请求报文的方向就行了，而回应报文，上述一条规则就能搞定，这样配置，即使以后有更多服务的响应报文需要放行，我们也不用再去针对响应报文设置规则了（具体原因前文已经详细的总结过），应该会让我们省去不少规则吧。</p>
+<p>比如，我们除了想要让内部主机能够访问外部的web服务，还想让内部主机能够访问外部的sshd服务，那么，我们则可以进行如下设置。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/24.png" alt="iamge"></p>
+<p>如上图所示，我们只要考虑内部主机的请求方向的报文规则即可，因为响应报文的规则已经被之前配置的规则”承包了”。</p>
+<p>此刻，使用C主机即可访问A主机的22端口。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/25.png" alt="iamge"></p>
+<p>目前，我们只允许内部主机访问外部主机的web服务与sshd服务，但是外部主机还无法访问内部主机的服务，那么具体怎么配置我们就不赘述了，就由客官你去负责实现吧。</p>
+<p>备注：在之前的一次实验中，使用centos6.8作为网络防火墙，出现了即使开启核心转发，也无法转发报文的情况，具体原因仍未查明，遇到过类似场景的朋友如果有解决方法，欢迎赐教。</p>
+<p>小结<br>为了方便以后回顾，我们将上述过程提炼总结一下。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">如果想要iptables作为网络防火墙，iptables所在主机开启核心转发功能，以便能够转发报文。</span></span><br><span class="line"><span class="meta">#</span><span class="bash">使用如下命令查看当前主机是否已经开启了核心转发，0表示未开启，1表示已开启</span></span><br><span class="line">cat /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="meta">#</span><span class="bash">使用如下两种方法均可临时开启核心转发，立即生效，但是重启网络配置后会失效。</span></span><br><span class="line">方法一：echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">方法二：sysctl -w net.ipv4.ip_forward=1</span><br><span class="line"><span class="meta">#</span><span class="bash">使用如下方法开启核心转发功能，重启网络服务后永久生效。</span></span><br><span class="line">配置/etc/sysctl.conf文件（centos7中配置/usr/lib/sysctl.d/00-system.conf文件），在配置文件中将 net.ipv4.ip_forward设置为1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">由于iptables此时的角色为<span class="string">&quot;网络防火墙&quot;</span>，所以需要在filter表中的FORWARD链中设置规则。</span></span><br><span class="line"><span class="meta">#</span><span class="bash">可以使用<span class="string">&quot;白名单机制&quot;</span>，先添加一条默认拒绝的规则，然后再为需要放行的报文设置规则。</span></span><br><span class="line"><span class="meta">#</span><span class="bash">配置规则时需要考虑<span class="string">&quot;方向问题&quot;</span>，针对请求报文与回应报文，考虑报文的源地址与目标地址，源端口与目标端口等。</span></span><br><span class="line"><span class="meta">#</span><span class="bash">示例为允许网络内主机访问网络外主机的web服务与sshd服务。</span></span><br><span class="line">iptables -A FORWARD -j REJECT</span><br><span class="line">iptables -I FORWARD -s 10.1.0.0/16 -p tcp --dport 80 -j ACCEPT</span><br><span class="line">iptables -I FORWARD -d 10.1.0.0/16 -p tcp --sport 80 -j ACCEPT</span><br><span class="line">iptables -I FORWARD -s 10.1.0.0/16 -p tcp --dport 22 -j ACCEPT</span><br><span class="line">iptables -I FORWARD -d 10.1.0.0/16 -p tcp --sport 22 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">可以使用state扩展模块，对上述规则进行优化，使用如下配置可以省略许多<span class="string">&quot;回应报文放行规则&quot;</span>。</span></span><br><span class="line">iptables -A FORWARD -j REJECT</span><br><span class="line">iptables -I FORWARD -s 10.1.0.0/16 -p tcp --dport 80 -j ACCEPT</span><br><span class="line">iptables -I FORWARD -s 10.1.0.0/16 -p tcp --dport 22 -j ACCEPT</span><br><span class="line">iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br></pre></td></tr></table></figure></div>
+
+<p>一些注意点：</p>
+<p>1、当测试网络防火墙时，默认前提为网络已经正确配置。</p>
+<p>2、当测试网络防火墙时，如果出现问题，请先确定主机防火墙规则的配置没有问题。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifajw0000pwr7fssa1zca/" rel="next" title="Kubernetes网络系列之(三十)iptables自定义链">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(三十)iptables自定义链
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/" rel="prev" title="Kubernetes网络系列之(三十二)iptables动作总结之一">
+                Kubernetes网络系列之(三十二)iptables动作总结之一 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">网络防火墙测试</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

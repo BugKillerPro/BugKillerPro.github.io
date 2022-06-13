@@ -1,0 +1,695 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(三十二)iptables动作总结之一">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/6.png">
+<meta property="article:published_time" content="2022-06-13T08:44:16.102Z">
+<meta property="article:modified_time" content="2022-06-13T08:49:18.587Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(三十二)iptables动作总结之一 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(三十二)iptables动作总结之一
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+
+<hr>
+<p>前文一直在介绍iptables的匹配条件，并没有对动作进行过总结，那么此处，我们就来总结一下iptables中的动作。</p>
+<p>之前的举例中已经用到了一些常用动作，比如ACCEPT、DROP、REJECT等。</p>
+<p>其实，”动作”与”匹配条件”一样，也有”基础”与”扩展”之分。</p>
+<p>同样，使用扩展动作也需要借助扩展模块，但是，扩展动作可以直接使用，不用像使用”扩展匹配条件”那样指定特定的模块。</p>
+<p>之前用到的ACCEPT与DROP都属于基础动作。</p>
+<p>而REJECT则属于扩展动作。</p>
+<p>之前举过很多例子，我们知道，使用-j可以指定动作，比如</p>
+<ul>
+<li><p>-j ACCEPT</p>
+</li>
+<li><p>-j DROP</p>
+</li>
+<li><p>-j REJECT</p>
+</li>
+</ul>
+<p>其实，”动作”也有自己的选项，我们可以在使用动作时，设置对应的选项，此处以REJECT为例，展开与”动作”有关的话题。</p>
+<h3 id="动作REJECT"><a href="#动作REJECT" class="headerlink" title="动作REJECT"></a>动作REJECT</h3><p>REJECT动作的常用选项为–reject-with</p>
+<p>使用–reject-with选项，可以设置提示信息，当对方被拒绝时，会提示对方为什么被拒绝。</p>
+<p>可用值如下</p>
+<ul>
+<li><p>icmp-net-unreachable</p>
+</li>
+<li><p>icmp-host-unreachable</p>
+</li>
+<li><p>icmp-port-unreachable,</p>
+</li>
+<li><p>icmp-proto-unreachable</p>
+</li>
+<li><p>icmp-net-prohibited</p>
+</li>
+<li><p>icmp-host-pro-hibited</p>
+</li>
+<li><p>icmp-admin-prohibited</p>
+</li>
+</ul>
+<p>当不设置任何值时，默认值为icmp-port-unreachable。</p>
+<p>我们来动手实践一下，在主机139上设置如下规则，如下图所示，当没有明确设置–reject-with的值时，默认提示信息为icmp-port-unreachable，即端口不可达之意。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/1.png" alt="iamge"></p>
+<p>此时在另一台主机上向主机139发起ping请求，如下图所示，提示目标端口不可达。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/2.png" alt="iamge"></p>
+<p>那么我们将拒绝报文的提示设置为”主机不可达”，示例如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/3.png" alt="iamge"></p>
+<p>如上图所示，我们在设置拒绝的动作时，使用了–reject-with选项，将提示信息设置为icmp-host-unreachable，完成上述操作后，我们再次在在另一台主机上向主机139发起ping请求。</p>
+<p>如下图所示。<br><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/4.png" alt="iamge"></p>
+<p>可以看到，ping请求被拒绝时，提示信息已经从”目标端口不可达”变成了”目标主机不可达”。</p>
+<h3 id="动作LOG"><a href="#动作LOG" class="headerlink" title="动作LOG"></a>动作LOG</h3><p>在本博客中，前文并没有对LOG动作进行示例，此处我们来了解一下LOG动作。</p>
+<p>使用LOG动作，可以将符合条件的报文的相关信息记录到日志中，但当前报文具体是被”接受”，还是被”拒绝”，都由后面的规则控制，换句话说，LOG动作只负责记录匹配到的报文的相关信息，不负责对报文的其他处理，如果想要对报文进行进一步的处理，可以在之后设置具体规则，进行进一步的处理。</p>
+<p>示例如下，下例表示将发往22号端口的报文相关信息记录在日志中。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/5.png" alt="iamge"></p>
+<p>如上图所示，上述规则表示所有发往22号端口的tcp报文都符合条件，所以都会被记录到日志中，查看/var/log/messages即可看到对应报文的相关信息，但是上述规则只是用于示例，因为上例中使用的匹配条件过于宽泛，所以匹配到的报文数量将会非常之多，记录到的信息也不利于分析，所以在使用LOG动作时，匹配条件应该尽量写的精确一些，匹配到的报文数量也会大幅度的减少，这样冗余的日志信息就会变少，同时日后分析日志时，日志中的信息可用程度更高。</p>
+<p>注：请把刚才用于示例的规则删除。</p>
+<p>从刚才的示例中我们已经了解到，LOG动作会将报文的相关信息记录在/var/log/message文件中，当然，我们也可以将相关信息记录在指定的文件中，以防止iptables的相关信息与其他日志信息相混淆，修改/etc/rsyslog.conf文件（或者/etc/syslog.conf），在rsyslog配置文件中添加如下配置即可。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">vim /etc/rsyslog.conf</span></span><br><span class="line"></span><br><span class="line">kern.warning /var/log/iptables.log</span><br></pre></td></tr></table></figure></div>
+
+<p>加入上述配置后，报文的相关信息将会被记录到/var/log/iptables.log文件中。</p>
+<p>完成上述配置后，重启rsyslog服务（或者syslogd）</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">service rsyslog restart</span></span><br></pre></td></tr></table></figure></div>
+
+<p>服务重启后，配置即可生效，匹配到的报文的相关信息将被记录到指定的文件中。</p>
+<p>LOG动作也有自己的选项，常用选项如下（先列出概念，后面有示例）</p>
+<ul>
+<li><p>–log-level选项可以指定记录日志的日志级别，可用级别有emerg，alert，crit，error，warning，notice，info，debug。</p>
+</li>
+<li><p>–log-prefix选项可以给记录到的相关信息添加”标签”之类的信息，以便区分各种记录到的报文信息，方便在分析时进行过滤。</p>
+</li>
+</ul>
+<p>注：–log-prefix对应的值不能超过29个字符。</p>
+<p>比如，我想要将主动连接22号端口的报文的相关信息都记录到日志中，并且把这类记录命名为”want-in-from-port-22″,则可以使用如下命令</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifak10004pwr75tri6w43/6.png" alt="iamge"></p>
+<p>完成上述配置后，我在IP地址为192.168.1.98的客户端机上，尝试使用ssh工具连接上例中的主机，然后查看对应的日志文件（已经将日志文件设置为/var/log/iptables.log）</p>
+<p>如上图所示，ssh连接操作的报文的相关信息已经被记录到了iptables.log日志文件中，而且这条日志中包含”标签”：want-in-from-port-22，如果有很多日志记录，我们就能通过这个”标签”进行筛选了，这样方便我们查看日志，同时，从上述记录中还能够得知报文的源IP与目标IP，源端口与目标端口等信息，从上述日志我们能够看出，192.168.1.98这个IP想要在14点11分连接到192.168.1.139（当前主机的IP）的22号端口，报文由eth4网卡进入，eth4网卡的MAC地址为00:0C:29:B7:F4:D1，客户端网卡的mac地址为F4-8E-38-82-B1-29。</p>
+<p>除了ACCEPT、DROP、REJECT、LOG等动作，还有一些其他的常用动作，比如DNAT、SNAT等，我们会在之后的文章中对它们进行总结。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifajy0001pwr71ippfotz/" rel="next" title="Kubernetes网络系列之(三十一)iptables之网络防火墙">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(三十一)iptables之网络防火墙
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifaoy000upwr7fsyw1c87/" rel="prev" title="Kubernetes网络系列之(三十三)iptables动作总结之二">
+                Kubernetes网络系列之(三十三)iptables动作总结之二 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E4%BD%9CREJECT"><span class="nav-number">1.</span> <span class="nav-text">动作REJECT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E4%BD%9CLOG"><span class="nav-number">2.</span> <span class="nav-text">动作LOG</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

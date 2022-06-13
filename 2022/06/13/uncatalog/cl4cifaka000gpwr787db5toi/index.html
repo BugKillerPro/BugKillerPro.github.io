@@ -1,0 +1,655 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(二十八)iptables扩展模块之state扩展">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/3.png">
+<meta property="article:published_time" content="2022-06-13T08:16:06.630Z">
+<meta property="article:modified_time" content="2022-06-13T08:19:18.822Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(二十八)iptables扩展模块之state扩展 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(二十八)iptables扩展模块之state扩展
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+
+<hr>
+<p>当我们通过http的url访问某个网站的网页时，客户端向服务端的80端口发起请求，服务端再通过80端口响应我们的请求，于是，作为客户端，我们似乎应该理所应当的放行80端口，以便服务端回应我们的报文可以进入客户端主机，于是，我们在客户端放行了80端口，同理，当我们通过ssh工具远程连接到某台服务器时，客户端向服务端的22号端口发起请求，服务端再通过22号端口响应我们的请求，于是我们理所应当的放行了所有22号端口，以便远程主机的响应请求能够通过防火墙，但是，作为客户端，如果我们并没有主动向80端口发起请求，也没有主动向22号端口发起请求，那么其他主机通过80端口或者22号端口向我们发送数据时，我们可以接收到吗？应该是可以的，因为我们为了收到http与ssh的响应报文，已经放行了80端口与22号端口，所以，不管是”响应”我们的报文，还是”主动发送”给我们的报文，应该都是可以通过这两个端口的，那么仔细想想，这样是不是不太安全呢？如果某些与你敌对的人，利用这些端口”主动”连接到你的主机，你肯定会不爽的吧，一般都是我们主动请求80端口，80端口回应我们，但是一般不会出现80端口主动请求我们的情况吧。</p>
+<p>你心里可能会这样想：我知道哪些主机是安全的，我只要针对这些安全的主机放行对应的端口就行了，其他IP一律拒绝，比如，我知道IP为123的主机是安全的，所以，我对123主机开放了22号端口，以便123主机能够通过22号端口响应我们的ssh请求，那么，如果你需要管理的主机越来越多呢？你是不是每次都要为新的主机配置这些规则呢？如果有30台主机呢？如果有300台主机呢？80端口就更别提了，难道你每次访问一个新的网址，都要对这个网址添加信任吗？这显然不太合理。</p>
+<p>你心里可能又会想：针对对应的端口，我用–tcp-flags去匹配tcp报文的标志位，把外来的”第一次握手”的请求拒绝，是不是也可以呢？那么如果对方使用的是UDP协议或者ICMP协议呢？似乎总是有一些不完美的地方。</p>
+<p>那么我们仔细的思考一下，造成上述问题的”根源”在哪里，我们为了让”提供服务方”能够正常的”响应”我们的请求，于是在主机上开放了对应的端口，开放这些端口的同时，也出现了问题，别人利用这些开放的端口，”主动”的攻击我们，他们发送过来的报文并不是为了响应我们，而是为了主动攻击我们，好了，我们似乎找到了问题所在？</p>
+<p>问题就是：怎样判断这些报文是为了回应我们之前发出的报文，还是主动向我们发送的报文呢？</p>
+<p>我们可以通过iptables的state扩展模块解决上述问题，但是我们需要先了解一些state模块的相关概念，然后再回过头来解决上述问题。</p>
+<p>从字面上理解，state可以译为状态，但是我们也可以用一个高大上的词去解释它，state模块可以让iptables实现”连接追踪”机制。</p>
+<p>那么，既然是”连接追踪”，则必然要有”连接”。</p>
+<p>咱们就来聊聊什么是连接吧，一说到连接，你可能会下意识的想到tcp连接，但是，对于state模块而言的”连接”并不能与tcp的”连接”画等号，在TCP/IP协议簇中，UDP和ICMP是没有所谓的连接的，但是对于state模块来说，tcp报文、udp报文、icmp报文都是有连接状态的，我们可以这样认为，对于state模块而言，只要两台机器在”你来我往”的通信，就算建立起了连接，如下图所示</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/1.png" alt="image"></p>
+<p>而报文在这个所谓的链接中是什么状态的呢？这是我们后面讨论的话题。</p>
+<p>对于state模块的连接而言，”连接”其中的报文可以分为5种状态，报文状态可以为NEW、ESTABLISHED、RELATED、INVALID、UNTRACKED</p>
+<p>那么上述报文的状态都代表什么含义呢？我们先来大概的了解一下概念，然后再结合示例说明。</p>
+<p>注意：如下报文状态都是对于state模块来说的。</p>
+<p>NEW：连接中的第一个包，状态就是NEW，我们可以理解为新连接的第一个包的状态为NEW。</p>
+<p>ESTABLISHED：我们可以把NEW状态包后面的包的状态理解为ESTABLISHED，表示连接已建立。</p>
+<p>或许用图说话更容易被人理解</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/2.png" alt="image"></p>
+<p>RELATED：从字面上理解RELATED译为关系，但是这样仍然不容易理解，我们举个例子。</p>
+<p>比如FTP服务，FTP服务端会建立两个进程，一个命令进程，一个数据进程。</p>
+<p>命令进程负责服务端与客户端之间的命令传输（我们可以把这个传输过程理解成state中所谓的一个”连接”，暂称为”命令连接”）。</p>
+<p>数据进程负责服务端与客户端之间的数据传输 ( 我们把这个过程暂称为”数据连接” )。</p>
+<p>但是具体传输哪些数据，是由命令去控制的，所以，”数据连接”中的报文与”命令连接”是有”关系”的。</p>
+<p>那么，”数据连接”中的报文可能就是RELATED状态，因为这些报文与”命令连接”中的报文有关系。</p>
+<p>(注：如果想要对ftp进行连接追踪，需要单独加载对应的内核模块nf_conntrack_ftp，如果想要自动加载，可以配置/etc/sysconfig/iptables-config文件)</p>
+<p>INVALID：如果一个包没有办法被识别，或者这个包没有任何状态，那么这个包的状态就是INVALID，我们可以主动屏蔽状态为INVALID的报文。</p>
+<p>UNTRACKED：报文的状态为untracked时，表示报文未被追踪，当报文的状态为Untracked时通常表示无法找到相关的连接。</p>
+<p>上述5种状态的详细解释可以参考<a target="_blank" rel="noopener" href="http://www.iptables.info/en/connection-state.html">User-land states</a>章节</p>
+<p>好了，我们已经大致了解了state模块中所定义的5种状态，那么现在，我们回过头想想刚才的问题。</p>
+<p>刚才问题的根源就是：怎样判断报文是否是为了回应之前发出的报文。</p>
+<p>刚才举例中的问题即可使用state扩展模块解决，我们只要放行状态为ESTABLISHED的报文即可，因为如果报文的状态为ESTABLISHED，那么报文肯定是之前发出的报文的回应，如果你还不放心，可以将状态为RELATED或ESTABLISHED的报文都放行，这样，就表示只有回应我们的报文能够通过防火墙，如果是别人主动发送过来的新的报文，则无法通过防火墙，示例如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/3.png" alt="image"></p>
+<p>当前主机IP为104，当放行ESTABLISHED与RELATED状态的包以后，并没有影响通过本机远程ssh到IP为77的主机上，但是无法从77上使用22端口主动连接到104上。</p>
+<p>对于其他端口与IP来说，也是相同的，可以从104主动发送报文，并且能够收到响应报文，但是其他主机并不能主动向104发起请求。</p>
+<p>好了，state模块就总结到这里，希望这篇文章能够对你有所帮助。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/" rel="next" title="Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifak8000cpwr739275b4h/" rel="prev" title="Kubernetes网络系列之(二十九)iptables的黑白名单机制">
+                Kubernetes网络系列之(二十九)iptables的黑白名单机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

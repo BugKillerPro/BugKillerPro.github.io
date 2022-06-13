@@ -1,0 +1,780 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes网络系列之(二十三)iptables规则管理">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/1.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/2.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/3.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/4.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/5.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/6.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/7.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/8.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/9.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/10.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/11.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/12.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/13.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/14.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/15.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/16.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/17.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/18.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/19.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/20.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/21.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/22.png">
+<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/23.png">
+<meta property="article:published_time" content="2022-06-13T06:35:07.878Z">
+<meta property="article:modified_time" content="2022-06-13T07:54:13.050Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="云原生基础系列">
+<meta property="article:tag" content="Kubernetes网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/1.png">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Kubernetes网络系列之(二十三)iptables规则管理 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kubernetes网络系列之(二十三)iptables规则管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+
+<hr>
+<p>上一篇文章中，我们已经学会了怎样使用iptables命令查看规则，那么这篇文章我们就来总结一下，怎样管理规则。</p>
+<p>之前，我们把查看iptables规则的操作比作”增删改查”当中的”查”，那么在这篇文章中，我们就聊聊怎样对iptables进行”增、删、改”操作。</p>
+<p>注意：在参照本文进行iptables实验时，请务必在个人的测试机上进行，因为如果iptables规则设置不当，有可能使你无法连接到远程主机中。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/1.png" alt="image"></p>
+<p>首先，我们来回顾一下什么是iptables的规则。</p>
+<p>之前打过一个比方，每条”链”都是一个”关卡”，每个通过这个”关卡”的报文都要匹配这个关卡上的规则，如果匹配，则对报文进行对应的处理，比如说，你我二人此刻就好像两个”报文”，你我二人此刻都要入关，可是城主有命，只有器宇轩昂之人才能入关，不符合此条件的人不能入关，于是守关将士按照城主制定的”规则”，开始打量你我二人，最终，你顺利入关了，而我已被拒之门外，因为你符合”器宇轩昂”的标准，所以把你”放行”了，而我不符合标准，所以没有被放行，其实，”器宇轩昂”就是一种”匹配条件”，”放行”就是一种”动作”，”匹配条件”与”动作”组成了规则。</p>
+<p>只不过，在iptables的世界中，最常用的匹配条件并不是”器宇轩昂”，而是报文的”源地址”、”目标地址”、”源端口”、”目标端口”等，在iptables的世界中，最常用的动作有ACCEPT（接受）、DROP（丢弃）、REJECT（拒绝），其中ACCEPT就与我们举例中的”放行”类似，但是，我们刚才提到的这些并不是全部的匹配条件与动作，只是最常用的一些罢了，具体的匹配条件与动作不是我们今天讨论的重点，我们会在以后的文章中再做总结。</p>
+<p>好了，我们已经回顾了规则的概念，并且已经明白了，规则大致由两个逻辑单元组成，匹配条件与动作，那么多说无益，我们来动手定义一条规则，此处仍然以filter表中的INPUT链为例，因为filter表负责”过滤”功能，而所有发往本机的报文如果需要被过滤，首先会经过INPUT链（PREROUTING链没有过滤功能），这与我们所比喻的”入关”场景非常相似，所以，使用filter表的INPUT链为例，有助于我们进行理解。</p>
+<p>首先，查看一下filter表中的INPUT链中的规则，查看规则的相关命令在前文已经总结了，此处不再赘述，如果你忘了，请回顾前文。</p>
+<p>使用如下命令查看filter表INPUT链的规则，下图中的规则为centos6默认添加的规则。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/2.png" alt="image"></p>
+<p>注意：在参照本文进行iptables实验时，请务必在个人的测试机上进行。</p>
+<p>为了准备一个从零开始的环境，我们将centos6默认提供的规则清空，以便我们进行实验，使用iptables -F INPUT命令清空filter表INPUT链中的规则，后面我们会单独对清除规则的相关命令进行总结，此处不用纠结此命令。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/3.png" alt="image"></p>
+<p>清空INPUT链以后，filter表中的INPUT链已经不存在任何的规则，但是可以看出，INPUT链的默认策略是ACCEPT，也就是说，INPUT链默认”放行”所有发往本机的报文，当没有任何规则时，会接受所有报文，当报文没有被任何规则匹配到时，也会默认放行报文。</p>
+<p>那么此刻，我们就在另外一台机器上，使用ping命令，向当前机器发送报文，如下图所示，ping命令可以得到回应，证明ping命令发送的报文已经正常的发送到了防火墙所在的主机，ping命令所在机器IP地址为146，当前测试防火墙主机的IP地址为156，我们就用这样的环境，对iptables进行操作演示。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/4.png" alt="image"></p>
+<h3 id="增加规则"><a href="#增加规则" class="headerlink" title="增加规则"></a>增加规则</h3><p>那么此处，我们就在156上配置一条规则，拒绝192.168.1.146上的所有报文访问当前机器，之前一直在说，规则由匹配条件与动作组成，那么”拒绝192.168.1.146上的所有报文访问当前机器”这条规则中，报文的”源地址为192.168.1.146″则属于匹配条件，如果报文来自”192.168.1.146″，则表示满足匹配条件，而”拒绝”这个报文，就属于对应的动作，好了，那么怎样用命令去定义这条规则呢？使用如下命令即可</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/5.png" alt="image"></p>
+<p>上图中，使用 -t选项指定了要操作的表，此处指定了操作filter表，与之前的查看命令一样，不使用-t选项指定表时，默认为操作filter表。</p>
+<p>使用-I选项，指明将”规则”插入至哪个链中，-I表示insert，即插入的意思，所以-I INPUT表示将规则插入于INPUT链中，即添加规则之意。</p>
+<p>使用-s选项，指明”匹配条件”中的”源地址”，即如果报文的源地址属于-s对应的地址，那么报文则满足匹配条件，-s为source之意，表示源地址。</p>
+<p>使用-j选项，指明当”匹配条件”被满足时，所对应的动作，上例中指定的动作为DROP，在上例中，当报文的源地址为192.168.1.146时，报文则被DROP（丢弃）。</p>
+<p>再次查看filter表中的INPUT链，发现规则已经被添加了，在iptables中，动作被称之为”target”，所以，上图中taget字段对应的动作为DROP。</p>
+<p>那么此时，我们再通过192.168.1.146去ping主机156，看看能否ping通。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/6.png" alt="image"></p>
+<p>如上图所示，ping 156主机时，PING命令一直没有得到回应，看来我们的iptables规则已经生效了，ping发送的报文压根没有被156主机接受，而是被丢弃了，所以更不要说什么回应了，好了，我们已经成功的配置了一条iptables规则，看来，我们已经入门了。</p>
+<p>还记得我们在前文中说过的”计数器”吗？此时，我们再次查看iptables中的规则，可以看到，已经有24个包被对应的规则匹配到，总计大小2016bytes。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/7.png" alt="image"></p>
+<p>此刻，我们来做一个实验。</p>
+<p>现在INPUT链中已经存在了一条规则，它拒绝了所有来自192.168.1.146主机中的报文，如果此时，我们在这条规则之后再配置一条规则，后面这条规则规定，接受所有来自192.168.1.146主机中的报文，那么，iptables是否会接受来自146主机的报文呢？我们动手试试。</p>
+<p>使用如下命令在filter表的INPUT链中追加一条规则，这条规则表示接受所有来自192.168.1.146的发往本机的报文。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/8.png" alt="image"></p>
+<p>上图中的命令并没有使用-t选项指定filter表，我们一直在说，不使用-t选项指定表时表示默认操作filter表。</p>
+<p>上图中，使用-A选项，表示在对应的链中”追加规则”，-A为append之意，所以，-A INPUT则表示在INPUT链中追加规则，而之前示例中使用的-I选项则表示在链中”插入规则”，聪明如你一定明白了，它们的本意都是添加一条规则，只是-A表示在链的尾部追加规则，-I表示在链的首部插入规则而已。</p>
+<p>使用-j选项，指定当前规则对应的动作为ACCEPT。</p>
+<p>执行完添加规则的命令后，再次查看INPUT链，发现规则已经成功”追加”至INPUT链的末尾，那么现在，第一条规则指明了丢弃所有来自192.168.1.146的报文，第二条规则指明了接受所有来自192.168.1.146的报文，那么结果到底是怎样的呢？实践出真知，在146主机上再次使用ping命令向156主机发送报文，发现仍然是ping不通的，看来第二条规则并没有生效。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/9.png" alt="image"></p>
+<p>而且从上图中第二条规则的计数器可以看到，根本没有任何报文被第二条规则匹配到。</p>
+<p>聪明如你一定在猜想，发生上述情况，会不会与规则的先后顺序有关呢？测试一下不就知道了，我们再添加一条规则，新规则仍然规定接受所有来自192.168.1.146主机中的报文，只是这一次，我们将新规则添加至INPUT链的最前面试试。</p>
+<p>在添加这条规则之前，我们先把146上的ping命令强制停止了，然后使用如下命令，在filter表的INPUT链的前端添加新规则。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/10.png" alt="image"></p>
+<p>好了，现在第一条规则就是接受所有来自192.168.1.146的报文，而且此时计数是0，此刻，我们再从146上向156发起ping请求。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/11.png" alt="image"></p>
+<p>146上已经可以正常的收到响应报文了，那么回到156查看INPUT链的规则，第一条规则的计数器已经显示出了匹配到的报文数量。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/12.png" alt="image"><br>看来，规则的顺序很重要。</p>
+<p>如果报文已经被前面的规则匹配到，iptables则会对报文执行对应的动作，即使后面的规则也能匹配到当前报文，很有可能也没有机会再对报文执行相应的动作了，就以上图为例，报文先被第一条规则匹配到了，于是当前报文被”放行”了，因为报文已经被放行了，所以，即使上图中的第二条规则即使能够匹配到刚才”放行”的报文，也没有机会再对刚才的报文进行丢弃操作了。这就是iptables的工作机制。</p>
+<p>之前在总结查看命令时提到过，使用–line-number选项可以列出规则的序号，如下图所示<br><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/13.png" alt="image"></p>
+<p>我们也可以在添加规则时，指定新增规则的编号，这样我们就能在任意位置插入规则了，我们只要把刚才的命令稍作修改即可，如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/14.png" alt="image"></p>
+<p>仍然使用-I选项进行插入规则操作，-I INPUT 2表示在INPUT链中新增规则，新增的规则的编号为2，好了，自己动手试试吧。</p>
+<h3 id="删除规则"><a href="#删除规则" class="headerlink" title="删除规则"></a>删除规则</h3><p>注意：在参照本文进行iptables实验时，请务必在个人的测试机上进行。</p>
+<p>此刻，如果我们想要删除filter表中INPUT中的一条规则，该怎么做呢？</p>
+<p>有两种办法</p>
+<p>方法一：根据规则的编号去删除规则</p>
+<p>方法二：根据具体的匹配条件与动作删除规则</p>
+<p>那么我们先看看方法一，先查看一下filter表中INPUT链中的规则</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/15.png" alt="image"></p>
+<p>假如我们想要删除上图中的第3条规则，则可以使用如下命令。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/16.png" alt="image"></p>
+<p>上例中，使用了-t选项指定了要操作的表（没错，省略-t默认表示操作filter表），使用-D选项表示删除指定链中的某条规则，-D INPUT 3表示删除INPUT链中的第3条规则。</p>
+<p>当然，我们也可以根据具体的匹配条件与动作去删除规则，比如，删除下图中源地址为192.168.1.146，动作为ACCEPT的规则，于是，删除规则的命令如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/17.png" alt="image"></p>
+<p>上图中，删除对应规则时，仍然使用-D选项，-D INPUT表示删除INPUT链中的规则，剩下的选项与我们添加规则时一毛一样，-s表示以对应的源地址作为匹配条件，-j ACCEPT表示对应的动作为接受，所以，上述命令表示删除INPUT链中源地址为192.168.1.146，动作为ACCEPT的规则。</p>
+<p>而删除指定表中某条链中的所有规则的命令，我们在一开始就使用到了，就是”iptables -t 表名 -F 链名”</p>
+<p>-F选项为flush之意，即冲刷指定的链，即删除指定链中的所有规则，但是注意，此操作相当于删除操作，在没有保存iptables规则的情况下，请慎用。</p>
+<p>其实，-F选项不仅仅能清空指定链上的规则，其实它还能清空整个表中所有链上的规则，不指定链名，只指定表名即可删除表中的所有规则，命令如下</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t 表名 -F</span><br></pre></td></tr></table></figure></div>
+
+<p>不过再次强调，在没有保存iptables规则时，请勿随便清空链或者表中的规则，除非你明白你在干什么。</p>
+<h3 id="修改规则"><a href="#修改规则" class="headerlink" title="修改规则"></a>修改规则</h3><p>注意：在参照本文进行iptables实验时，请务必在个人的测试机上进行。</p>
+<p>那么，我们怎样修改某条规则中的动作呢？比如，我想把如下规则中的动作从DROP改为REJECT，改怎么办呢？</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/18.png" alt="image"></p>
+<p>我们可以使用-R选项修改指定的链中的规则，在修改规则时指定规则对应的编号即可(有坑，慎行)，示例命令如下</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/19.png" alt="image"></p>
+<p>上例中，-R选项表示修改指定的链，使用-R INPUT 1表示修改INPUT链的第1条规则，使用-j REJECT表示将INPUT链中的第一条规则的动作修改为REJECT，注意：上例中， -s选项以及对应的源地址不可省略，即使我们已经指定了规则对应的编号，但是在使用-R选项修改某个规则时，必须指定规则对应的原本的匹配条件（如果有多个匹配条件，都需要指定）。</p>
+<p>如果上例中的命令没有使用-s指定对应规则中原本的源地址，那么在修改完成后，你修改的规则中的源地址会自动变为0.0.0.0/0（此IP表示匹配所有网段的IP地址），而此时，-j对应的动作又为REJECT，所以在执行上述命令时如果没有指明规则原本的源地址，那么所有IP的请求都被拒绝了（因为没有指定原本的源地址，当前规则的源地址自动变为0.0.0.0/0），如果你正在使用ssh远程到服务器上进行iptables设置，那么你的ssh请求也将会被阻断。</p>
+<p>既然使用-R选项修改规则时，必须指明规则原本的匹配条件，那么我们则可以理解为，只能通过-R选项修改规则对应的动作了，所以我觉得，如果你想要修改某条规则，还不如先将这条规则删除，然后在同样位置再插入一条新规则，这样更好，当然，如果你只是为了修改某条规则的动作，那么使用-R选项时，不要忘了指明规则原本对应的匹配条件。</p>
+<p>好了，上例中，我们已经将规则中的动作从DROP改为了REJECT，那么DROP与REJECT有什么不同呢？从字面上理解，DROP表示丢弃，REJECT表示拒绝，REJECT表达的意思好像更坚决一点，我们再次从146主机上向156主机上发起ping请求，看看与之前动作为DROP时有什么不同。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/20.png" alt="image"></p>
+<p>如上图所示，当156主机中的iptables规则对应的动作为REJECT时，从146上进行ping操作时，直接就提示”目标不可达”，并没有像之前那样卡在那里，看来，REJECT比DROP更加”干脆”。</p>
+<p>其实，我们还可以修改指定链的”默认策略”，没错，就是下图中标注的默认策略。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/21.png" alt="image"></p>
+<p>每张表的每条链中，都有自己的默认策略，我们也可以理解为默认”动作”。</p>
+<p>当报文没有被链中的任何规则匹配到时，或者，当链中没有任何规则时，防火墙会按照默认动作处理报文，我们可以修改指定链的默认策略，使用如下命令即可。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/22.png" alt="image"></p>
+<p>使用-t指定要操作的表，使用-P选项指定要修改的链，上例中，-P FORWARD DROP表示将表中FORWRD链的默认策略改为DROP。</p>
+<h3 id="保存规则"><a href="#保存规则" class="headerlink" title="保存规则"></a>保存规则</h3><p>在默认的情况下，我们对”防火墙”所做出的修改都是”临时的”，换句话说就是，当重启iptables服务或者重启服务器以后，我们平常添加的规则或者对规则所做出的修改都将消失，为了防止这种情况的发生，我们需要将规则”保存”。</p>
+<p>centos7与centos6中的情况稍微有些不同，我们先说centos6中怎样保存iptables规则。</p>
+<p>centos6中，使用”service iptables save”命令即可保存规则，规则默认保存在/etc/sysconfig/iptables文件中，如果你刚刚安装完centos6，在刚开始使用iptables时，会发现filter表中会有一些默认的规则，这些默认提供的规则其实就保存在/etc/sysconfig/iptables中，  保存规则的示例如下。</p>
+<p><img src="/2022/06/13/uncatalog/cl4cifap3000vpwr7cqad5sgx/23.png" alt="image"></p>
+<p>如上图所示，文件中保存了filter表中每条链的默认策略，以及每条链中的规则，由于其他表中并没有设置规则，也没有使用过其他表，所以文件中只保存了filter表中的规则。</p>
+<p>当我们对规则进行了修改以后，如果想要修改永久生效，必须使用service iptables save保存规则，当然，如果你误操作了规则，但是并没有保存，那么使用service iptables restart命令重启iptables以后，规则会再次回到上次保存/etc/sysconfig/iptables文件时的模样。</p>
+<p>从现在开始，最好养成及时保存规则的好习惯。</p>
+<p>centos7中，已经不再使用init风格的脚本启动服务，而是使用unit文件，所以，在centos7中已经不能再使用类似service iptables start这样的命令了，所以service iptables save也无法执行，同时，在centos7中，使用firewall替代了原来的iptables service，不过不用担心，我们只要通过yum源安装iptables与iptables-services即可（iptables一般会被默认安装，但是iptables-services在centos7中一般不会被默认安装），在centos7中安装完iptables-services后，即可像centos6中一样，通过service iptables save命令保存规则了，规则同样保存在/etc/sysconfig/iptables文件中。</p>
+<p>此处给出centos7中配置iptables-service的步骤</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置好yum源以后安装iptables-service</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> yum install -y iptables-services</span></span><br><span class="line"><span class="meta">#</span><span class="bash">停止firewalld</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl stop firewalld</span></span><br><span class="line"><span class="meta">#</span><span class="bash">禁止firewalld自动启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl <span class="built_in">disable</span> firewalld</span></span><br><span class="line"><span class="meta">#</span><span class="bash">启动iptables</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl start iptables</span></span><br><span class="line"><span class="meta">#</span><span class="bash">将iptables设置为开机自动启动，以后即可通过iptables-service控制iptables服务</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> systemctl <span class="built_in">enable</span> iptables</span></span><br></pre></td></tr></table></figure></div>
+
+
+<p>上述配置过程只需一次，以后即可在centos7中愉快的使用service iptables save命令保存iptables规则了。</p>
+<h3 id="其他通用方法"><a href="#其他通用方法" class="headerlink" title="其他通用方法"></a>其他通用方法</h3><p>还可以使用另一种方法保存iptables规则，就是使用iptables-save命令</p>
+<p>使用iptables-save并不能保存当前的iptables规则，但是可以将当前的iptables规则以”保存后的格式”输出到屏幕上。</p>
+<p>所以，我们可以使用iptables-save命令，再配合重定向，将规则重定向到/etc/sysconfig/iptables文件中即可。</p>
+<p>iptables-save &gt; /etc/sysconfig/iptables</p>
+<p>我们也可以将/etc/sysconfig/iptables中的规则重新载入为当前的iptables规则，但是注意，未保存入/etc/sysconfig/iptables文件中的修改将会丢失或者被覆盖。</p>
+<p>使用iptables-restore命令可以从指定文件中重载规则，示例如下</p>
+<p>iptables-restore &lt; /etc/sysconfig/iptables</p>
+<p>再次提醒：重载规则时，现有规则将会被覆盖。</p>
+<h3 id="命令小结"><a href="#命令小结" class="headerlink" title="命令小结"></a>命令小结</h3><p>上文已经详细的举例并描述了怎样进行iptables规则管理，为了以后能够快速的回顾，我们把上述命令总结一下。</p>
+<h4 id="添加规则"><a href="#添加规则" class="headerlink" title="添加规则"></a>添加规则</h4><p>注意点：添加规则时，规则的顺序非常重要</p>
+<p>在指定表的指定链的尾部添加一条规则，-A选项表示在对应链的末尾添加规则，省略-t选项时，表示默认操作filter表中的规则</p>
+<p>命令语法：iptables -t 表名 -A 链名 匹配条件 -j 动作<br>示例：iptables -t filter -A INPUT -s 192.168.1.146 -j DROP</p>
+<p>在指定表的指定链的首部添加一条规则，-I选型表示在对应链的开头添加规则</p>
+<p>命令语法：iptables -t 表名 -I 链名 匹配条件 -j 动作<br>示例：iptables -t filter -I INPUT -s 192.168.1.146 -j ACCEPT</p>
+<p>在指定表的指定链的指定位置添加一条规则</p>
+<p>命令语法：iptables -t 表名 -I 链名 规则序号 匹配条件 -j 动作<br>示例：iptables -t filter -I INPUT 5 -s 192.168.1.146 -j REJECT</p>
+<p>设置指定表的指定链的默认策略（默认动作），并非添加规则。</p>
+<p>命令语法：iptables -t 表名 -P 链名 动作<br>示例：iptables -t filter -P FORWARD ACCEPT<br>上例表示将filter表中FORWARD链的默认策略设置为ACCEPT</p>
+<h4 id="删除规则-1"><a href="#删除规则-1" class="headerlink" title="删除规则"></a>删除规则</h4><p>注意点：如果没有保存规则，删除规则时请慎重</p>
+<p>按照规则序号删除规则，删除指定表的指定链的指定规则，-D选项表示删除对应链中的规则。</p>
+<p>命令语法：iptables -t 表名 -D 链名 规则序号<br>示例：iptables -t filter -D INPUT 3<br>上述示例表示删除filter表中INPUT链中序号为3的规则。</p>
+<p>按照具体的匹配条件与动作删除规则，删除指定表的指定链的指定规则。</p>
+<p>命令语法：iptables -t 表名 -D 链名 匹配条件 -j 动作<br>示例：iptables -t filter -D INPUT -s 192.168.1.146 -j DROP<br>上述示例表示删除filter表中INPUT链中源地址为192.168.1.146并且动作为DROP的规则。</p>
+<p>删除指定表的指定链中的所有规则，-F选项表示清空对应链中的规则，执行时需三思。</p>
+<p>命令语法：iptables -t 表名 -F 链名<br>示例：iptables -t filter -F INPUT</p>
+<p>删除指定表中的所有规则，执行时需三思。</p>
+<p>命令语法：iptables -t 表名 -F<br>示例：iptables -t filter -F</p>
+<h4 id="修改规则-1"><a href="#修改规则-1" class="headerlink" title="修改规则"></a>修改规则</h4><p>注意点：如果使用-R选项修改规则中的动作，那么必须指明原规则中的原匹配条件，例如源IP，目标IP等。</p>
+<p>修改指定表中指定链的指定规则，-R选项表示修改对应链中的规则，使用-R选项时要同时指定对应的链以及规则对应的序号，并且规则中原本的匹配条件不可省略。</p>
+<p>命令语法：iptables -t 表名 -R 链名 规则序号 规则原本的匹配条件 -j 动作<br>示例：iptables -t filter -R INPUT 3 -s 192.168.1.146 -j ACCEPT<br>上述示例表示修改filter表中INPUT链的第3条规则，将这条规则的动作修改为ACCEPT， -s 192.168.1.146为这条规则中原本的匹配条件，如果省略此匹配条件，修改后的规则中的源地址可能会变为0.0.0.0/0。</p>
+<p>其他修改规则的方法：先通过编号删除规则，再在原编号位置添加一条规则。</p>
+<p>修改指定表的指定链的默认策略（默认动作），并非修改规则，可以使用如下命令。</p>
+<p>命令语法：iptables -t 表名 -P 链名 动作<br>示例：iptables -t filter -P FORWARD ACCEPT<br>上例表示将filter表中FORWARD链的默认策略修改为ACCEPT</p>
+<h4 id="保存规则-1"><a href="#保存规则-1" class="headerlink" title="保存规则"></a>保存规则</h4><p>保存规则命令如下，表示将iptables规则保存至/etc/sysconfig/iptables文件中，如果对应的操作没有保存，那么当重启iptables服务以后</p>
+<p>service iptables save<br>注意点：centos7中使用默认使用firewalld，如果想要使用上述命令保存规则，需要安装iptables-services，具体配置过程请回顾上文。</p>
+<p>或者使用如下方法保存规则</p>
+<p>iptables-save &gt; /etc/sysconfig/iptables<br>可以使用如下命令从指定的文件载入规则，注意：重载规则时，文件中的规则将会覆盖现有规则。</p>
+<p>iptables-restore &lt; /etc/sysconfig/iptables</p>
+<p>好了，这篇文章已经总结了怎样添加、删除、修改 iptables规则，与前文结合起来，我们已经掌握了对iptables规则的”增删改查”，同时，这篇文章也总结了如何设置链的默认策略，以及怎样保存iptables规则。</p>
+<p>我想，你已经入门了，对吗？如果你是一个新手，希望这篇文章能对你有所帮助。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
+          
+            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifak9000epwr7cx322y2s/" rel="next" title="Kubernetes网络系列之(二十二)iptables实际操作之规则查询">
+                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(二十二)iptables实际操作之规则查询
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/13/uncatalog/cl4cifap5000zpwr721cugaqx/" rel="prev" title="Kubernetes网络系列之(二十四)iptables匹配条件总结之一">
+                Kubernetes网络系列之(二十四)iptables匹配条件总结之一 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E8%A7%84%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">增加规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%A7%84%E5%88%99"><span class="nav-number">2.</span> <span class="nav-text">删除规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%A7%84%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">修改规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">保存规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">其他通用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">命令小结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%A7%84%E5%88%99"><span class="nav-number">6.1.</span> <span class="nav-text">添加规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%A7%84%E5%88%99-1"><span class="nav-number">6.2.</span> <span class="nav-text">删除规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%A7%84%E5%88%99-1"><span class="nav-number">6.3.</span> <span class="nav-text">修改规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E8%A7%84%E5%88%99-1"><span class="nav-number">6.4.</span> <span class="nav-text">保存规则</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
