@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cnypz40000z4r77k3khkjx/</loc>
+    
+    <lastmod>2022-06-13</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifal9000rpwr7ffrw6e1h/</loc>
     
     <lastmod>2022-06-13</lastmod>
@@ -677,6 +684,13 @@
   
   <url>
     <loc>https://bugkillerpro.github.io/tags/Kubernetes%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2022-06-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bugkillerpro.github.io/tags/%E6%89%8B%E6%92%B8%E4%B8%80%E4%B8%AAweb%E6%A1%86%E6%9E%B6/</loc>
     <lastmod>2022-06-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
