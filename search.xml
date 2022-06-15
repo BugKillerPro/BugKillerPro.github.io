@@ -7298,19 +7298,29 @@
 <li><a href="#install">Quick start</a></li>
 </ul>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><blockquote>
-<p>实现一个go web框架，是2018年中旬，我从java转go的第一个项目，当时团队人手紧缺，业务线原有的java项目重构需求非常紧急，对于为这些项目提供支撑的框架，给的开发时间更是少得可怜，更让人抓狂的是，这个框架开发项目，就我一个人，哈哈哈哈。 当时，看了下httprouter的源码，还没来得及学习下gin beego等知名web框架，就直接上手干了。<br>现在回想起来，虽然该有的功能都有了，但是可优化的地方还是不少，并且很多知识点并没有来得及由点到面的展开，所以决定从零开始，再写一个web框架，同时把一些比较值得记录的地方，以文字的形式做一个输出和总结，这一点很值得做。</p>
+<p>实现一个go web框架，是2018年中旬，我从java转go的第一个项目，当时团队人手紧缺，业务线原有的java项目重构需求非常紧急，对于为这些项目提供支撑的web框架，给的开发时间更是少得可怜，更让人抓狂的是，这么紧急的框架开发任务，人员配置就我一个，哈哈哈哈。 当时，看了下httprouter的源码，还没来得及学习下gin beego等知名web框架，就直接上手干了。<br>现在回想起来，虽然该有的功能都有了，但是从设计和代码结构上看，可优化的地方还是不少的，并且当时很多涉及到的知识点还没有来得及由点到面的展开，也就没有来得及应用到项目中去。所以决定从零开始，再写一个web框架，同时把一些比较值得记录的地方，以文字的形式做一个输出和总结。</p>
 </blockquote>
 <h3 id="为什么不用现有的gin-、beego、kit、echo和gorilla等web框架，而是要重复造轮子？"><a href="#为什么不用现有的gin-、beego、kit、echo和gorilla等web框架，而是要重复造轮子？" class="headerlink" title="为什么不用现有的gin 、beego、kit、echo和gorilla等web框架，而是要重复造轮子？"></a>为什么不用现有的<code>gin</code> 、<code>beego</code>、<code>kit</code>、<code>echo</code>和<code>gorilla</code>等<code>web</code>框架，而是要重复造轮子？</h3><ul>
 <li>第一，也是最重要的原因–练手。了解一个领域/知识点，最好的办法就是实现它，当时刚从java转go，急需一个项目练手。</li>
 <li>第二，拿web框架作为练手项目，除了需要扎实的基础之外，难度方面，不高不低，非常合适。</li>
 <li>第三，团队内部关于现有轮子的争论无法达成一致，最终决定自己开发满足定制化需求的轻量级框架。</li>
-<li>第四，有plan B，如果开发失败，就直接上现有的轮子，对于业务线，几乎没有切换成本。<h3 id="名字less的由来？"><a href="#名字less的由来？" class="headerlink" title="名字less的由来？"></a>名字<code>less</code>的由来？</h3>less is more</li>
+<li>第四，有plan B，也就是兜底方案。如果开发失败，就直接上现有的轮子，对于业务线，几乎没有切换成本。</li>
 </ul>
-<h3 id="理解less，需要了解哪些前置知识？"><a href="#理解less，需要了解哪些前置知识？" class="headerlink" title="理解less，需要了解哪些前置知识？"></a>理解<code>less</code>，需要了解哪些前置知识？</h3><p>   1，认真读懂<code>net/http</code>标准库，其中大致的逻辑如下:<br>     - 标准库创建 HTTP 服务是通过创建一个 Server 数据结构完成的<br>     - Server 数据结构在 for 循环中不断监听每一个连接<br>     - 每个连接默认开启一个 Goroutine 为其服务<br>     - serverHandler 结构代表请求对应的处理逻辑，并且通过这个结构进行具体业务逻辑处理<br>     - Server 数据结构如果没有设置处理函数 Handler，默认使用DefaultServerMux 处理请求<br>     - DefaultServerMux 是使用 map 结构来存储和查找路由规则</p>
+<h3 id="名字less的由来？"><a href="#名字less的由来？" class="headerlink" title="名字less的由来？"></a>名字<code>less</code>的由来？</h3><p>   less is more</p>
+<h3 id="理解less，需要了解哪些前置知识？"><a href="#理解less，需要了解哪些前置知识？" class="headerlink" title="理解less，需要了解哪些前置知识？"></a>理解<code>less</code>，需要了解哪些前置知识？</h3><h4 id="1，认真读懂net-http标准库，其中大致的逻辑如下"><a href="#1，认真读懂net-http标准库，其中大致的逻辑如下" class="headerlink" title="1，认真读懂net/http标准库，其中大致的逻辑如下:"></a>1，认真读懂<code>net/http</code>标准库，其中大致的逻辑如下:</h4><pre><code> - 标准库创建 HTTP 服务是通过创建一个 Server 数据结构完成的
+ - Server 数据结构在 for 循环中不断监听每一个连接
+ - 每个连接默认开启一个 Goroutine 为其服务
+ - serverHandler 结构代表请求对应的处理逻辑，并且通过这个结构进行具体业务逻辑处理
+ - Server 数据结构如果没有设置处理函数 Handler，默认使用DefaultServerMux 处理请求
+ - DefaultServerMux 是使用 map 结构来存储和查找路由规则
+</code></pre>
 <blockquote>
-<p>很显然，最后一步”DefaultServerMux 是使用 map 结构来存储和查找路由规则”是一个可优化的点，也是众多go web框架需要自己实现的一个地方。</p>
+<p>很显然，聪明而又熟悉<code>RESTful</code>的你肯定已经发现，最后一步”DefaultServerMux 是使用 map 结构来存储和查找路由规则”是一个可优化的点，这也是众多go web框架需要自己实现的一个地方，当然<code>less</code>也不例外。</p>
 </blockquote>
-]]></content>
+<h4 id="2-理解context的设计思路，在less中，我们将设计一个实现Context接口的custom-context，并将被应用于以下方面："><a href="#2-理解context的设计思路，在less中，我们将设计一个实现Context接口的custom-context，并将被应用于以下方面：" class="headerlink" title="2,理解context的设计思路，在less中，我们将设计一个实现Context接口的custom context，并将被应用于以下方面："></a>2,理解<code>context</code>的设计思路，在<code>less</code>中，我们将设计一个实现<code>Context</code>接口的<code>custom context</code>，并将被应用于以下方面：</h4><pre><code> - 日常开发中我们大概率会遇到超时控制的场景，比如一个批量耗时任务、网络请求等；一个良好的超时控制可以有效的避免一些问题（比如 goroutine 泄露、资源不释放等）
+ - 一个请求，从接受到返回过程中的信息传递和共享
+</code></pre>
+<h3 id="3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。"><a href="#3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。" class="headerlink" title="3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。"></a>3，熟悉<code>http</code>协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。</h3><h3 id="4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。"><a href="#4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。" class="headerlink" title="4，熟悉http.ResponseWriter和*http.Request这两大信息载体的结构和方法，不然的话，连从哪里读取query values和 form data以及往哪里写response都不知道，那就尴尬了。"></a>4，熟悉<code>http.ResponseWriter</code>和<code>*http.Request</code>这两大信息载体的结构和方法，不然的话，连从哪里读取<code>query values</code>和 <code>form data</code>以及往哪里写<code>response</code>都不知道，那就尴尬了。</h3>]]></content>
       <tags>
         <tag>手撸一个web框架</tag>
       </tags>
