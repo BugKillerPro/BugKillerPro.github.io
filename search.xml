@@ -4418,10 +4418,7 @@
 <p>软件开发70年历史，软件工程发展了近50年，互联网从出现到现在的蓬勃发展二十多年。软件开发的模型从最早的瀑布模型，到敏捷开发，再到现在的DevOps理念。软件的形态从物理扎线，到打孔编程，再到大机，到微机，到网络时代的C/S、B/S、再到移动互联网时代App。架构的演变经过几十年的进化，在硬件、网络、信息的认知、用户数等都达到条件后，再才发展出了微服务，然后进而才出现了Kubernetes的框架。</p>
 <p>绝大部分的人认为Kubernetes只是一个基础平台。但实际大部分人都想不明白，为什么为出现Kubernetes这样的平台。物理机不能跑微服务吗，虚拟机不能跑微服务吗？你想不明白这个问题，你就没法入门Kubernetes，遗憾的是，这一点也是绝大多数Kubernetes所没有关注到的。</p>
 <p>Kubernetes的出现是大型互联网公司（Google）在非常庞大的微服务体系下，为了降低维护成本，为了提高维护效率，提高交付效率，更重要是为了服务自治不断思考和实践才开发出来的。IT行业的技术革新，总是会有先驱者为我们艰辛的躺平道路，然后我们再站在巨人的肩膀上借得更高的视野，但是现在很多人都被眼前的树叶给遮挡了，比如目前互联网浮躁的就业环境。</p>
-<h3 id="正题：Kubernetes读书笔记"><a href="#正题：Kubernetes读书笔记" class="headerlink" title="正题：Kubernetes读书笔记"></a>正题：Kubernetes读书笔记</h3><blockquote>
-<p>以下书籍/课程，笔记和内容质量无关</p>
-</blockquote>
-<h3 id="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"><a href="#1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》" class="headerlink" title="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"></a>1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/1.jpg" alt="1.jpg"><br>这本书或者说Kubernetes,对于当时的我来说，非常的有魔力，现在回想起来，也能不禁笑出声来。<br><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/2.png" alt="2.png"><br>非常适合小白入门，但是也仅限于入门，与其说是权威指南，不如说是入门指南。<br>里面的内容，几乎涵盖了Kubernetes运维相关的的方方面面，广度有余，而深度不足。</p>
+<h3 id="正题：Kubernetes读书笔记"><a href="#正题：Kubernetes读书笔记" class="headerlink" title="正题：Kubernetes读书笔记"></a>正题：Kubernetes读书笔记</h3><h3 id="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"><a href="#1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》" class="headerlink" title="1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》"></a>1，《Kubernetes权威指南：从Docker到Kubernetes实践全接触（第5版）》</h3><p><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/1.jpg" alt="1.jpg"><br>这本书或者说Kubernetes,对于当时的我来说，非常的有魔力，现在回想起来，也能不禁笑出声来。<br><img src="/2022/06/10/uncatalog/cl48eey5y0000owr728gk66p6/2.png" alt="2.png"><br>非常适合小白入门，但是也仅限于入门，与其说是权威指南，不如说是入门指南。<br>里面的内容，几乎涵盖了Kubernetes运维相关的的方方面面，广度有余，而深度不足。</p>
 <p>或许是因为书名起的调太高，亦或是Kubernetes涉及的知识点过于庞杂，导致内容的翔实层度以及前置知识对于小白的友好程度，并不能十分匹配<strong>权威</strong>二字。<br>虽然如此，但是我还是非常推荐选择这本书作为入门教材。<br>但是，如果想仅凭这本书就入门Kubernetes的话，你至少还需要以下前置知识：</p>
 <ul>
 <li>微服务架构，及微服务能解决的问题</li>
@@ -7309,13 +7306,10 @@
 <li>第三，团队内部关于现有轮子的争论无法达成一致，最终决定自己开发满足定制化需求的轻量级框架。</li>
 <li>第四，有plan B，如果开发失败，就直接上现有的轮子，对于业务线，几乎没有切换成本。<h3 id="名字less的由来？"><a href="#名字less的由来？" class="headerlink" title="名字less的由来？"></a>名字<code>less</code>的由来？</h3>less is more</li>
 </ul>
-<h3 id="理解less，需要了解哪些库？"><a href="#理解less，需要了解哪些库？" class="headerlink" title="理解less，需要了解哪些库？"></a>理解<code>less</code>，需要了解哪些库？</h3><ul>
-<li>net/http标准库。现在绝大部分的 Web 框架，都是基于 net/http 标准库，原因有二<ul>
-<li>相信官方开源的力量</li>
-<li>Web 服务架构的变化，单机并发性能并不是评判 Web 服务优劣的唯一标准了，易用性、扩展性也是底<br>层库需要考量的。</li>
-</ul>
-</li>
-</ul>
+<h3 id="理解less，需要了解哪些前置知识？"><a href="#理解less，需要了解哪些前置知识？" class="headerlink" title="理解less，需要了解哪些前置知识？"></a>理解<code>less</code>，需要了解哪些前置知识？</h3><p>   1，认真读懂<code>net/http</code>标准库，其中大致的逻辑如下:<br>     - 标准库创建 HTTP 服务是通过创建一个 Server 数据结构完成的<br>     - Server 数据结构在 for 循环中不断监听每一个连接<br>     - 每个连接默认开启一个 Goroutine 为其服务<br>     - serverHandler 结构代表请求对应的处理逻辑，并且通过这个结构进行具体业务逻辑处理<br>     - Server 数据结构如果没有设置处理函数 Handler，默认使用DefaultServerMux 处理请求<br>     - DefaultServerMux 是使用 map 结构来存储和查找路由规则</p>
+<blockquote>
+<p>很显然，最后一步”DefaultServerMux 是使用 map 结构来存储和查找路由规则”是一个可优化的点，也是众多go web框架需要自己实现的一个地方。</p>
+</blockquote>
 ]]></content>
       <tags>
         <tag>手撸一个web框架</tag>
