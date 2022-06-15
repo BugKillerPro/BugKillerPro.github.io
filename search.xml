@@ -948,7 +948,9 @@
   <entry>
     <title>k8s集群搭建</title>
     <url>/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/</url>
-    <content><![CDATA[<p>k8s集群搭建/k8s安装安装网络插件<br>网络上的教程在安装网络插件的时候,总会出问题,遂出此手把手教程.</p>
+    <content><![CDATA[<blockquote>
+<p>网络上的教程在安装网络插件的时候,总会出问题,遂出此手把手教程.</p>
+</blockquote>
 <span id="more"></span>
 <p><img src="/2022/02/17/uncatalog/ckzqm8tm30000dwr70rq7714w/1.png"></p>
 <h1 id="k8s集群搭建-k8s安装安装网络插件"><a href="#k8s集群搭建-k8s安装安装网络插件" class="headerlink" title="k8s集群搭建/k8s安装安装网络插件"></a>k8s集群搭建/k8s安装安装网络插件</h1><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="code"><pre><span class="line">Kubernetes 简称 k8s，是用 8 来代替 8 个字符 “ubernete” 的缩写</span><br></pre></td></tr></table></figure></div>
@@ -5263,6 +5265,7 @@
 ]]></content>
       <tags>
         <tag>云原生基础系列</tag>
+        <tag>Docker</tag>
         <tag>Kubernetes网络</tag>
       </tags>
   </entry>
