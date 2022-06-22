@@ -7325,7 +7325,7 @@
 <li>超时控制groutine，触发超时，写入<code>ResponseWriter</code>超时响应之后，业务逻辑groutine重复写<code>ResponseWriter</code>的问题处理</li>
 </ul>
 <p>Context设计思想及使用实践，可以参考我的这篇<a href="https://bugkillerpro.github.io/2022/06/16/uncatalog/cl4gopymv00009or79u472iwp/">Context设计思想及使用实践</a></p>
-<h3 id="3-3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。"><a href="#3-3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。" class="headerlink" title="3.3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。"></a>3.3，熟悉<code>http</code>协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。</h3><h3 id="3-4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。"><a href="#3-4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。" class="headerlink" title="3.4，熟悉http.ResponseWriter和*http.Request这两大信息载体的结构和方法，不然的话，连从哪里读取query values和 form data以及往哪里写response都不知道，那就尴尬了。"></a>3.4，熟悉<code>http.ResponseWriter</code>和<code>*http.Request</code>这两大信息载体的结构和方法，不然的话，连从哪里读取<code>query values</code>和 <code>form data</code>以及往哪里写<code>response</code>都不知道，那就尴尬了。</h3><h3 id="3-5，熟悉设计模式。"><a href="#3-5，熟悉设计模式。" class="headerlink" title="3.5，熟悉设计模式。"></a>3.5，熟悉设计模式。</h3><p>如果做到巧妙而又优雅，几乎是所有架构设计的基本准则，<code>less</code>也不例外，如果你来不及认真研读23种设计模式，可以认真阅读<a href="https://bugkillerpro.github.io/2022/06/17/uncatalog/cl4i43q7u00005sr70tpnfrfg/">面向对象设计六大原则</a>，如果能够做到融会贯通，那么由此衍化而来的设计模式，你也可以做到信手拈来。</p>
+<h3 id="3-3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。"><a href="#3-3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP-IP详解》系列。" class="headerlink" title="3.3，熟悉http协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。"></a>3.3，熟悉<code>http</code>协议，推荐阅读《HTTP权威指南》，如果时间充裕还可以读一下《TCP/IP详解》系列。</h3><h3 id="3-4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。"><a href="#3-4，熟悉http-ResponseWriter和-http-Request这两大信息载体的结构和方法，不然的话，连从哪里读取query-values和-form-data以及往哪里写response都不知道，那就尴尬了。" class="headerlink" title="3.4，熟悉http.ResponseWriter和*http.Request这两大信息载体的结构和方法，不然的话，连从哪里读取query values和 form data以及往哪里写response都不知道，那就尴尬了。"></a>3.4，熟悉<code>http.ResponseWriter</code>和<code>*http.Request</code>这两大信息载体的结构和方法，不然的话，连从哪里读取<code>query values</code>和 <code>form data</code>以及往哪里写<code>response</code>都不知道，那就尴尬了。</h3><h3 id="3-5，熟悉设计模式。"><a href="#3-5，熟悉设计模式。" class="headerlink" title="3.5，熟悉设计模式。"></a>3.5，熟悉设计模式。</h3><p>如果做到巧妙而又优雅，几乎是所有架构设计的基本准则，<code>less</code>也不例外，如果你来不及认真研读23种设计模式，可以认真阅读我的这篇<a href="https://bugkillerpro.github.io/2022/06/17/uncatalog/cl4i43q7u00005sr70tpnfrfg/">面向对象设计六大原则</a>，如果能够做到融会贯通，那么由此衍化而来的设计模式，你也可以做到信手拈来。</p>
 <h2 id="二，重要结构-web框架三大件：context-router-middleware"><a href="#二，重要结构-web框架三大件：context-router-middleware" class="headerlink" title="二，重要结构(web框架三大件：context,router,middleware)"></a>二，重要结构(web框架三大件：context,router,middleware)</h2><blockquote>
 <p>框架中的某个模块，比如说路由，实现的方法不止一种，每一个模块要实现的功能也各有不同，所以用哪一种方法来实现，以及要实现哪些功能，都是一种选择。 而每种选择的背后，其实都是方向问题，因为这些选择共同构成了一个框架的倾向性，也就是设计感。设计感非常考验开发者的综合技能和项目经验，也是考核框架质量的一个重要维度。</p>
 </blockquote>
@@ -7342,6 +7342,57 @@
 <li>路由批量通用前缀</li>
 <li>动态路由匹配</li>
 </ul>
+<p>所以在路由存储结构的设计选型上，需要花些时间去思考的，毕竟该结构除了要满足上述需求外，还要有比较高的查找效率。常见的数据结构：</p>
+<table>
+<thead>
+<tr>
+<th align="left">数据结构</th>
+<th align="left">查找时间复杂度</th>
+<th align="left">是否满足路由匹配4点要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">数据组</td>
+<td align="left">O(n)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">哈希表</td>
+<td align="left">O(1)</td>
+<td align="left">满足，动态路由匹配需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">队列</td>
+<td align="left">O(n)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">栈</td>
+<td align="left">O(n)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">链表</td>
+<td align="left">O(n)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">堆</td>
+<td align="left">O(n)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">图</td>
+<td align="left">O(n^2)</td>
+<td align="left">满足，匹配都需要遍历，时间复杂度O(n)</td>
+</tr>
+<tr>
+<td align="left">树</td>
+<td align="left">O(logn)</td>
+<td align="left">满足，匹配不需要遍历</td>
+</tr>
+</tbody></table>
+<p>所以，从对比可以得出我们的选型结果，那就是–树。了解树这个数据结构的人都应该知道，树的查找时间复杂度和树高是负相关的，树高越高，查找的效率越低，当树的左右子树极度不平衡的时候，就会退化为链表，时间复杂度为O(n)。所以，我们还需要对树的结构和节点上存储的数据做一些设计和优化，来提高查找性能。我们可以参考下gin所采取的方案–httprouter。我的这篇博客<a href="http://www.baidu.com/">httprouter源码解析</a>分析了httprouter的源码，可以移步查阅，在此就不做重复叙述了。</p>
 ]]></content>
       <tags>
         <tag>手撸一个web框架</tag>
@@ -7571,6 +7622,32 @@
       <tags>
         <tag>设计模式</tag>
         <tag>架构设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>httprouter源码解析</title>
+    <url>/2022/06/22/uncatalog/cl4pdun8r0000rsr7bninemtl/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><blockquote>
+<p>gin框架采用了httprouter进行路由匹配，所以废话少说，这篇文章来帮你了解他的源码实现</p>
+</blockquote>
+<h3 id="树"><a href="#树" class="headerlink" title="树"></a>树</h3><p>httprouter的路由匹配功能是基于radix tree(前缀树/基数树)这种数据结构实现的：<br><img src="/2022/06/22/uncatalog/cl4pdun8r0000rsr7bninemtl/radix_tree.png" alt="img"><br>有读者可能会有疑问：为什么不按照RUL分隔符切割的来分割，每个segment作为一个节点，而是要用公共前缀来分割？针对这个疑问，了解树的开发者都知道，树的高度是影响查找效率的重要因素，高度越高，查找效率越低。两张图片来对比一下:<br><img src="/2022/06/22/uncatalog/cl4pdun8r0000rsr7bninemtl/1.png" alt="img"><br><img src="/2022/06/22/uncatalog/cl4pdun8r0000rsr7bninemtl/2.png" alt="img"></p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>demo</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;net/http&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;github.com/julienschmidt/httprouter&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Index</span><span class="params">(w http.ResponseWriter, r *http.Request, _ httprouter.Params)</span></span> &#123;</span><br><span class="line">    fmt.Fprint(w, <span class="string">&quot;Welcome!\n&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(w http.ResponseWriter, r *http.Request, ps httprouter.Params)</span></span> &#123;</span><br><span class="line">    fmt.Fprintf(w, <span class="string">&quot;hello, %s!\n&quot;</span>, ps.ByName(<span class="string">&quot;name&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    router := httprouter.New()</span><br><span class="line">    router.GET(<span class="string">&quot;/&quot;</span>, Index)</span><br><span class="line">    router.GET(<span class="string">&quot;/hello/:name&quot;</span>, Hello)</span><br><span class="line"></span><br><span class="line">    log.Fatal(http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, router))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>首先看到 httprouter.New()，因为它返回一个router实例：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">()</span> *<span class="title">Router</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Router&#123;</span><br><span class="line">		RedirectTrailingSlash:  <span class="literal">true</span>,</span><br><span class="line">		RedirectFixedPath:      <span class="literal">true</span>,</span><br><span class="line">		HandleMethodNotAllowed: <span class="literal">true</span>,</span><br><span class="line">		HandleOPTIONS:          <span class="literal">true</span>,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Router is a http.Handler which can be used to dispatch requests to different</span></span><br><span class="line"><span class="comment">// handler functions via configurable routes</span></span><br><span class="line"><span class="keyword">type</span> Router <span class="keyword">struct</span> &#123;</span><br><span class="line">	trees <span class="keyword">map</span>[<span class="keyword">string</span>]*node</span><br><span class="line"></span><br><span class="line">	paramsPool sync.Pool</span><br><span class="line">	maxParams  <span class="keyword">uint16</span></span><br><span class="line">	SaveMatchedRoutePath <span class="keyword">bool</span></span><br><span class="line">	RedirectTrailingSlash <span class="keyword">bool</span></span><br><span class="line">	RedirectFixedPath <span class="keyword">bool</span></span><br><span class="line">	HandleMethodNotAllowed <span class="keyword">bool</span></span><br><span class="line">	HandleOPTIONS <span class="keyword">bool</span></span><br><span class="line">	GlobalOPTIONS http.Handler</span><br><span class="line">	globalAllowed <span class="keyword">string</span></span><br><span class="line">	NotFound http.Handler</span><br><span class="line">	MethodNotAllowed http.Handler</span><br><span class="line">	PanicHandler <span class="function"><span class="keyword">func</span><span class="params">(http.ResponseWriter, *http.Request, <span class="keyword">interface</span>&#123;&#125;)</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>它实现了 ServeHTTP 这个函数，因此符合 net/http.Handler 接口：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ServeHTTP makes the router implement the http.Handler interface.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Router)</span> <span class="title">ServeHTTP</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> r.PanicHandler != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> r.recv(w, req)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	path := req.URL.Path</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> root := r.trees[req.Method]; root != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> handle, ps, tsr := root.getValue(path, r.getParams); handle != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> ps != <span class="literal">nil</span> &#123;</span><br><span class="line">				handle(w, req, *ps)</span><br><span class="line">				r.putParams(ps)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				handle(w, req, <span class="literal">nil</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这就是处理请求的时候，查找路由树及handler的那部分，root.getValue就是查找路由树的具体函数，不过细节此处不表。</p>
+<p>我们接下来看看注册路由的那部分：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// GET is a shortcut for router.Handle(http.MethodGet, path, handle)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Router)</span> <span class="title">GET</span><span class="params">(path <span class="keyword">string</span>, handle Handle)</span></span> &#123;</span><br><span class="line">	r.Handle(http.MethodGet, path, handle)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 跟进 r.Handle 函数之后发现调用了 addRoute 函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// addRoute adds a node with the given handle to the path.</span></span><br><span class="line"><span class="comment">// Not concurrency-safe!</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(n *node)</span> <span class="title">addRoute</span><span class="params">(path <span class="keyword">string</span>, handle Handle)</span></span> &#123;</span><br><span class="line">	fullPath := path</span><br><span class="line">	n.priority++</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Empty tree</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(n.path) == <span class="number">0</span> &amp;&amp; <span class="built_in">len</span>(n.indices) == <span class="number">0</span> &#123;</span><br><span class="line">		n.insertChild(path, fullPath, handle)</span><br><span class="line">		n.nType = root</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">walk:</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>而 addRoute 函数就是实现radix tree这个数据结构的函数了，它会先找到共同的部分，然后考虑是否把路由切分为字节点，最后 把handler写上去(调用 insertChild 函数)。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> node <span class="keyword">struct</span> &#123;</span><br><span class="line">	path      <span class="keyword">string</span> <span class="comment">// URL</span></span><br><span class="line">	indices   <span class="keyword">string</span> <span class="comment">// 字节点的首字母拼成的string，顺序与 children 一致</span></span><br><span class="line">	wildChild <span class="keyword">bool</span> <span class="comment">// 是否是泛匹配</span></span><br><span class="line">	nType     nodeType <span class="comment">// 节点类型</span></span><br><span class="line">	priority  <span class="keyword">uint32</span> <span class="comment">// 优先级</span></span><br><span class="line">	children  []*node <span class="comment">// 子节点</span></span><br><span class="line">	handle    Handle <span class="comment">// 处理函数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>node就是保存这些资料的radix tree的节点</p>
+]]></content>
+      <tags>
+        <tag>手撸一个web框架</tag>
       </tags>
   </entry>
 </search>
