@@ -7334,7 +7334,7 @@
 <li>框架性能。qps等性能</li>
 <li>文档/社区。</li>
 </ul>
-<p>很显然，示例级别的框架，并不满足以上几点。除此之外，一个人完美契合以上几点的生产级别的框架也是不可能的，所以需要学会站在巨人的肩膀上思考，向巨人借力，因此，less在关键代码的设计上，会借鉴gin的做法，只有这样，才能做出功能完备，性能优良的生产级框架。</p>
+<p>很显然，示例级别的框架，并不满足以上几点。除此之外，一个人完成完美契合以上几点的生产级别的框架也是不可能的，所以需要学会站在巨人的肩膀上思考，向巨人借力，因此，less在关键代码的设计上，会借鉴gin的做法，只有这样，才能做出功能完备，性能优良的生产级框架。</p>
 <h2 id="二，重要结构-web框架三大件：context-router-middleware"><a href="#二，重要结构-web框架三大件：context-router-middleware" class="headerlink" title="二，重要结构(web框架三大件：context,router,middleware)"></a>二，重要结构(web框架三大件：context,router,middleware)</h2><blockquote>
 <p>框架中的某个模块，比如说路由，实现的方法不止一种，每一个模块要实现的功能也各有不同，所以用哪一种方法来实现，以及要实现哪些功能，都是一种选择。 而每种选择的背后，其实都是方向问题，因为这些选择共同构成了一个框架的倾向性，也就是设计感。设计感非常考验开发者的综合技能和项目经验，也是考核框架质量的一个重要维度。</p>
 </blockquote>
@@ -7414,7 +7414,7 @@
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> DemoProvider <span class="keyword">struct</span> &#123;</span><br><span class="line">	framework.ServiceProvider</span><br><span class="line"></span><br><span class="line">	c framework.Container</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sp *DemoProvider)</span> <span class="title">Name</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> DemoKey</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sp *DemoProvider)</span> <span class="title">Register</span><span class="params">(c framework.Container)</span> <span class="title">framework</span>.<span class="title">NewInstance</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> NewService</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sp *DemoProvider)</span> <span class="title">IsDefer</span><span class="params">()</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sp *DemoProvider)</span> <span class="title">Params</span><span class="params">(c framework.Container)</span> []<span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">interface</span>&#123;&#125;&#123;sp.c&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sp *DemoProvider)</span> <span class="title">Boot</span><span class="params">(c framework.Container)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	sp.c = c</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
 <h4 id="2，服务容器"><a href="#2，服务容器" class="headerlink" title="2，服务容器"></a>2，服务容器</h4><p>设计详见注释</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Container 是一个服务容器，提供绑定服务和获取服务的功能</span></span><br><span class="line"><span class="keyword">type</span> Container <span class="keyword">interface</span> &#123;</span><br><span class="line">	<span class="comment">// Bind 绑定一个服务提供者，如果关键字凭证已经存在，会进行替换操作，返回error</span></span><br><span class="line">	Bind(provider ServiceProvider) error</span><br><span class="line">	<span class="comment">// IsBind 关键字凭证是否已经绑定服务提供者</span></span><br><span class="line">	IsBind(key <span class="keyword">string</span>) <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Make 根据关键字凭证获取一个服务，</span></span><br><span class="line">	Make(key <span class="keyword">string</span>) (<span class="keyword">interface</span>&#123;&#125;, error)</span><br><span class="line">	<span class="comment">// MustMake 根据关键字凭证获取一个服务，如果这个关键字凭证未绑定服务提供者，那么会panic。</span></span><br><span class="line">	<span class="comment">// 所以在使用这个接口的时候请保证服务容器已经为这个关键字凭证绑定了服务提供者。</span></span><br><span class="line">	MustMake(key <span class="keyword">string</span>) <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">	<span class="comment">// MakeNew 根据关键字凭证获取一个服务，只是这个服务并不是单例模式的</span></span><br><span class="line">	<span class="comment">// 它是根据服务提供者注册的启动函数和传递的params参数实例化出来的</span></span><br><span class="line">	<span class="comment">// 这个函数在需要为不同参数启动不同实例的时候非常有用</span></span><br><span class="line">	MakeNew(key <span class="keyword">string</span>, params []<span class="keyword">interface</span>&#123;&#125;) (<span class="keyword">interface</span>&#123;&#125;, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-<h4 id="3，命令工具"><a href="#3，命令工具" class="headerlink" title="3，命令工具"></a>3，命令工具</h4><p>less引入著名的cobra库来实现扩展命令行功能,Cron、CronSpecs和container使我们新加入的定制化功能。</p>
+<h4 id="3，命令工具"><a href="#3，命令工具" class="headerlink" title="3，命令工具"></a>3，命令工具</h4><p>less引入著名的cobra库来实现扩展命令行功能,Cron、CronSpecs和container使我们新加入的定制化功能。在less，启动web服务也被设计成一个子命令。</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Command <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Command支持cron，只在RootCommand中有这个值</span></span><br><span class="line">	Cron *cron.Cron</span><br><span class="line">	<span class="comment">// 对应Cron命令的说明文档</span></span><br><span class="line">	CronSpecs []CronSpec</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 服务容器</span></span><br><span class="line">	container Container</span><br><span class="line">	<span class="comment">// Use is the one-line usage message.</span></span><br><span class="line">	<span class="comment">// Recommended syntax is as follow:</span></span><br><span class="line">	<span class="comment">//   [ ] identifies an optional argument. Arguments that are not enclosed in brackets are required.</span></span><br><span class="line">	<span class="comment">//   ... indicates that you can specify multiple values for the previous argument.</span></span><br><span class="line">	<span class="comment">//   |   indicates mutually exclusive information. You can use the argument to the left of the separator or the</span></span><br><span class="line">	<span class="comment">//       argument to the right of the separator. You cannot use both arguments in a single use of the command.</span></span><br><span class="line">	<span class="comment">//   &#123; &#125; delimits a set of mutually exclusive arguments when one of the arguments is required. If the arguments are</span></span><br><span class="line">	<span class="comment">//       optional, they are enclosed in brackets ([ ]).</span></span><br><span class="line">	<span class="comment">// Example: add [-F file | -D dir]... [-f format] profile</span></span><br><span class="line">	Use <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Aliases is an array of aliases that can be used instead of the first word in Use.</span></span><br><span class="line">	Aliases []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// SuggestFor is an array of command names for which this command will be suggested -</span></span><br><span class="line">	<span class="comment">// similar to aliases but only suggests.</span></span><br><span class="line">	SuggestFor []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Short is the short description shown in the &#x27;help&#x27; output.</span></span><br><span class="line">	Short <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Long is the long message shown in the &#x27;help &lt;this-command&gt;&#x27; output.</span></span><br><span class="line">	Long <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Example is examples of how to use the command.</span></span><br><span class="line">	Example <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// ValidArgs is list of all valid non-flag arguments that are accepted in shell completions</span></span><br><span class="line">	ValidArgs []<span class="keyword">string</span></span><br><span class="line">	<span class="comment">// ValidArgsFunction is an optional function that provides valid non-flag arguments for shell completion.</span></span><br><span class="line">	<span class="comment">// It is a dynamic version of using ValidArgs.</span></span><br><span class="line">	<span class="comment">// Only one of ValidArgs and ValidArgsFunction can be used for a command.</span></span><br><span class="line">	ValidArgsFunction <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>, toComplete <span class="keyword">string</span>)</span> <span class="params">([]<span class="keyword">string</span>, ShellCompDirective)</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Expected arguments</span></span><br><span class="line">	Args PositionalArgs</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ArgAliases is List of aliases for ValidArgs.</span></span><br><span class="line">	<span class="comment">// These are not suggested to the user in the shell completion,</span></span><br><span class="line">	<span class="comment">// but accepted if entered manually.</span></span><br><span class="line">	ArgAliases []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// BashCompletionFunction is custom bash functions used by the legacy bash autocompletion generator.</span></span><br><span class="line">	<span class="comment">// For portability with other shells, it is recommended to instead use ValidArgsFunction</span></span><br><span class="line">	BashCompletionFunction <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Deprecated defines, if this command is deprecated and should print this string when used.</span></span><br><span class="line">	Deprecated <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Annotations are key/value pairs that can be used by applications to identify or</span></span><br><span class="line">	<span class="comment">// group commands.</span></span><br><span class="line">	Annotations <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Version defines the version for this command. If this value is non-empty and the command does not</span></span><br><span class="line">	<span class="comment">// define a &quot;version&quot; flag, a &quot;version&quot; boolean flag will be added to the command and, if specified,</span></span><br><span class="line">	<span class="comment">// will print content of the &quot;Version&quot; variable. A shorthand &quot;v&quot; flag will also be added if the</span></span><br><span class="line">	<span class="comment">// command does not define one.</span></span><br><span class="line">	Version <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// The *Run functions are executed in the following order:</span></span><br><span class="line">	<span class="comment">//   * PersistentPreRun()</span></span><br><span class="line">	<span class="comment">//   * PreRun()</span></span><br><span class="line">	<span class="comment">//   * Run()</span></span><br><span class="line">	<span class="comment">//   * PostRun()</span></span><br><span class="line">	<span class="comment">//   * PersistentPostRun()</span></span><br><span class="line">	<span class="comment">// All functions get the same args, the arguments after the command name.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// PersistentPreRun: children of this command will inherit and execute.</span></span><br><span class="line">	PersistentPreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PersistentPreRunE: PersistentPreRun but returns an error.</span></span><br><span class="line">	PersistentPreRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PreRun: children of this command will not inherit.</span></span><br><span class="line">	PreRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PreRunE: PreRun but returns an error.</span></span><br><span class="line">	PreRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// Run: Typically the actual work function. Most commands will only implement this.</span></span><br><span class="line">	Run <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// RunE: Run but returns an error.</span></span><br><span class="line">	RunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PostRun: run after the Run command.</span></span><br><span class="line">	PostRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PostRunE: PostRun but returns an error.</span></span><br><span class="line">	PostRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// PersistentPostRun: children of this command will inherit and execute after PostRun.</span></span><br><span class="line">	PersistentPostRun <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// PersistentPostRunE: PersistentPostRun but returns an error.</span></span><br><span class="line">	PersistentPostRunE <span class="function"><span class="keyword">func</span><span class="params">(cmd *Command, args []<span class="keyword">string</span>)</span> <span class="title">error</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// args is actual args parsed from flags.</span></span><br><span class="line">	args []<span class="keyword">string</span></span><br><span class="line">	<span class="comment">// flagErrorBuf contains all error messages from pflag.</span></span><br><span class="line">	flagErrorBuf *bytes.Buffer</span><br><span class="line">	<span class="comment">// flags is full set of flags.</span></span><br><span class="line">	flags *flag.FlagSet</span><br><span class="line">	<span class="comment">// pflags contains persistent flags.</span></span><br><span class="line">	pflags *flag.FlagSet</span><br><span class="line">	<span class="comment">// lflags contains local flags.</span></span><br><span class="line">	lflags *flag.FlagSet</span><br><span class="line">	<span class="comment">// iflags contains inherited flags.</span></span><br><span class="line">	iflags *flag.FlagSet</span><br><span class="line">	<span class="comment">// parentsPflags is all persistent flags of cmd&#x27;s parents.</span></span><br><span class="line">	parentsPflags *flag.FlagSet</span><br><span class="line">	<span class="comment">// globNormFunc is the global normalization function</span></span><br><span class="line">	<span class="comment">// that we can use on every pflag set and children commands</span></span><br><span class="line">	globNormFunc <span class="function"><span class="keyword">func</span><span class="params">(f *flag.FlagSet, name <span class="keyword">string</span>)</span> <span class="title">flag</span>.<span class="title">NormalizedName</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// usageFunc is usage func defined by user.</span></span><br><span class="line">	usageFunc <span class="function"><span class="keyword">func</span><span class="params">(*Command)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// usageTemplate is usage template defined by user.</span></span><br><span class="line">	usageTemplate <span class="keyword">string</span></span><br><span class="line">	<span class="comment">// flagErrorFunc is func defined by user and it&#x27;s called when the parsing of</span></span><br><span class="line">	<span class="comment">// flags returns an error.</span></span><br><span class="line">	flagErrorFunc <span class="function"><span class="keyword">func</span><span class="params">(*Command, error)</span> <span class="title">error</span></span></span><br><span class="line">	<span class="comment">// helpTemplate is help template defined by user.</span></span><br><span class="line">	helpTemplate <span class="keyword">string</span></span><br><span class="line">	<span class="comment">// helpFunc is help func defined by user.</span></span><br><span class="line">	helpFunc <span class="function"><span class="keyword">func</span><span class="params">(*Command, []<span class="keyword">string</span>)</span></span></span><br><span class="line">	<span class="comment">// helpCommand is command with usage &#x27;help&#x27;. If it&#x27;s not defined by user,</span></span><br><span class="line">	<span class="comment">// cobra uses default help command.</span></span><br><span class="line">	helpCommand *Command</span><br><span class="line">	<span class="comment">// versionTemplate is the version template defined by user.</span></span><br><span class="line">	versionTemplate <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// inReader is a reader defined by the user that replaces stdin</span></span><br><span class="line">	inReader io.Reader</span><br><span class="line">	<span class="comment">// outWriter is a writer defined by the user that replaces stdout</span></span><br><span class="line">	outWriter io.Writer</span><br><span class="line">	<span class="comment">// errWriter is a writer defined by the user that replaces stderr</span></span><br><span class="line">	errWriter io.Writer</span><br><span class="line"></span><br><span class="line">	<span class="comment">//FParseErrWhitelist flag parse errors to be ignored</span></span><br><span class="line">	FParseErrWhitelist FParseErrWhitelist</span><br><span class="line"></span><br><span class="line">	<span class="comment">// CompletionOptions is a set of options to control the handling of shell completion</span></span><br><span class="line">	CompletionOptions CompletionOptions</span><br><span class="line"></span><br><span class="line">	<span class="comment">// commandsAreSorted defines, if command slice are sorted or not.</span></span><br><span class="line">	commandsAreSorted <span class="keyword">bool</span></span><br><span class="line">	<span class="comment">// commandCalledAs is the name or alias value used to call this command.</span></span><br><span class="line">	commandCalledAs <span class="keyword">struct</span> &#123;</span><br><span class="line">		name   <span class="keyword">string</span></span><br><span class="line">		called <span class="keyword">bool</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ctx context.Context</span><br><span class="line"></span><br><span class="line">	<span class="comment">// commands is the list of commands supported by this program.</span></span><br><span class="line">	commands []*Command</span><br><span class="line">	<span class="comment">// parent is a parent command for this command.</span></span><br><span class="line">	parent *Command</span><br><span class="line">	<span class="comment">// Max lengths of commands&#x27; string lengths for use in padding.</span></span><br><span class="line">	commandsMaxUseLen         <span class="keyword">int</span></span><br><span class="line">	commandsMaxCommandPathLen <span class="keyword">int</span></span><br><span class="line">	commandsMaxNameLen        <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// TraverseChildren parses flags on all parents before executing child command.</span></span><br><span class="line">	TraverseChildren <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Hidden defines, if this command is hidden and should NOT show up in the list of available commands.</span></span><br><span class="line">	Hidden <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// SilenceErrors is an option to quiet errors down stream.</span></span><br><span class="line">	SilenceErrors <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// SilenceUsage is an option to silence usage when an error occurs.</span></span><br><span class="line">	SilenceUsage <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// DisableFlagParsing disables the flag parsing.</span></span><br><span class="line">	<span class="comment">// If this is true all flags will be passed to the command as arguments.</span></span><br><span class="line">	DisableFlagParsing <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// DisableAutoGenTag defines, if gen tag (&quot;Auto generated by spf13/cobra...&quot;)</span></span><br><span class="line">	<span class="comment">// will be printed by generating docs for this command.</span></span><br><span class="line">	DisableAutoGenTag <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// DisableFlagsInUseLine will disable the addition of [flags] to the usage</span></span><br><span class="line">	<span class="comment">// line of a command when printing help or generating docs</span></span><br><span class="line">	DisableFlagsInUseLine <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// DisableSuggestions disables the suggestions based on Levenshtein distance</span></span><br><span class="line">	<span class="comment">// that go along with &#x27;unknown command&#x27; messages.</span></span><br><span class="line">	DisableSuggestions <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// SuggestionsMinimumDistance defines minimum levenshtein distance to display suggestions.</span></span><br><span class="line">	<span class="comment">// Must be &gt; 0.</span></span><br><span class="line">	SuggestionsMinimumDistance <span class="keyword">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p><em><strong>参考</strong></em></p>
@@ -7429,7 +7429,7 @@
       </tags>
   </entry>
   <entry>
-    <title>端口监听情况exporter</title>
+    <title>端口监听情况exporter开发实践</title>
     <url>/2022/06/15/uncatalog/cl4fbnh440000bgr72qu68h03/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
@@ -7678,6 +7678,700 @@
 ]]></content>
       <tags>
         <tag>手撸一个web框架</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--I.Codebase</title>
+    <url>/2022/06/24/uncatalog/cl4s23b37000010r7cl0h25hd/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h2 id="I-Codebase"><a href="#I-Codebase" class="headerlink" title="I. Codebase"></a>I. Codebase</h2><blockquote>
+<p>One codebase tracked in revision control, many deploys</p>
+</blockquote>
+<p>A twelve-factor app is always tracked in a version control system, such as Git, Mercurial, or Subversion. A copy of the revision tracking database is known as a code repository, often shortened to code repo or just repo.</p>
+<p>A codebase is any single repo (in a centralized revision control system like Subversion), or any set of repos who share a root commit (in a decentralized revision control system like Git).</p>
+<p>One codebase maps to many deploys</p>
+<p>There is always a one-to-one correlation between the codebase and the app:</p>
+<ul>
+<li>If there are multiple codebases, it’s not an app – it’s a distributed system. Each component in a distributed system is an app, and each can individually comply with twelve-factor.</li>
+<li>Multiple apps sharing the same code is a violation of twelve-factor. The solution here is to factor shared code into libraries which can be included through the dependency manager.<br><img src="/2022/06/24/uncatalog/cl4s23b37000010r7cl0h25hd/codebase-deploys.png" alt="imag"></li>
+</ul>
+<p>There is only one codebase per app, but there will be many deploys of the app. A deploy is a running instance of the app. This is typically a production site, and one or more staging sites. Additionally, every developer has a copy of the app running in their local development environment, each of which also qualifies as a deploy.</p>
+<p>The codebase is the same across all deploys, although different versions may be active in each deploy. For example, a developer has some commits not yet deployed to staging; staging has some commits not yet deployed to production. But they all share the same codebase, thus making them identifiable as different deploys of the same app.  </p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="I-基准代码"><a href="#I-基准代码" class="headerlink" title="I. 基准代码"></a>I. 基准代码</h3><blockquote>
+<p>一份基准代码（Codebase），多份部署（deploy）</p>
+</blockquote>
+<p>12-Factor应用(译者注：应该是说一个使用本文概念来设计的应用，下同)通常会使用版本控制系统加以管理，如Git, Mercurial, Subversion。一份用来跟踪代码所有修订版本的数据库被称作 代码库（code repository, code repo, repo）。</p>
+<p>在类似 SVN 这样的集中式版本控制系统中，基准代码 就是指控制系统中的这一份代码库；而在 Git 那样的分布式版本控制系统中，基准代码 则是指最上游的那份代码库。</p>
+<p>一份代码库对应多份部署</p>
+<p>基准代码和应用之间总是保持一一对应的关系：</p>
+<ul>
+<li>一旦有多个基准代码，就不能称为一个应用，而是一个分布式系统。分布式系统中的每一个组件都是一个应用，每一个应用可以分别使用 12-Factor 进行开发。</li>
+<li>多个应用共享一份基准代码是有悖于 12-Factor 原则的。解决方案是将共享的代码拆分为独立的类库，然后使用 依赖管理 策略去加载它们。<br><img src="/2022/06/24/uncatalog/cl4s23b37000010r7cl0h25hd/codebase-deploys.png" alt="imag"></li>
+</ul>
+<p>尽管每个应用只对应一份基准代码，但可以同时存在多份部署。每份 部署 相当于运行了一个应用的实例。通常会有一个生产环境，一个或多个预发布环境。此外，每个开发人员都会在自己本地环境运行一个应用实例，这些都相当于一份部署。</p>
+<p>所有部署的基准代码相同，但每份部署可以使用其不同的版本。比如，开发人员可能有一些提交还没有同步至预发布环境；预发布环境也有一些提交没有同步至生产环境。但它们都共享一份基准代码，我们就认为它们只是相同应用的不同部署而已</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--II.Dependencies</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedb0000yor75ersbj7b/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="II-Dependencies"><a href="#II-Dependencies" class="headerlink" title="II. Dependencies"></a>II. Dependencies</h3><blockquote>
+<p>Explicitly declare and isolate dependencies</p>
+</blockquote>
+<p>Most programming languages offer a packaging system for distributing support libraries, such as CPAN for Perl or Rubygems for Ruby. Libraries installed through a packaging system can be installed system-wide (known as “site packages”) or scoped into the directory containing the app (known as “vendoring” or “bundling”).</p>
+<p>A twelve-factor app never relies on implicit existence of system-wide packages. It declares all dependencies, completely and exactly, via a dependency declaration manifest. Furthermore, it uses a dependency isolation tool during execution to ensure that no implicit dependencies “leak in” from the surrounding system. The full and explicit dependency specification is applied uniformly to both production and development.</p>
+<p>For example, Bundler for Ruby offers the Gemfile manifest format for dependency declaration and bundle exec for dependency isolation. In Python there are two separate tools for these steps – Pip is used for declaration and Virtualenv for isolation. Even C has Autoconf for dependency declaration, and static linking can provide dependency isolation. No matter what the toolchain, dependency declaration and isolation must always be used together – only one or the other is not sufficient to satisfy twelve-factor.</p>
+<p>One benefit of explicit dependency declaration is that it simplifies setup for developers new to the app. The new developer can check out the app’s codebase onto their development machine, requiring only the language runtime and dependency manager installed as prerequisites. They will be able to set up everything needed to run the app’s code with a deterministic build command. For example, the build command for Ruby/Bundler is bundle install, while for Clojure/Leiningen it is lein deps.</p>
+<p>Twelve-factor apps also do not rely on the implicit existence of any system tools. Examples include shelling out to ImageMagick or curl. While these tools may exist on many or even most systems, there is no guarantee that they will exist on all systems where the app may run in the future, or whether the version found on a future system will be compatible with the app. If the app needs to shell out to a system tool, that tool should be vendored into the app.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="II-依赖"><a href="#II-依赖" class="headerlink" title="II. 依赖"></a>II. 依赖</h3><blockquote>
+<p>显式声明依赖关系（ dependency ）</p>
+</blockquote>
+<p>大多数编程语言都会提供一个打包系统，用来为各个类库提供打包服务，就像 Perl 的 CPAN 或是 Ruby 的 Rubygems 。通过打包系统安装的类库可以是系统级的（称之为 “site packages”），或仅供某个应用程序使用，部署在相应的目录中（称之为 “vendoring” 或 “bunding”）。</p>
+<p>12-Factor规则下的应用程序不会隐式依赖系统级的类库。 它一定通过 依赖清单 ，确切地声明所有依赖项。此外，在运行过程中通过 依赖隔离 工具来确保程序不会调用系统中存在但清单中未声明的依赖项。这一做法会统一应用到生产和开发环境。</p>
+<p>例如， Ruby 的 Bundler 使用 Gemfile 作为依赖项声明清单，使用 bundle exec 来进行依赖隔离。Python 中则可分别使用两种工具 – Pip 用作依赖声明， Virtualenv 用作依赖隔离。甚至 C 语言也有类似工具， Autoconf 用作依赖声明，静态链接库用作依赖隔离。无论用什么工具，依赖声明和依赖隔离必须一起使用，否则无法满足 12-Factor 规范。</p>
+<p>显式声明依赖的优点之一是为新进开发者简化了环境配置流程。新进开发者可以检出应用程序的基准代码，安装编程语言环境和它对应的依赖管理工具，只需通过一个 构建命令 来安装所有的依赖项，即可开始工作。例如，Ruby/Bundler 下使用 bundle install，而 Clojure/Leiningen 则是 lein deps。</p>
+<p>12-Factor 应用同样不会隐式依赖某些系统工具，如 ImageMagick 或是curl。即使这些工具存在于几乎所有系统，但终究无法保证所有未来的系统都能支持应用顺利运行，或是能够和应用兼容。如果应用必须使用到某些系统工具，那么这些工具应该被包含在应用之中。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--III.Config</title>
+    <url>/2022/06/24/uncatalog/cl4s5aede0001yor787lle01q/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="III-Config"><a href="#III-Config" class="headerlink" title="III. Config"></a>III. Config</h3><blockquote>
+<p>Store config in the environment</p>
+</blockquote>
+<p>An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc). This includes:</p>
+<ul>
+<li>Resource handles to the database, Memcached, and other backing services</li>
+<li>Credentials to external services such as Amazon S3 or Twitter</li>
+<li>Per-deploy values such as the canonical hostname for the deploy<br>Apps sometimes store config as constants in the code. This is a violation of twelve-factor, which requires strict separation of config from code. Config varies substantially across deploys, code does not.</li>
+</ul>
+<p>A litmus test for whether an app has all config correctly factored out of the code is whether the codebase could be made open source at any moment, without compromising any credentials.</p>
+<p>Note that this definition of “config” does not include internal application config, such as config/routes.rb in Rails, or how code modules are connected in Spring. This type of config does not vary between deploys, and so is best done in the code.</p>
+<p>Another approach to config is the use of config files which are not checked into revision control, such as config/database.yml in Rails. This is a huge improvement over using constants which are checked into the code repo, but still has weaknesses: it’s easy to mistakenly check in a config file to the repo; there is a tendency for config files to be scattered about in different places and different formats, making it hard to see and manage all the config in one place. Further, these formats tend to be language- or framework-specific.</p>
+<p>The twelve-factor app stores config in environment variables (often shortened to env vars or env). Env vars are easy to change between deploys without changing any code; unlike config files, there is little chance of them being checked into the code repo accidentally; and unlike custom config files, or other config mechanisms such as Java System Properties, they are a language- and OS-agnostic standard.</p>
+<p>Another aspect of config management is grouping. Sometimes apps batch config into named groups (often called “environments”) named after specific deploys, such as the development, test, and production environments in Rails. This method does not scale cleanly: as more deploys of the app are created, new environment names are necessary, such as staging or qa. As the project grows further, developers may add their own special environments like joes-staging, resulting in a combinatorial explosion of config which makes managing deploys of the app very brittle.</p>
+<p>In a twelve-factor app, env vars are granular controls, each fully orthogonal to other env vars. They are never grouped together as “environments”, but instead are independently managed for each deploy. This is a model that scales up smoothly as the app naturally expands into more deploys over its lifetime.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="III-配置"><a href="#III-配置" class="headerlink" title="III. 配置"></a>III. 配置</h3><blockquote>
+<p>在环境中存储配置</p>
+</blockquote>
+<p>通常，应用的 配置 在不同 部署 (预发布、生产环境、开发环境等等)间会有很大差异。这其中包括：</p>
+<ul>
+<li>数据库，Memcached，以及其他 后端服务 的配置</li>
+<li>第三方服务的证书，如 Amazon S3、Twitter 等</li>
+<li>每份部署特有的配置，如域名等</li>
+</ul>
+<p>有些应用在代码中使用常量保存配置，这与 12-Factor 所要求的代码和配置严格分离显然大相径庭。配置文件在各部署间存在大幅差异，代码却完全一致。</p>
+<p>判断一个应用是否正确地将配置排除在代码之外，一个简单的方法是看该应用的基准代码是否可以立刻开源，而不用担心会暴露任何敏感的信息。</p>
+<p>需要指出的是，这里定义的“配置”并不包括应用的内部配置，比如 Rails 的 config/routes.rb，或是使用 Spring 时 代码模块间的依赖注入关系 。这类配置在不同部署间不存在差异，所以应该写入代码。</p>
+<p>另外一个解决方法是使用配置文件，但不把它们纳入版本控制系统，就像 Rails 的 config/database.yml 。这相对于在代码中使用常量已经是长足进步，但仍然有缺点：总是会不小心将配置文件签入了代码库；配置文件的可能会分散在不同的目录，并有着不同的格式，这让找出一个地方来统一管理所有配置变的不太现实。更糟的是，这些格式通常是语言或框架特定的。</p>
+<p>12-Factor推荐将应用的配置存储于 环境变量 中（ env vars, env ）。环境变量可以非常方便地在不同的部署间做修改，却不动一行代码；与配置文件不同，不小心把它们签入代码库的概率微乎其微；与一些传统的解决配置问题的机制（比如 Java 的属性配置文件）相比，环境变量与语言和系统无关。</p>
+<p>配置管理的另一个方面是分组。有时应用会将配置按照特定部署进行分组（或叫做“环境”），例如Rails中的 development,test, 和 production 环境。这种方法无法轻易扩展：更多部署意味着更多新的环境，例如 staging 或 qa 。 随着项目的不断深入，开发人员可能还会添加他们自己的环境，比如 joes-staging ，这将导致各种配置组合的激增，从而给管理部署增加了很多不确定因素。</p>
+<p>12-Factor 应用中，环境变量的粒度要足够小，且相对独立。它们永远也不会组合成一个所谓的“环境”，而是独立存在于每个部署之中。当应用程序不断扩展，需要更多种类的部署时，这种配置管理方式能够做到平滑过渡。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--IV.Backing_services</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedf0003yor755fd317a/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="IV-Backing-services"><a href="#IV-Backing-services" class="headerlink" title="IV. Backing services"></a>IV. Backing services</h3><blockquote>
+<p>Treat backing services as attached resources</p>
+</blockquote>
+<p>A backing service is any service the app consumes over the network as part of its normal operation. Examples include datastores (such as MySQL or CouchDB), messaging/queueing systems (such as RabbitMQ or Beanstalkd), SMTP services for outbound email (such as Postfix), and caching systems (such as Memcached).</p>
+<p>Backing services like the database are traditionally managed by the same systems administrators who deploy the app’s runtime. In addition to these locally-managed services, the app may also have services provided and managed by third parties. Examples include SMTP services (such as Postmark), metrics-gathering services (such as New Relic or Loggly), binary asset services (such as Amazon S3), and even API-accessible consumer services (such as Twitter, Google Maps, or Last.fm).</p>
+<p>The code for a twelve-factor app makes no distinction between local and third party services. To the app, both are attached resources, accessed via a URL or other locator/credentials stored in the config. A deploy of the twelve-factor app should be able to swap out a local MySQL database with one managed by a third party (such as Amazon RDS) without any changes to the app’s code. Likewise, a local SMTP server could be swapped with a third-party SMTP service (such as Postmark) without code changes. In both cases, only the resource handle in the config needs to change.</p>
+<p>Each distinct backing service is a resource. For example, a MySQL database is a resource; two MySQL databases (used for sharding at the application layer) qualify as two distinct resources. The twelve-factor app treats these databases as attached resources, which indicates their loose coupling to the deploy they are attached to.<br><img src="/2022/06/24/uncatalog/cl4s5aedf0003yor755fd317a/attached-resources.png" alt="image"><br>Resources can be attached to and detached from deploys at will. For example, if the app’s database is misbehaving due to a hardware issue, the app’s administrator might spin up a new database server restored from a recent backup. The current production database could be detached, and the new database attached – all without any code changes.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="IV-后端服务"><a href="#IV-后端服务" class="headerlink" title="IV. 后端服务"></a>IV. 后端服务</h3><blockquote>
+<p>把后端服务(backing services)当作附加资源</p>
+</blockquote>
+<p>后端服务是指程序运行所需要的通过网络调用的各种服务，如数据库（MySQL，CouchDB），消息/队列系统（RabbitMQ，Beanstalkd），SMTP 邮件发送服务（Postfix），以及缓存系统（Memcached）。</p>
+<p>类似数据库的后端服务，通常由部署应用程序的系统管理员一起管理。除了本地服务之外，应用程序有可能使用了第三方发布和管理的服务。示例包括 SMTP（例如 Postmark），数据收集服务（例如 New Relic 或 Loggly），数据存储服务（如 Amazon S3），以及使用 API 访问的服务（例如 Twitter, Google Maps, Last.fm）。</p>
+<p>12-Factor 应用不会区别对待本地或第三方服务。 对应用程序而言，两种都是附加资源，通过一个 url 或是其他存储在 配置 中的服务定位/服务证书来获取数据。12-Factor 应用的任意 部署 ，都应该可以在不进行任何代码改动的情况下，将本地 MySQL 数据库换成第三方服务（例如 Amazon RDS）。类似的，本地 SMTP 服务应该也可以和第三方 SMTP 服务（例如 Postmark ）互换。上述 2 个例子中，仅需修改配置中的资源地址。</p>
+<p>每个不同的后端服务是一份 资源 。例如，一个 MySQL 数据库是一个资源，两个 MySQL 数据库（用来数据分区）就被当作是 2 个不同的资源。12-Factor 应用将这些数据库都视作 附加资源 ，这些资源和它们附属的部署保持松耦合。<br><img src="/2022/06/24/uncatalog/cl4s5aedf0003yor755fd317a/attached-resources.png" alt="image"><br>部署可以按需加载或卸载资源。例如，如果应用的数据库服务由于硬件问题出现异常，管理员可以从最近的备份中恢复一个数据库，卸载当前的数据库，然后加载新的数据库 – 整个过程都不需要修改代码。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--IX.Disposability</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedi0005yor703iffxzw/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="IX-Disposability"><a href="#IX-Disposability" class="headerlink" title="IX. Disposability"></a>IX. Disposability</h3><blockquote>
+<p>Maximize robustness with fast startup and graceful shutdown</p>
+</blockquote>
+<p>The twelve-factor app’s processes are disposable, meaning they can be started or stopped at a moment’s notice. This facilitates fast elastic scaling, rapid deployment of code or config changes, and robustness of production deploys.</p>
+<p>Processes should strive to minimize startup time. Ideally, a process takes a few seconds from the time the launch command is executed until the process is up and ready to receive requests or jobs. Short startup time provides more agility for the release process and scaling up; and it aids robustness, because the process manager can more easily move processes to new physical machines when warranted.</p>
+<p>Processes shut down gracefully when they receive a SIGTERM signal from the process manager. For a web process, graceful shutdown is achieved by ceasing to listen on the service port (thereby refusing any new requests), allowing any current requests to finish, and then exiting. Implicit in this model is that HTTP requests are short (no more than a few seconds), or in the case of long polling, the client should seamlessly attempt to reconnect when the connection is lost.</p>
+<p>For a worker process, graceful shutdown is achieved by returning the current job to the work queue. For example, on RabbitMQ the worker can send a NACK; on Beanstalkd, the job is returned to the queue automatically whenever a worker disconnects. Lock-based systems such as Delayed Job need to be sure to release their lock on the job record. Implicit in this model is that all jobs are reentrant, which typically is achieved by wrapping the results in a transaction, or making the operation idempotent.</p>
+<p>Processes should also be robust against sudden death, in the case of a failure in the underlying hardware. While this is a much less common occurrence than a graceful shutdown with SIGTERM, it can still happen. A recommended approach is use of a robust queueing backend, such as Beanstalkd, that returns jobs to the queue when clients disconnect or time out. Either way, a twelve-factor app is architected to handle unexpected, non-graceful terminations. Crash-only design takes this concept to its logical conclusion.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="IX-易处理"><a href="#IX-易处理" class="headerlink" title="IX. 易处理"></a>IX. 易处理</h3><blockquote>
+<p>快速启动和优雅终止可最大化健壮性</p>
+</blockquote>
+<p>12-Factor 应用的 进程 是 易处理（disposable）的，意思是说它们可以瞬间开启或停止。 这有利于快速、弹性的伸缩应用，迅速部署变化的 代码 或 配置 ，稳健的部署应用。</p>
+<p>进程应当追求 最小启动时间 。 理想状态下，进程从敲下命令到真正启动并等待请求的时间应该只需很短的时间。更少的启动时间提供了更敏捷的 发布 以及扩展过程，此外还增加了健壮性，因为进程管理器可以在授权情形下容易的将进程搬到新的物理机器上。</p>
+<p>进程 一旦接收 终止信号（SIGTERM） 就会优雅的终止 。就网络进程而言，优雅终止是指停止监听服务的端口，即拒绝所有新的请求，并继续执行当前已接收的请求，然后退出。此类型的进程所隐含的要求是HTTP请求大多都很短(不会超过几秒钟)，而在长时间轮询中，客户端在丢失连接后应该马上尝试重连。</p>
+<p>对于 worker 进程来说，优雅终止是指将当前任务退回队列。例如，RabbitMQ 中，worker 可以发送一个NACK信号。 Beanstalkd 中，任务终止并退回队列会在worker断开时自动触发。有锁机制的系统诸如 Delayed Job 则需要确定释放了系统资源。此类型的进程所隐含的要求是，任务都应该 可重复执行 ， 这主要由将结果包装进事务或是使重复操作 幂等 来实现。</p>
+<p>进程还应当在面对突然死亡时保持健壮，例如底层硬件故障。虽然这种情况比起优雅终止来说少之又少，但终究有可能发生。一种推荐的方式是使用一个健壮的后端队列，例如 Beanstalkd ，它可以在客户端断开或超时后自动退回任务。无论如何，12-Factor 应用都应该可以设计能够应对意外的、不优雅的终结。Crash-only design 将这种概念转化为 合乎逻辑的理论。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--V.Build,release,run</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedk0007yor7fl055pq7/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="V-Build-release-run"><a href="#V-Build-release-run" class="headerlink" title="V. Build, release, run"></a>V. Build, release, run</h3><blockquote>
+<p>Strictly separate build and run stages</p>
+</blockquote>
+<p>A codebase is transformed into a (non-development) deploy through three stages:</p>
+<ul>
+<li>The build stage is a transform which converts a code repo into an executable bundle known as a build. Using a version of the code at a commit specified by the deployment process, the build stage fetches vendors dependencies and compiles binaries and assets.</li>
+<li>The release stage takes the build produced by the build stage and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution in the execution environment.</li>
+<li>The run stage (also known as “runtime”) runs the app in the execution environment, by launching some set of the app’s processes against a selected release.<br>Code becomes a build, which is combined with config to create a release.<br><img src="/2022/06/24/uncatalog/cl4s5aedk0007yor7fl055pq7/release.png" alt="im"></li>
+</ul>
+<p>The twelve-factor app uses strict separation between the build, release, and run stages. For example, it is impossible to make changes to the code at runtime, since there is no way to propagate those changes back to the build stage.</p>
+<p>Deployment tools typically offer release management tools, most notably the ability to roll back to a previous release. For example, the Capistrano deployment tool stores releases in a subdirectory named releases, where the current release is a symlink to the current release directory. Its rollback command makes it easy to quickly roll back to a previous release.</p>
+<p>Every release should always have a unique release ID, such as a timestamp of the release (such as 2011-04-06-20:32:17) or an incrementing number (such as v100). Releases are an append-only ledger and a release cannot be mutated once it is created. Any change must create a new release.</p>
+<p>Builds are initiated by the app’s developers whenever new code is deployed. Runtime execution, by contrast, can happen automatically in cases such as a server reboot, or a crashed process being restarted by the process manager. Therefore, the run stage should be kept to as few moving parts as possible, since problems that prevent an app from running can cause it to break in the middle of the night when no developers are on hand. The build stage can be more complex, since errors are always in the foreground for a developer who is driving the deploy.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="V-构建，发布，运行"><a href="#V-构建，发布，运行" class="headerlink" title="V. 构建，发布，运行"></a>V. 构建，发布，运行</h3><blockquote>
+<p>严格分离构建和运行</p>
+</blockquote>
+<p>基准代码 转化为一份部署(非开发环境)需要以下三个阶段：</p>
+<ul>
+<li>构建阶段 是指将代码仓库转化为可执行包的过程。构建时会使用指定版本的代码，获取和打包 依赖项，编译成二进制文件和资源文件。</li>
+<li>发布阶段 会将构建的结果和当前部署所需 配置 相结合，并能够立刻在运行环境中投入使用。</li>
+<li>运行阶段 （或者说“运行时”）是指针对选定的发布版本，在执行环境中启动一系列应用程序 进程。<br>代码被构建，然后和配置结合成为发布版本<br><img src="/2022/06/24/uncatalog/cl4s5aedk0007yor7fl055pq7/release.png" alt="im"></li>
+</ul>
+<p>12-factor 应用严格区分构建，发布，运行这三个步骤。 举例来说，直接修改处于运行状态的代码是非常不可取的做法，因为这些修改很难再同步回构建步骤。</p>
+<p>部署工具通常都提供了发布管理工具，最引人注目的功能是退回至较旧的发布版本。比如， Capistrano 将所有发布版本都存储在一个叫 releases 的子目录中，当前的在线版本只需映射至对应的目录即可。该工具的 rollback 命令可以很容易地实现回退版本的功能。</p>
+<p>每一个发布版本必须对应一个唯一的发布 ID，例如可以使用发布时的时间戳（2011-04-06-20:32:17），亦或是一个增长的数字（v100）。发布的版本就像一本只能追加的账本，一旦发布就不可修改，任何的变动都应该产生一个新的发布版本。</p>
+<p>新的代码在部署之前，需要开发人员触发构建操作。但是，运行阶段不一定需要人为触发，而是可以自动进行。如服务器重启，或是进程管理器重启了一个崩溃的进程。因此，运行阶段应该保持尽可能少的模块，这样假设半夜发生系统故障而开发人员又捉襟见肘也不会引起太大问题。构建阶段是可以相对复杂一些的，因为错误信息能够立刻展示在开发人员面前，从而得到妥善处理。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--VI.Processes</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedm0009yor77lq164nz/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="VI-Processes"><a href="#VI-Processes" class="headerlink" title="VI. Processes"></a>VI. Processes</h3><blockquote>
+<p>Execute the app as one or more stateless processes</p>
+</blockquote>
+<p>The app is executed in the execution environment as one or more processes.</p>
+<p>In the simplest case, the code is a stand-alone script, the execution environment is a developer’s local laptop with an installed language runtime, and the process is launched via the command line (for example, python my_script.py). On the other end of the spectrum, a production deploy of a sophisticated app may use many process types, instantiated into zero or more running processes.</p>
+<p>Twelve-factor processes are stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service, typically a database.</p>
+<p>The memory space or filesystem of the process can be used as a brief, single-transaction cache. For example, downloading a large file, operating on it, and storing the results of the operation in the database. The twelve-factor app never assumes that anything cached in memory or on disk will be available on a future request or job – with many processes of each type running, chances are high that a future request will be served by a different process. Even when running only one process, a restart (triggered by code deploy, config change, or the execution environment relocating the process to a different physical location) will usually wipe out all local (e.g., memory and filesystem) state.</p>
+<p>Asset packagers like django-assetpackager use the filesystem as a cache for compiled assets. A twelve-factor app prefers to do this compiling during the build stage. Asset packagers such as Jammit and the Rails asset pipeline can be configured to package assets during the build stage.</p>
+<p>Some web systems rely on “sticky sessions” – that is, caching user session data in memory of the app’s process and expecting future requests from the same visitor to be routed to the same process. Sticky sessions are a violation of twelve-factor and should never be used or relied upon. Session state data is a good candidate for a datastore that offers time-expiration, such as Memcached or Redis.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="VI-进程"><a href="#VI-进程" class="headerlink" title="VI. 进程"></a>VI. 进程</h3><blockquote>
+<p>以一个或多个无状态进程运行应用</p>
+</blockquote>
+<p>运行环境中，应用程序通常是以一个和多个 进程 运行的。</p>
+<p>最简单的场景中，代码是一个独立的脚本，运行环境是开发人员自己的笔记本电脑，进程由一条命令行（例如python my_script.py）。另外一个极端情况是，复杂的应用可能会使用很多 进程类型 ，也就是零个或多个进程实例。</p>
+<p>12-Factor 应用的进程必须无状态且 无共享 。 任何需要持久化的数据都要存储在 后端服务 内，比如数据库。</p>
+<p>内存区域或磁盘空间可以作为进程在做某种事务型操作时的缓存，例如下载一个很大的文件，对其操作并将结果写入数据库的过程。12-Factor应用根本不用考虑这些缓存的内容是不是可以保留给之后的请求来使用，这是因为应用启动了多种类型的进程，将来的请求多半会由其他进程来服务。即使在只有一个进程的情形下，先前保存的数据（内存或文件系统中）也会因为重启（如代码部署、配置更改、或运行环境将进程调度至另一个物理区域执行）而丢失。</p>
+<p>源文件打包工具（Jammit, django-compressor） 使用文件系统来缓存编译过的源文件。12-Factor 应用更倾向于在 构建步骤 做此动作——正如 Rails资源管道 ，而不是在运行阶段。</p>
+<p>一些互联网系统依赖于 “粘性 session”， 这是指将用户 session 中的数据缓存至某进程的内存中，并将同一用户的后续请求路由到同一个进程。粘性 session 是 12-Factor 极力反对的。Session 中的数据应该保存在诸如 Memcached 或 Redis 这样的带有过期时间的缓存中。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--VII.Port_binding</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedo000byor78qwog8wr/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="VII-Port-binding"><a href="#VII-Port-binding" class="headerlink" title="VII. Port binding"></a>VII. Port binding</h3><blockquote>
+<p>Export services via port binding</p>
+</blockquote>
+<p>Web apps are sometimes executed inside a webserver container. For example, PHP apps might run as a module inside Apache HTTPD, or Java apps might run inside Tomcat.</p>
+<p>The twelve-factor app is completely self-contained and does not rely on runtime injection of a webserver into the execution environment to create a web-facing service. The web app exports HTTP as a service by binding to a port, and listening to requests coming in on that port.</p>
+<p>In a local development environment, the developer visits a service URL like <a href="http://localhost:5000/">http://localhost:5000/</a> to access the service exported by their app. In deployment, a routing layer handles routing requests from a public-facing hostname to the port-bound web processes.</p>
+<p>This is typically implemented by using dependency declaration to add a webserver library to the app, such as Tornado for Python, Thin for Ruby, or Jetty for Java and other JVM-based languages. This happens entirely in user space, that is, within the app’s code. The contract with the execution environment is binding to a port to serve requests.</p>
+<p>HTTP is not the only service that can be exported by port binding. Nearly any kind of server software can be run via a process binding to a port and awaiting incoming requests. Examples include ejabberd (speaking XMPP), and Redis (speaking the Redis protocol).</p>
+<p>Note also that the port-binding approach means that one app can become the backing service for another app, by providing the URL to the backing app as a resource handle in the config for the consuming app.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="VII-端口绑定"><a href="#VII-端口绑定" class="headerlink" title="VII. 端口绑定"></a>VII. 端口绑定</h3><blockquote>
+<p>通过端口绑定(Port binding)来提供服务</p>
+</blockquote>
+<p>互联网应用有时会运行于服务器的容器之中。例如 PHP 经常作为 Apache HTTPD 的一个模块来运行，正如 Java 运行于 Tomcat 。</p>
+<p>12-Factor 应用完全自我加载 而不依赖于任何网络服务器就可以创建一个面向网络的服务。互联网应用 通过端口绑定来提供服务 ，并监听发送至该端口的请求。</p>
+<p>本地环境中，开发人员通过类似 <a href="http://localhost:5000/">http://localhost:5000/</a> 的地址来访问服务。在线上环境中，请求统一发送至公共域名而后路由至绑定了端口的网络进程。</p>
+<p>通常的实现思路是，将网络服务器类库通过 依赖声明 载入应用。例如，Python 的 Tornado, Ruby 的Thin , Java 以及其他基于 JVM 语言的 Jetty。完全由 用户端 ，确切的说应该是应用的代码，发起请求。和运行环境约定好绑定的端口即可处理这些请求。</p>
+<p>HTTP 并不是唯一一个可以由端口绑定提供的服务。其实几乎所有服务器软件都可以通过进程绑定端口来等待请求。例如，使用 XMPP 的 ejabberd ， 以及使用 Redis 协议 的 Redis 。</p>
+<p>还要指出的是，端口绑定这种方式也意味着一个应用可以成为另外一个应用的 后端服务 ，调用方将服务方提供的相应 URL 当作资源存入 配置 以备将来调用。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--VIII.Concurrency</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedq000dyor70ynbgtrg/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="VIII-Concurrency"><a href="#VIII-Concurrency" class="headerlink" title="VIII. Concurrency"></a>VIII. Concurrency</h3><blockquote>
+<p>Scale out via the process model</p>
+</blockquote>
+<p>Any computer program, once run, is represented by one or more processes. Web apps have taken a variety of process-execution forms. For example, PHP processes run as child processes of Apache, started on demand as needed by request volume. Java processes take the opposite approach, with the JVM providing one massive uberprocess that reserves a large block of system resources (CPU and memory) on startup, with concurrency managed internally via threads. In both cases, the running process(es) are only minimally visible to the developers of the app.</p>
+<p>Scale is expressed as running processes, workload diversity is expressed as process types.</p>
+<p>In the twelve-factor app, processes are a first class citizen. Processes in the twelve-factor app take strong cues from the unix process model for running service daemons. Using this model, the developer can architect their app to handle diverse workloads by assigning each type of work to a process type. For example, HTTP requests may be handled by a web process, and long-running background tasks handled by a worker process.</p>
+<p>This does not exclude individual processes from handling their own internal multiplexing, via threads inside the runtime VM, or the async/evented model found in tools such as EventMachine, Twisted, or Node.js. But an individual VM can only grow so large (vertical scale), so the application must also be able to span multiple processes running on multiple physical machines.<br><img src="/2022/06/24/uncatalog/cl4s5aedq000dyor70ynbgtrg/process-types.png" alt="img"><br>The process model truly shines when it comes time to scale out. The share-nothing, horizontally partitionable nature of twelve-factor app processes means that adding more concurrency is a simple and reliable operation. The array of process types and number of processes of each type is known as the process formation.</p>
+<p>Twelve-factor app processes should never daemonize or write PID files. Instead, rely on the operating system’s process manager (such as systemd, a distributed process manager on a cloud platform, or a tool like Foreman in development) to manage output streams, respond to crashed processes, and handle user-initiated restarts and shutdowns.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="VIII-并发"><a href="#VIII-并发" class="headerlink" title="VIII. 并发"></a>VIII. 并发</h3><blockquote>
+<p>通过进程模型进行扩展</p>
+</blockquote>
+<p>任何计算机程序，一旦启动，就会生成一个或多个进程。互联网应用采用多种进程运行方式。例如，PHP 进程作为 Apache 的子进程存在，随请求按需启动。Java 进程则采取了相反的方式，在程序启动之初 JVM 就提供了一个超级进程储备了大量的系统资源(CPU 和内存)，并通过多线程实现内部的并发管理。上述 2 个例子中，进程是开发人员可以操作的最小单位。</p>
+<p>扩展表现为运行中的进程，工作多样性表现为进程类型。</p>
+<p>在 12-factor 应用中，进程是一等公民。12-Factor 应用的进程主要借鉴于 unix 守护进程模型 。开发人员可以运用这个模型去设计应用架构，将不同的工作分配给不同的 进程类型 。例如，HTTP 请求可以交给 web 进程来处理，而常驻的后台工作则交由 worker 进程负责。</p>
+<p>这并不包括个别较为特殊的进程，例如通过虚拟机的线程处理并发的内部运算，或是使用诸如 EventMachine, Twisted, Node.js 的异步/事件触发模型。但一台独立的虚拟机的扩展有瓶颈（垂直扩展），所以应用程序必须可以在多台物理机器间跨进程工作。<br><img src="/2022/06/24/uncatalog/cl4s5aedq000dyor70ynbgtrg/process-types.png" alt="img"><br>上述进程模型会在系统急需扩展时大放异彩。 12-Factor 应用的进程所具备的无共享，水平分区的特性 意味着添加并发会变得简单而稳妥。这些进程的类型以及每个类型中进程的数量就被称作 进程构成 。</p>
+<p>12-Factor 应用的进程 不需要守护进程 或是写入 PID 文件。相反的，应该借助操作系统的进程管理器(例如 systemd ，分布式的进程管理云平台，或是类似 Foreman 的工具)，来管理 输出流 ，响应崩溃的进程，以及处理用户触发的重启和关闭超级进程的请</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--X.Dev/prod_parity</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedr000fyor726t7b7ya/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="IX-X-Dev-prod-parity"><a href="#IX-X-Dev-prod-parity" class="headerlink" title="IX. X. Dev/prod parity"></a>IX. X. Dev/prod parity</h3><blockquote>
+<p>Keep development, staging, and production as similar as possible</p>
+</blockquote>
+<p>Historically, there have been substantial gaps between development (a developer making live edits to a local deploy of the app) and production (a running deploy of the app accessed by end users). These gaps manifest in three areas:</p>
+<ul>
+<li>The time gap: A developer may work on code that takes days, weeks, or even months to go into production.</li>
+<li>The personnel gap: Developers write code, ops engineers deploy it.</li>
+<li>The tools gap: Developers may be using a stack like Nginx, SQLite, and OS X, while the production deploy uses Apache, MySQL, and Linux.</li>
+</ul>
+<p>The twelve-factor app is designed for continuous deployment by keeping the gap between development and production small. Looking at the three gaps described above:</p>
+<ul>
+<li>Make the time gap small: a developer may write code and have it deployed hours or even just minutes later.</li>
+<li>Make the personnel gap small: developers who wrote code are closely involved in deploying it and watching its behavior in production.</li>
+<li>Make the tools gap small: keep development and production as similar as possible.</li>
+</ul>
+<p>Summarizing the above into a table:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Traditional app</th>
+<th>Twelve-factor app</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Time between deploys</td>
+<td>Weeks</td>
+<td>Hours</td>
+</tr>
+<tr>
+<td>Code authors vs code deployers</td>
+<td>Different people</td>
+<td>Same people</td>
+</tr>
+<tr>
+<td>Dev vs production environments</td>
+<td>Divergent</td>
+<td>As similar as possible</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Backing services, such as the app’s database, queueing system, or cache, is one area where dev/prod parity is important. Many languages offer libraries which simplify access to the backing service, including adapters to different types of services. Some examples are in the table below.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Language</th>
+<th>Library</th>
+<th>Adapters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Database</td>
+<td>Ruby/Rails</td>
+<td>ActiveRecord</td>
+<td>MySQL, PostgreSQL, SQLite</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>Python/Django</td>
+<td>Celery</td>
+<td>RabbitMQ, Beanstalkd, Redis</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Ruby/Rails</td>
+<td>ActiveSupport::Cache</td>
+<td>Memory, filesystem, Memcached</td>
+</tr>
+</tbody></table>
+<p>Developers sometimes find great appeal in using a lightweight backing service in their local environments, while a more serious and robust backing service will be used in production. For example, using SQLite locally and PostgreSQL in production; or local process memory for caching in development and Memcached in production.</p>
+<p>The twelve-factor developer resists the urge to use different backing services between development and production, even when adapters theoretically abstract away any differences in backing services. Differences between backing services mean that tiny incompatibilities crop up, causing code that worked and passed tests in development or staging to fail in production. These types of errors create friction that disincentivizes continuous deployment. The cost of this friction and the subsequent dampening of continuous deployment is extremely high when considered in aggregate over the lifetime of an application.</p>
+<p>Lightweight local services are less compelling than they once were. Modern backing services such as Memcached, PostgreSQL, and RabbitMQ are not difficult to install and run thanks to modern packaging systems, such as Homebrew and apt-get. Alternatively, declarative provisioning tools such as Chef and Puppet combined with light-weight virtual environments such as Docker and Vagrant allow developers to run local environments which closely approximate production environments. The cost of installing and using these systems is low compared to the benefit of dev/prod parity and continuous deployment.</p>
+<p>Adapters to different backing services are still useful, because they make porting to new backing services relatively painless. But all deploys of the app (developer environments, staging, production) should be using the same type and version of each of the backing services.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="X-开发环境与线上环境等价"><a href="#X-开发环境与线上环境等价" class="headerlink" title="X. 开发环境与线上环境等价"></a>X. 开发环境与线上环境等价</h3><blockquote>
+<p>尽可能的保持开发，预发布，线上环境相同</p>
+</blockquote>
+<p>从以往经验来看，开发环境（即开发人员的本地 部署）和线上环境（外部用户访问的真实部署）之间存在着很多差异。这些差异表现在以下三个方面：</p>
+<ul>
+<li>时间差异： 开发人员正在编写的代码可能需要几天，几周，甚至几个月才会上线。</li>
+<li>人员差异： 开发人员编写代码，运维人员部署代码。</li>
+<li>工具差异： 开发人员或许使用 Nginx，SQLite，OS X，而线上环境使用 Apache，MySQL 以及 Linux。</li>
+</ul>
+<p>12-Factor 应用想要做到 持续部署 就必须缩小本地与线上差异。 再回头看上面所描述的三个差异:</p>
+<ul>
+<li>缩小时间差异：开发人员可以几小时，甚至几分钟就部署代码。</li>
+<li>缩小人员差异：开发人员不只要编写代码，更应该密切参与部署过程以及代码在线上的表现。</li>
+<li>缩小工具差异：尽量保证开发环境以及线上环境的一致性。</li>
+</ul>
+<p>将上述总结变为一个表格如下：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>传统应用</th>
+<th>12-Factor 应用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>每次部署间隔</td>
+<td>数周</td>
+<td>几小时</td>
+</tr>
+<tr>
+<td>开发人员 vs 运维人员</td>
+<td>不同的人</td>
+<td>相同的人</td>
+</tr>
+<tr>
+<td>开发环境 vs 线上环境</td>
+<td>不同</td>
+<td>尽量接近</td>
+</tr>
+</tbody></table>
+<p>后端服务 是保持开发与线上等价的重要部分，例如数据库，队列系统，以及缓存。许多语言都提供了简化获取后端服务的类库，例如不同类型服务的 适配器 。下列表格提供了一些例子。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>语言</th>
+<th>类库</th>
+<th>适配器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据库</td>
+<td>Ruby/Rails</td>
+<td>ActiveRecord</td>
+<td>MySQL, PostgreSQL, SQLite</td>
+</tr>
+<tr>
+<td>队列</td>
+<td>Python/Django</td>
+<td>Celery</td>
+<td>RabbitMQ, Beanstalkd, Redis</td>
+</tr>
+<tr>
+<td>缓存</td>
+<td>Ruby/Rails</td>
+<td>ActiveSupport::Cache</td>
+<td>Memory, filesystem, Memcached</td>
+</tr>
+</tbody></table>
+<p>开发人员有时会觉得在本地环境中使用轻量的后端服务具有很强的吸引力，而那些更重量级的健壮的后端服务应该使用在生产环境。例如，本地使用 SQLite 线上使用 PostgreSQL；又如本地缓存在进程内存中而线上存入 Memcached。</p>
+<p>12-Factor 应用的开发人员应该反对在不同环境间使用不同的后端服务 ，即使适配器已经可以几乎消除使用上的差异。这是因为，不同的后端服务意味着会突然出现的不兼容，从而导致测试、预发布都正常的代码在线上出现问题。这些错误会给持续部署带来阻力。从应用程序的生命周期来看，消除这种阻力需要花费很大的代价。</p>
+<p>与此同时，轻量的本地服务也不像以前那样引人注目。借助于Homebrew，apt-get等现代的打包系统，诸如Memcached、PostgreSQL、RabbitMQ 等后端服务的安装与运行也并不复杂。此外，使用类似 Chef 和 Puppet 的声明式配置工具，结合像 Vagrant 这样轻量的虚拟环境就可以使得开发人员的本地环境与线上环境无限接近。与同步环境和持续部署所带来的益处相比，安装这些系统显然是值得的。</p>
+<p>不同后端服务的适配器仍然是有用的，因为它们可以使移植后端服务变得简单。但应用的所有部署，这其中包括开发、预发布以及线上环境，都应该使用同一个后端服务的相同版本。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--XI.Logs</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedu000hyor72kq5660y/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="XI-Logs"><a href="#XI-Logs" class="headerlink" title="XI. Logs"></a>XI. Logs</h3><blockquote>
+<p>Treat logs as event streams</p>
+</blockquote>
+<p>Logs provide visibility into the behavior of a running app. In server-based environments they are commonly written to a file on disk (a “logfile”); but this is only an output format.</p>
+<p>Logs are the stream of aggregated, time-ordered events collected from the output streams of all running processes and backing services. Logs in their raw form are typically a text format with one event per line (though backtraces from exceptions may span multiple lines). Logs have no fixed beginning or end, but flow continuously as long as the app is operating.</p>
+<p>A twelve-factor app never concerns itself with routing or storage of its output stream. It should not attempt to write to or manage logfiles. Instead, each running process writes its event stream, unbuffered, to stdout. During local development, the developer will view this stream in the foreground of their terminal to observe the app’s behavior.</p>
+<p>In staging or production deploys, each process’ stream will be captured by the execution environment, collated together with all other streams from the app, and routed to one or more final destinations for viewing and long-term archival. These archival destinations are not visible to or configurable by the app, and instead are completely managed by the execution environment. Open-source log routers (such as Logplex and Fluentd) are available for this purpose.</p>
+<p>The event stream for an app can be routed to a file, or watched via realtime tail in a terminal. Most significantly, the stream can be sent to a log indexing and analysis system such as Splunk, or a general-purpose data warehousing system such as Hadoop/Hive. These systems allow for great power and flexibility for introspecting an app’s behavior over time, including:</p>
+<ul>
+<li>Finding specific events in the past.</li>
+<li>Large-scale graphing of trends (such as requests per minute).</li>
+<li>Active alerting according to user-defined heuristics (such as an alert when the quantity of errors per minute exceeds a certain threshold).</li>
+</ul>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="XI-日志"><a href="#XI-日志" class="headerlink" title="XI. 日志"></a>XI. 日志</h3><blockquote>
+<p>把日志当作事件流</p>
+</blockquote>
+<p>日志 使得应用程序运行的动作变得透明。在基于服务器的环境中，日志通常被写在硬盘的一个文件里，但这只是一种输出格式。</p>
+<p>日志应该是 事件流 的汇总，将所有运行中进程和后端服务的输出流按照时间顺序收集起来。尽管在回溯问题时可能需要看很多行，日志最原始的格式确实是一个事件一行。日志没有确定开始和结束，但随着应用在运行会持续的增加。</p>
+<p>12-factor应用本身从不考虑存储自己的输出流。 不应该试图去写或者管理日志文件。相反，每一个运行的进程都会直接的标准输出（stdout）事件流。开发环境中，开发人员可以通过这些数据流，实时在终端看到应用的活动。</p>
+<p>在预发布或线上部署中，每个进程的输出流由运行环境截获，并将其他输出流整理在一起，然后一并发送给一个或多个最终的处理程序，用于查看或是长期存档。这些存档路径对于应用来说不可见也不可配置，而是完全交给程序的运行环境管理。类似 Logplex 和 Fluentd 的开源工具可以达到这个目的。</p>
+<p>这些事件流可以输出至文件，或者在终端实时观察。最重要的，输出流可以发送到 Splunk 这样的日志索引及分析系统，或 Hadoop/Hive 这样的通用数据存储系统。这些系统为查看应用的历史活动提供了强大而灵活的功能，包括：</p>
+<ul>
+<li>找出过去一段时间特殊的事件。</li>
+<li>图形化一个大规模的趋势，比如每分钟的请求量。</li>
+<li>根据用户定义的条件实时触发警报，比如每分钟的报错超过某个警戒线。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Twelve-Factor App--XII.Admin_processes</title>
+    <url>/2022/06/24/uncatalog/cl4s5aedw000jyor73nwic37r/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如今，软件通常会作为一种服务来交付，它们被称为网络应用程序，或软件即服务（SaaS）。12-Factor 为构建如下的 SaaS 应用提供了方法论：</p>
+<ul>
+<li>使用标准化流程自动配置，从而使新的开发者花费最少的学习成本加入这个项目。</li>
+<li>和操作系统之间尽可能的划清界限，在各个系统中提供最大的可移植性。</li>
+<li>适合部署在现代的云计算平台，从而在服务器和系统管理方面节省资源。</li>
+<li>将开发环境和生产环境的差异降至最低，并使用持续交付实施敏捷开发。</li>
+<li>可以在工具、架构和开发流程不发生明显变化的前提下实现扩展。<br>这套理论适用于任意语言和后端服务（数据库、消息队列、缓存等）开发的应用程序。</li>
+</ul>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这套方法论由Heroku的联合创始人Adam Wiggins发掘，应用到了数以百计的应用程序的开发和部署，并通过 Heroku 平台间接见证了数十万应用程序的开发，运作以及扩展的过程。</p>
+<p><code>The Twelve-Factor App</code>系列文章，综合了Hero库关于 SaaS 应用几乎所有的经验和智慧，是开发此类应用的理想实践标准，并特别关注于应用程序如何保持良性成长，开发者之间如何进行有效的代码协作，以及如何 避免软件污染 。</p>
+<blockquote>
+<p>英文原文</p>
+</blockquote>
+<h3 id="XII-Admin-processes"><a href="#XII-Admin-processes" class="headerlink" title="XII. Admin processes"></a>XII. Admin processes</h3><blockquote>
+<p>Run admin/management tasks as one-off processes</p>
+</blockquote>
+<p>The process formation is the array of processes that are used to do the app’s regular business (such as handling web requests) as it runs. Separately, developers will often wish to do one-off administrative or maintenance tasks for the app, such as:</p>
+<ul>
+<li>Running database migrations (e.g. manage.py migrate in Django, rake db:migrate in Rails).</li>
+<li>Running a console (also known as a REPL shell) to run arbitrary code or inspect the app’s models against the live database. Most languages provide a REPL by running the interpreter without any arguments (e.g. python or perl) or in some cases have a separate command (e.g. irb for Ruby, rails console for Rails).</li>
+<li>Running one-time scripts committed into the app’s repo (e.g. php scripts/fix_bad_records.php).</li>
+</ul>
+<p>One-off admin processes should be run in an identical environment as the regular long-running processes of the app. They run against a release, using the same codebase and config as any process run against that release. Admin code must ship with application code to avoid synchronization issues.</p>
+<p>The same dependency isolation techniques should be used on all process types. For example, if the Ruby web process uses the command bundle exec thin start, then a database migration should use bundle exec rake db:migrate. Likewise, a Python program using Virtualenv should use the vendored bin/python for running both the Tornado webserver and any manage.py admin processes.</p>
+<p>Twelve-factor strongly favors languages which provide a REPL shell out of the box, and which make it easy to run one-off scripts. In a local deploy, developers invoke one-off admin processes by a direct shell command inside the app’s checkout directory. In a production deploy, developers can use ssh or other remote command execution mechanism provided by that deploy’s execution environment to run such a process.</p>
+<blockquote>
+<p>中文</p>
+</blockquote>
+<h3 id="XII-管理进程"><a href="#XII-管理进程" class="headerlink" title="XII. 管理进程"></a>XII. 管理进程</h3><blockquote>
+<p>后台管理任务当作一次性进程运行</p>
+</blockquote>
+<p>进程构成（process formation）是指用来处理应用的常规业务（比如处理 web 请求）的一组进程。与此不同，开发人员经常希望执行一些管理或维护应用的一次性任务，例如：</p>
+<ul>
+<li>运行数据移植（Django 中的 manage.py migrate, Rails 中的 rake db:migrate）。</li>
+<li>运行一个控制台（也被称为 REPL shell），来执行一些代码或是针对线上数据库做一些检查。大多数语言都通过解释器提供了一个 REPL 工具（python 或 perl） ，或是其他命令（Ruby 使用 irb, Rails 使用 rails console）。</li>
+<li>运行一些提交到代码仓库的一次性脚本。</li>
+</ul>
+<p>一次性管理进程应该和正常的 常驻进程 使用同样的环境。这些管理进程和任何其他的进程一样使用相同的 代码 和 配置 ，基于某个 发布版本 运行。后台管理代码应该随其他应用程序代码一起发布，从而避免同步问题。</p>
+<p>所有进程类型应该使用同样的 依赖隔离 技术。例如，如果Ruby的web进程使用了命令 bundle exec thin start ，那么数据库移植应使用 bundle exec rake db:migrate 。同样的，如果一个 Python 程序使用了 Virtualenv，则需要在运行 Tornado Web 服务器和任何 manage.py 管理进程时引入 bin/python 。</p>
+<p>12-factor 尤其青睐那些提供了 REPL shell 的语言，因为那会让运行一次性脚本变得简单。在本地部署中，开发人员直接在命令行使用 shell 命令调用一次性管理进程。在线上部署中，开发人员依旧可以使用ssh或是运行环境提供的其他机制来运行这样的进程。</p>
+]]></content>
+      <tags>
+        <tag>The Twelve-Factor App</tag>
       </tags>
   </entry>
 </search>
