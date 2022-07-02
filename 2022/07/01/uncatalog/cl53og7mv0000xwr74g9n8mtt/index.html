@@ -1,0 +1,664 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+    <meta name="description" content="牧码人" />
+
+
+
+  <meta name="keywords" content="golang," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go编程模式之--函数式选项模式">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/07/01/uncatalog/cl53og7mv0000xwr74g9n8mtt/index.html">
+<meta property="og:site_name" content="BugKillerPro">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-01T11:27:11.250Z">
+<meta property="article:modified_time" content="2022-07-02T09:31:31.964Z">
+<meta property="article:author" content="BugKillerPro">
+<meta property="article:tag" content="golang">
+<meta name="twitter:card" content="summary">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Go编程模式之--函数式选项模式 | BugKillerPro </title>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a target="_blank" rel="noopener" href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">BugKillerPro</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">巴戈梅克</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Go编程模式之--函数式选项模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><hr>
+<span id="more"></span>
+<p>Go编程模式之–函数式选项模式</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在阅读grpc和gorm的时候，发现了一个比较有意思的设计：</p>
+<blockquote>
+<p>grpc: ServerOption</p>
+</blockquote>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A ServerOption sets options such as credentials, codec and keepalive parameters, etc.</span></span><br><span class="line"><span class="keyword">type</span> ServerOption <span class="keyword">interface</span> &#123;</span><br><span class="line">apply(*serverOptions)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NewServer creates a gRPC server which has no service registered and has not</span></span><br><span class="line"><span class="comment">// started to accept requests yet.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewServer</span><span class="params">(opt ...ServerOption)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">	opts := defaultServerOptions</span><br><span class="line">	<span class="keyword">for</span> _, o := <span class="keyword">range</span> opt &#123;</span><br><span class="line">		o.apply(&amp;opts)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 省略 ...</span></span><br><span class="line">	s := &amp;Server&#123;&#125;</span><br><span class="line">	<span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>gorm: Option</p>
+</blockquote>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Option gorm option interface</span></span><br><span class="line"><span class="keyword">type</span> Option <span class="keyword">interface</span> &#123;</span><br><span class="line">Apply(*Config) error</span><br><span class="line">AfterInitialize(*DB) error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Open initialize db session based on dialector</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(dialector Dialector, opts ...Option)</span> <span class="params">(db *DB, err error)</span></span> &#123;</span><br><span class="line">        config := &amp;Config&#123;&#125;</span><br><span class="line">        </span><br><span class="line">        sort.Slice(opts, <span class="function"><span class="keyword">func</span><span class="params">(i, j <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">        _, isConfig := opts[i].(*Config)</span><br><span class="line">        _, isConfig2 := opts[j].(*Config)</span><br><span class="line">        <span class="keyword">return</span> isConfig &amp;&amp; !isConfig2</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> _, opt := <span class="keyword">range</span> opts &#123;</span><br><span class="line">        <span class="keyword">if</span> opt != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> applyErr := opt.Apply(config); applyErr != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, applyErr</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 省略...</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>设计上的共同点还是很明显的，所以记录一下，方便日后借鉴。</p>
+<h2 id="函数式选项模式"><a href="#函数式选项模式" class="headerlink" title="函数式选项模式"></a>函数式选项模式</h2><p>Go 语言没有构造函数，一般通过定义 New 函数来充当构造函数。然而，如果结构有较多字段，要初始化这些字段，有很多种方式，但有一种方式认为是最好的，这就是函数式选项模式（Functional Options Pattern）。</p>
+<p>函数式选项模式是一种在 Go 中构造结构体的模式，它通过设计一组非常有表现力和灵活的 API 来帮助配置和初始化结构体。</p>
+<p>在 Uber 的 Go 语言规范中提到了该模式：</p>
+<blockquote>
+<p>Functional options 是一种模式，在该模式中，你可以声明一个不透明的 Option 类型，该类型在某些内部结构中记录信息。你接受这些可变数量的选项，并根据内部结构上的选项记录的完整信息进行操作。将此模式用于构造函数和其他公共 API 中的可选参数，你预计这些参数需要扩展，尤其是在这些函数上已经有三个或更多参数的情况下。</p>
+</blockquote>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>为了更好的理解该模式，我们通过一个例子来讲解。</p>
+<p>定义一个 Server 结构体：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span>&#123;</span><br><span class="line">  host <span class="keyword">string</span></span><br><span class="line">  port <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(host <span class="keyword">string</span>, port <span class="keyword">int</span>)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;Server&#123;host, port&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Server)</span> <span class="title">Start</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>如何使用呢？</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;server&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  svr := New(<span class="string">&quot;localhost&quot;</span>, <span class="number">1234</span>)</span><br><span class="line">  <span class="keyword">if</span> err := svr.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>但如果要扩展 Server 的配置选项，如何做？通常有三种做法：</p>
+<ul>
+<li>为每个不同的配置选项声明一个新的构造函数</li>
+<li>定义一个新的 Config 结构体来保存配置信息</li>
+<li>使用 Functional Option Pattern</li>
+</ul>
+<h4 id="做法-1：为每个不同的配置选项声明一个新的构造函数"><a href="#做法-1：为每个不同的配置选项声明一个新的构造函数" class="headerlink" title="做法 1：为每个不同的配置选项声明一个新的构造函数"></a>做法 1：为每个不同的配置选项声明一个新的构造函数</h4><p>这种做法是为不同选项定义专有的构造函数。假如上面的 Server 增加了两个字段：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span>&#123;</span><br><span class="line">  host <span class="keyword">string</span></span><br><span class="line">  port <span class="keyword">int</span></span><br><span class="line">  timeout time.Duration</span><br><span class="line">  maxConn <span class="keyword">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>一般来说，host 和 port 是必须的字段，而 timeout 和 maxConn 是可选的，所以，可以保留原来的构造函数，而这两个字段给默认值：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(host <span class="keyword">string</span>, port <span class="keyword">int</span>)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;Server&#123;host, port, time.Minute, <span class="number">100</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>然后针对 timeout 和 maxConn 额外提供两个构造函数：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewWithTimeout</span><span class="params">(host <span class="keyword">string</span>, port <span class="keyword">int</span>, timeout time.Duration)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;Server&#123;host, port, timeout&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewWithTimeoutAndMaxConn</span><span class="params">(host <span class="keyword">string</span>, port <span class="keyword">int</span>, timeout time.Duration, maxConn <span class="keyword">int</span>)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;Server&#123;host, port, timeout, maxConn&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>这种方式配置较少且不太会变化的情况，否则每次你需要为新配置创建新的构造函数。在 Go 语言标准库中，有这种方式的应用。比如 net 包中的 Dial 和 DialTimeout：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Dial</span><span class="params">(network, address <span class="keyword">string</span>)</span> <span class="params">(Conn, error)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DialTimeout</span><span class="params">(network, address <span class="keyword">string</span>, timeout time.Duration)</span> <span class="params">(Conn, error)</span></span></span><br></pre></td></tr></table></figure></div>
+<h4 id="做法-2：使用专门的配置结构体"><a href="#做法-2：使用专门的配置结构体" class="headerlink" title="做法 2：使用专门的配置结构体"></a>做法 2：使用专门的配置结构体</h4><p>这种方式也是很常见的，特别是当配置选项很多时。通常可以创建一个 Config 结构体，其中包含 Server 的所有配置选项。这种做法，即使将来增加更多配置选项，也可以轻松的完成扩展，不会破坏 Server 的 API。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span>&#123;</span><br><span class="line">  cfg Config</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Config <span class="keyword">struct</span> &#123;</span><br><span class="line">  Host <span class="keyword">string</span></span><br><span class="line">  Port <span class="keyword">int</span></span><br><span class="line">  Timeout time.Duration</span><br><span class="line">  MaxConn <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(cfg Config)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;Server&#123;cfg&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>在使用时，需要先构造 Config 实例，对这个实例，又回到了前面 Server 的问题上，因为增加或删除选项，需要对 Config 有较大的修改。如果将 Config 中的字段改为私有，可能需要定义 Config 的构造函数。</p>
+<h4 id="做法-3：使用-Functional-Option-Pattern"><a href="#做法-3：使用-Functional-Option-Pattern" class="headerlink" title="做法 3：使用 Functional Option Pattern"></a>做法 3：使用 Functional Option Pattern</h4><p>一个更好的解决方案是使用 Functional Option Pattern。</p>
+<p>在这个模式中，我们定义一个 Option 函数类型：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Option <span class="function"><span class="keyword">func</span><span class="params">(*Server)</span></span></span><br></pre></td></tr></table></figure></div>
+<p>Option 类型是一个函数类型，它接收一个参数：*Server。然后，Server 的构造函数接收一个 Option 类型的不定参数：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(options ...Option)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">  svr := &amp;Server&#123;&#125;</span><br><span class="line">  <span class="keyword">for</span> _, f := <span class="keyword">range</span> options &#123;</span><br><span class="line">    f(svr)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> svr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>那选项如何起作用？需要定义一系列相关返回 Option 的函数：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithHost</span><span class="params">(host <span class="keyword">string</span>)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(s *Server)</span></span> &#123;</span><br><span class="line">    s.host = host</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithPort</span><span class="params">(port <span class="keyword">int</span>)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(s *Server)</span></span> &#123;</span><br><span class="line">    s.port = port</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithTimeout</span><span class="params">(timeout time.Duration)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(s *Server)</span></span> &#123;</span><br><span class="line">    s.timeout = timeout</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithMaxConn</span><span class="params">(maxConn <span class="keyword">int</span>)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(s *Server)</span></span> &#123;</span><br><span class="line">    s.maxConn = maxConn</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>针对这种模式，客户端类似这么使用：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  </span><br><span class="line">  <span class="string">&quot;server&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  svr := New(</span><br><span class="line">    WithHost(<span class="string">&quot;localhost&quot;</span>),</span><br><span class="line">    WithPort(<span class="number">8080</span>),</span><br><span class="line">    WithTimeout(time.Minute),</span><br><span class="line">    WithMaxConn(<span class="number">120</span>),</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">if</span> err := svr.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>将来增加选项，只需要增加对应的 WithXXX 函数即可。</p>
+<p>这种模式，在第三方库中使用挺多，比如 github.com/gocolly/colly：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Collector &#123;</span><br><span class="line">  <span class="comment">// 省略...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewCollector</span><span class="params">(options ...CollectorOption)</span> *<span class="title">Collector</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义了一系列 CollectorOpiton</span></span><br><span class="line"><span class="keyword">type</span> CollectorOption&#123;</span><br><span class="line">  <span class="comment">// 省略...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AllowURLRevisit</span><span class="params">()</span> <span class="title">CollectorOption</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AllowedDomains</span><span class="params">(domains ...<span class="keyword">string</span>)</span> <span class="title">CollectorOption</span></span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></div>
+<p>不过 Uber 的 Go 语言编程规范中提到该模式时，建议定义一个 Option 接口，而不是 Option 函数类型。该 Option 接口有一个未导出的方法，然后通过一个未导出的 options 结构来记录各选项。</p>
+<p>Uber 的这个例子能看懂吗？</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GO"><figure class="iseeu highlight /go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> options <span class="keyword">struct</span> &#123;</span><br><span class="line">  cache  <span class="keyword">bool</span></span><br><span class="line">  logger *zap.Logger</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Option <span class="keyword">interface</span> &#123;</span><br><span class="line">  apply(*options)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> cacheOption <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c cacheOption)</span> <span class="title">apply</span><span class="params">(opts *options)</span></span> &#123;</span><br><span class="line">  opts.cache = <span class="keyword">bool</span>(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithCache</span><span class="params">(c <span class="keyword">bool</span>)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> cacheOption(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> loggerOption <span class="keyword">struct</span> &#123;</span><br><span class="line">  Log *zap.Logger</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l loggerOption)</span> <span class="title">apply</span><span class="params">(opts *options)</span></span> &#123;</span><br><span class="line">  opts.logger = l.Log</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WithLogger</span><span class="params">(log *zap.Logger)</span> <span class="title">Option</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> loggerOption&#123;Log: log&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Open creates a connection.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  addr <span class="keyword">string</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  opts ...Option,</span></span></span><br><span class="line"><span class="function"><span class="params">)</span> <span class="params">(*Connection, error)</span></span> &#123;</span><br><span class="line">  options := options&#123;</span><br><span class="line">    cache:  defaultCache,</span><br><span class="line">    logger: zap.NewNop(),</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> _, o := <span class="keyword">range</span> opts &#123;</span><br><span class="line">    o.apply(&amp;options)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>在实际项目中，当你要处理的选项比较多，或者处理不同来源的选项（来自文件、来自环境变量等）时，可以考虑试试函数式选项模式。</p>
+<p>注意，在实际工作中，我们不应该教条的应用上面的模式，就像 Uber 中的例子，Open 函数并非只接受一个 Option 不定参数，因为 addr 参数是必须的。因此，函数式选项模式更多应该应用在那些配置较多，且有可选参数的情况。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag">#golang</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/24/uncatalog/cl4s5aedw000jyor73nwic37r/" rel="next" title="The Twelve-Factor App--XII.Admin_processes">
+                <i class="fa fa-chevron-left"></i> The Twelve-Factor App--XII.Admin_processes
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="" itemprop="image"/>
+          <p class="site-author-name" itemprop="name"></p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">88</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">categories</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E9%80%89%E9%A1%B9%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">函数式选项模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%9A%E6%B3%95-1%EF%BC%9A%E4%B8%BA%E6%AF%8F%E4%B8%AA%E4%B8%8D%E5%90%8C%E7%9A%84%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9%E5%A3%B0%E6%98%8E%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">做法 1：为每个不同的配置选项声明一个新的构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%9A%E6%B3%95-2%EF%BC%9A%E4%BD%BF%E7%94%A8%E4%B8%93%E9%97%A8%E7%9A%84%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">2.1.2.</span> <span class="nav-text">做法 2：使用专门的配置结构体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%9A%E6%B3%95-3%EF%BC%9A%E4%BD%BF%E7%94%A8-Functional-Option-Pattern"><span class="nav-number">2.1.3.</span> <span class="nav-text">做法 3：使用 Functional Option Pattern</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">使用场景</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BugKillerPro</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
