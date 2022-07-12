@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/6404.jpg">
 <meta property="og:image" content="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/6405.jpg">
 <meta property="article:published_time" content="2022-07-04T09:29:32.981Z">
-<meta property="article:modified_time" content="2022-07-11T01:15:25.048Z">
+<meta property="article:modified_time" content="2022-07-11T02:27:10.354Z">
 <meta property="article:author" content="BugKillerPro">
 <meta property="article:tag" content="架构设计那些事儿">
 <meta name="twitter:card" content="summary">
@@ -435,7 +435,7 @@
 <p>1、性能和一致性不能同时满足，为了性能考虑，通常会采用「最终一致性」的方案</p>
 <p>2、掌握缓存和数据库一致性问题，核心问题有 3 点：缓存利用率、并发、缓存 + 数据库一起成功问题</p>
 <p>3、失败场景下要保证一致性，常见手段就是「重试」，同步重试会影响吞吐量，所以通常会采用异步重试的方案</p>
-<p>4、订阅变更日志的思想，本质是把权威数据源（例如 MySQL）当做 leader 副本，让其它异质系统（例如 Redis / Elasticsearch）成为它的 follower 副本，通过同步变更日志的方式，保证 leader 和 follower 之间保持一致</p>
+<p>4、订阅变更日志的思想，本质是把权威数据源（例如 MySQL）当做 leader 主本，让其它异质系统（例如 Redis / Elasticsearch）成为它的 follower 副本，通过同步变更日志的方式，保证 leader 和 follower 之间保持一致</p>
 <p>很多一致性问题，都会采用这些方案来解决，希望我的这些心得对你有所启发。</p>
 </span>
       
@@ -461,6 +461,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/" rel="prev" title="架构设计那些事儿--缓存那些事儿(四)">
+                架构设计那些事儿--缓存那些事儿(四) <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -525,7 +529,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">91</span>
+              <span class="site-state-item-count">93</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
