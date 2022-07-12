@@ -36,7 +36,7 @@
 
 
 
-  <meta name="keywords" content="云原生基础系列,Kubernetes网络," />
+  <meta name="keywords" content="架构设计那些事儿," />
 
 
 
@@ -46,25 +46,15 @@
 
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展">
-<meta property="og:url" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/index.html">
+<meta property="og:title" content="架构设计那些事儿--缓存那些事儿(六)，redis">
+<meta property="og:url" content="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hsfpv60000m4r706d63234/index.html">
 <meta property="og:site_name" content="BugKillerPro">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/2.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/3.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/4.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/5.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/6.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/7.png">
-<meta property="og:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/8.png">
-<meta property="article:published_time" content="2022-06-13T08:08:36.267Z">
-<meta property="article:modified_time" content="2022-06-13T08:14:39.054Z">
+<meta property="article:published_time" content="2022-07-12T06:07:42.680Z">
+<meta property="article:modified_time" content="2022-07-12T06:25:08.911Z">
 <meta property="article:author" content="BugKillerPro">
-<meta property="article:tag" content="云原生基础系列">
-<meta property="article:tag" content="Kubernetes网络">
+<meta property="article:tag" content="架构设计那些事儿">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://bugkillerpro.github.io/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -76,7 +66,7 @@
 
 
 
-  <title> Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展 | BugKillerPro </title>
+  <title> 架构设计那些事儿--缓存那些事儿(六)，redis | BugKillerPro </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -191,7 +181,7 @@
             
             
               
-                Kubernetes网络系列之(二十七)iptables扩展之udp扩展与icmp扩展
+                架构设计那些事儿--缓存那些事儿(六)，redis
               
             
           </h1>
@@ -219,46 +209,24 @@
       
         <span itemprop="articleBody"><hr>
 <span id="more"></span>
-
-<hr>
-<p>前文中总结了iptables的tcp扩展模块，此处，我们来总结一下另外两个跟协议有关的常用的扩展模块，udp扩展与icmp扩展。</p>
-<h3 id="udp扩展"><a href="#udp扩展" class="headerlink" title="udp扩展"></a>udp扩展</h3><p>我们先来说说udp扩展模块，这个扩展模块中能用的匹配条件比较少，只有两个，就是–sport与–dport，即匹配报文的源端口与目标端口。</p>
-<p>没错，tcp模块中也有这两个选项，名称都一模一样。</p>
-<p>只不过udp扩展模块的–sport与–dport是用于匹配UDP协议报文的源端口与目标端口，比如，放行samba服务的137与138这两个UDP端口，示例如下</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/1.png" alt="image"></p>
-<p>前文说明过，当使用扩展匹配条件时，如果未指定扩展模块，iptables会默认调用与”-p”对应的协议名称相同的模块，所以，当使用”-p udp”时，可以省略”-m udp”，示例如下。</p>
-<p>udp扩展中的–sport与–dport同样支持指定一个连续的端口范围，示例如下</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/2.png" alt="image"></p>
-<p>上图中的配置表示137到157之间的所有udp端口全部对外开放，其实与tcp扩展中的使用方法相同。<br><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/3.png" alt="image"><br>但是udp中的–sport与–dport也只能指定连续的端口范围，并不能一次性指定多个离散的端口，没错，聪明如你一定想到，使用之前总结过的multiport扩展模块，即可指定多个离散的UDP端口，如果你忘了multiport模块怎样使用，请回顾前文。</p>
-<p>总之有了前文的基础，再理解上述示例就容易多了，此处不再对udp模块的–sport与–dport进行赘述。</p>
-<h3 id="icmp扩展"><a href="#icmp扩展" class="headerlink" title="icmp扩展"></a>icmp扩展</h3><p>最常用的tcp扩展、udp扩展已经总结完毕，现在聊聊icmp扩展，没错，看到icmp，你肯定就想到了ping命令，因为ping命令使用的就是icmp协议。</p>
-<p>ICMP协议的全称为Internet Control Message Protocol，翻译为互联网控制报文协议，它主要用于探测网络上的主机是否可用，目标是否可达，网络是否通畅，路由是否可用等。</p>
-<p>我们平常使用ping命令ping某主机时，如果主机可达，对应主机会对我们的ping请求做出回应（此处不考虑禁ping等情况），也就是说，我们发出ping请求，对方回应ping请求，虽然ping请求报文与ping回应报文都属于ICMP类型的报文，但是如果在概念上细分的话，它们所属的类型还是不同的，我们发出的ping请求属于类型8的icmp报文，而对方主机的ping回应报文则属于类型0的icmp报文，根据应用场景的不同，icmp报文被细分为如下各种类型。</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/4.png" alt="image"></p>
-<p>从上图可以看出，所有表示”目标不可达”的icmp报文的type码为3，而”目标不可达”又可以细分为多种情况，是网络不可达呢？还是主机不可达呢？再或者是端口不可达呢？所以，为了更加细化的区分它们，icmp对每种type又细分了对应的code，用不同的code对应具体的场景，  所以，我们可以使用type/code去匹配具体类型的ICMP报文，比如可以使用”3/1″表示主机不可达的icmp报文。</p>
-<p>上图中的第一行就表示ping回应报文，它的type为0，code也为0，从上图可以看出，ping回应报文属于查询类（query）的ICMP报文，从大类上分，ICMP报文还能分为查询类与错误类两大类，目标不可达类的icmp报文则属于错误类报文。</p>
-<p>而我们发出的ping请求报文对应的type为8，code为0。</p>
-<p>了解完上述概念，就好办了，我们来看一些应用场景。</p>
-<p>假设，我们现在想要禁止所有icmp类型的报文进入本机，那么我们可以进行如下设置。</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/5.png" alt="image"><br>上例中，我们并没有使用任何扩展匹配条件，我们只是使用”-p icmp”匹配了所有icmp协议类型的报文。</p>
-<p>如果进行了上述设置，别的主机向我们发送的ping请求报文无法进入防火墙，我们向别人发送的ping请求对应的回应报文也无法进入防火墙。所以，我们既无法ping通别人，别人也无法ping通我们。</p>
-<p>假设，此刻需求有变，我们只想要ping通别人，但是不想让别人ping通我们，刚才的配置就不能满足我们了，我们则可以进行如下设置（此处不考虑禁ping的情况）</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/6.png" alt="image"><br>上图中，使用”-m icmp”表示使用icmp扩展，因为上例中使用了”-p icmp”，所以”-m icmp”可以省略，使用”–icmp-type”选项表示根据具体的type与code去匹配对应的icmp报文，而上图中的”–icmp-type 8/0″表示icmp报文的type为8，code为0才会被匹配到，也就是只有ping请求类型的报文才能被匹配到，所以，别人对我们发起的ping请求将会被拒绝通过防火墙，而我们之所以能够ping通别人，是因为别人回应我们的报文的icmp type为0，code也为0，所以无法被上述规则匹配到，所以我们可以看到别人回应我们的信息。</p>
-<p>因为type为8的类型下只有一个code为0的类型，所以我们可以省略对应的code，示例如下</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/7.png" alt="image"></p>
-<p>除了能够使用对应type/code匹配到具体类型的icmp报文以外，我们还能用icmp报文的描述名称去匹配对应类型的报文，示例如下</p>
-<p>没错，上例中使用的 –icmp-type “echo-request”与 –icmp-type 8/0的效果完全相同，参考本文最上方的表格即可获取对应的icmp类型的描述名称。</p>
-<p><img src="/2022/06/13/uncatalog/cl4cifak7000apwr7hgyg2fgs/8.png" alt="image"><br>注意：名称中的”空格”需要替换为”-“。</p>
-<p>小结<br>udp扩展<br>常用的扩展匹配条件</p>
+<blockquote>
+<p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
+</blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
 <ul>
-<li><p>–sport：匹配udp报文的源地址</p>
-</li>
-<li><p>–dport：匹配udp报文的目标地址</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">示例</span></span><br><span class="line">iptables -t filter -I INPUT -p udp -m udp --dport 137 -j ACCEPT</span><br><span class="line">iptables -t filter -I INPUT -p udp -m udp --dport 137:157 -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash">可以结合multiport模块指定多个离散的端口</span></span><br></pre></td></tr></table></figure></div></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
 </ul>
-<p>icmp扩展<br>常用的扩展匹配条件</p>
-<p>–icmp-type：匹配icmp报文的具体类型</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">示例</span></span><br><span class="line">iptables -t filter -I INPUT -p icmp -m icmp --icmp-type 8/0 -j REJECT</span><br><span class="line">iptables -t filter -I INPUT -p icmp --icmp-type 8 -j REJECT</span><br><span class="line">iptables -t filter -I OUTPUT -p icmp -m icmp --icmp-type 0/0 -j REJECT</span><br><span class="line">iptables -t filter -I OUTPUT -p icmp --icmp-type 0 -j REJECT</span><br><span class="line">iptables -t filter -I INPUT -p icmp --icmp-type &quot;echo-request&quot; -j REJECT</span><br></pre></td></tr></table></figure></div></span>
+<h2 id="First-of-all"><a href="#First-of-all" class="headerlink" title="First of all"></a>First of all</h2><p> 当我们想要全面无误的了解一个工具的时候，强烈建议直接去读官方文档，redis也不例外</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://redis.io/">reids官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://redis.uptrace.dev/">go redis</a></li>
+</ul>
+</span>
       
     </div>
 
@@ -266,9 +234,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F%E5%9F%BA%E7%A1%80%E7%B3%BB%E5%88%97/" rel="tag">#云原生基础系列</a>
-          
-            <a href="/tags/Kubernetes%E7%BD%91%E7%BB%9C/" rel="tag">#Kubernetes网络</a>
+            <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/" rel="tag">#架构设计那些事儿</a>
           
         </div>
       
@@ -277,17 +243,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2022/06/13/uncatalog/cl4cifakc000ipwr7bhs4dux2/" rel="next" title="Kubernetes网络系列之(二十六)iptables扩展匹配条件之[–tcp-flags]">
-                <i class="fa fa-chevron-left"></i> Kubernetes网络系列之(二十六)iptables扩展匹配条件之[–tcp-flags]
+              <a href="/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/" rel="next" title="架构设计那些事儿--缓存那些事儿(五)，布隆过滤器详解">
+                <i class="fa fa-chevron-left"></i> 架构设计那些事儿--缓存那些事儿(五)，布隆过滤器详解
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2022/06/13/uncatalog/cl4cifaka000gpwr787db5toi/" rel="prev" title="Kubernetes网络系列之(二十八)iptables扩展模块之state扩展">
-                Kubernetes网络系列之(二十八)iptables扩展模块之state扩展 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -394,7 +356,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#udp%E6%89%A9%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">udp扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#icmp%E6%89%A9%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text">icmp扩展</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#First-of-all"><span class="nav-number">1.</span> <span class="nav-text">First of all</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

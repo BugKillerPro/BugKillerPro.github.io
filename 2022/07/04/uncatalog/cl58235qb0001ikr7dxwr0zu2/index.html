@@ -46,13 +46,13 @@
 
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="架构设计那些事儿--缓存那些事儿(二)">
+<meta property="og:title" content="架构设计那些事儿--缓存那些事儿(二)，缓存设计模式">
 <meta property="og:url" content="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/index.html">
 <meta property="og:site_name" content="BugKillerPro">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/20200806194359875.png">
 <meta property="article:published_time" content="2022-07-04T09:06:09.494Z">
-<meta property="article:modified_time" content="2022-07-04T09:30:36.046Z">
+<meta property="article:modified_time" content="2022-07-12T06:25:08.898Z">
 <meta property="article:author" content="BugKillerPro">
 <meta property="article:tag" content="架构设计那些事儿">
 <meta name="twitter:card" content="summary">
@@ -68,7 +68,7 @@
 
 
 
-  <title> 架构设计那些事儿--缓存那些事儿(二) | BugKillerPro </title>
+  <title> 架构设计那些事儿--缓存那些事儿(二)，缓存设计模式 | BugKillerPro </title>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -183,7 +183,7 @@
             
             
               
-                架构设计那些事儿--缓存那些事儿(二)
+                架构设计那些事儿--缓存那些事儿(二)，缓存设计模式
               
             
           </h1>
@@ -214,6 +214,15 @@
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <h2 id="缓存设计的几种常见模式"><a href="#缓存设计的几种常见模式" class="headerlink" title="缓存设计的几种常见模式"></a>缓存设计的几种常见模式</h2><h3 id="1，Cache-Aside"><a href="#1，Cache-Aside" class="headerlink" title="1，Cache-Aside"></a>1，Cache-Aside</h3><ul>
 <li>读操作：应用先去查询缓存，命中则返回；没命中应用则会去数据库读取数据，写入缓存后返回。</li>
 <li>写操作：应用先更新数据库再删除缓存，然后返回。<br>可以看到，这种模式下，缓存只有写入与删除而没有修改操作。<br>适用场景：读多写少。<br>存在的问题：多线程下易出现数据不一致的问题。</li>
@@ -242,16 +251,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/" rel="next" title="架构设计那些事儿--缓存那些事儿(一)">
-                <i class="fa fa-chevron-left"></i> 架构设计那些事儿--缓存那些事儿(一)
+              <a href="/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/" rel="next" title="架构设计那些事儿--缓存那些事儿(一)，缓存的前世今生">
+                <i class="fa fa-chevron-left"></i> 架构设计那些事儿--缓存那些事儿(一)，缓存的前世今生
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/" rel="prev" title="架构设计那些事儿--缓存那些事儿(三)">
-                架构设计那些事儿--缓存那些事儿(三) <i class="fa fa-chevron-right"></i>
+              <a href="/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/" rel="prev" title="架构设计那些事儿--缓存那些事儿(三)，缓存性能和一致性的最佳实践">
+                架构设计那些事儿--缓存那些事儿(三)，缓存性能和一致性的最佳实践 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -317,7 +326,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">93</span>
+              <span class="site-state-item-count">94</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

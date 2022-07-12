@@ -8475,13 +8475,22 @@
       </tags>
   </entry>
   <entry>
-    <title>架构设计那些事儿--缓存那些事儿(一)</title>
+    <title>架构设计那些事儿--缓存那些事儿(一)，缓存的前世今生</title>
     <url>/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。 </p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一般而言，现在互联网应用（网站或App）的整体流程，可以概括如图1所示，用户请求从界面（浏览器或App界面）到网络转发、应用服务再到存储（数据库或文件系统），然后返回到界面呈现内容。随着互联网的普及，内容信息越来越复杂，用户数和访问量越来越大，我们的应用需要支撑更多的并发量，同时我们的应用服务器和数据库服务器所做的计算也越来越多。但是往往我们的应用服务器资源是有限的，且技术变革是缓慢的，数据库每秒能接受的请求次数也是有限的（或者文件的读写也是有限的），如何能够有效利用有限的资源来提供尽可能大的吞吐量？一个有效的办法就是引入缓存，打破标准流程，每个环节中请求可以从缓存中直接获取目标数据并返回，从而减少计算量，有效提升响应速度，让有限的资源服务更多的用户。如图1所示，缓存的使用可以出现在1～4的各个环节中，每个环节的缓存方案与使用各有特点。<br>如下图所示，缓存的使用可以出现在1～4的各个环节中，每个环节的缓存方案与使用各有特点。<br><img src="/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/v2-9838f98ea50f9f143b2d56eed6dac717_b.png" alt="ima"></p>
 <h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><h3 id="1-缓存特征"><a href="#1-缓存特征" class="headerlink" title="1.缓存特征"></a>1.缓存特征</h3><p>缓存也是一个数据模型对象，那么必然有它的一些特征：</p>
 <h4 id="1-1-命中率"><a href="#1-1-命中率" class="headerlink" title="1.1 命中率"></a>1.1 命中率</h4><p>命中率=返回正确结果数/请求缓存次数，命中率问题是缓存中的一个非常重要的问题，它是衡量缓存有效性的重要指标。命中率越高，表明缓存的使用率越高。</p>
@@ -8573,13 +8582,22 @@
       </tags>
   </entry>
   <entry>
-    <title>架构设计那些事儿--缓存那些事儿(三)</title>
+    <title>架构设计那些事儿--缓存那些事儿(三)，缓存性能和一致性的最佳实践</title>
     <url>/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <p>当系统决定引入缓存方案的时候，缓存和数据库的一致性，便会成为一个无法回避的问题。<br>很多人对这个问题，有很多疑惑：</p>
 <ul>
 <li>到底是更新缓存还是删缓存？</li>
@@ -8803,13 +8821,22 @@
       </tags>
   </entry>
   <entry>
-    <title>架构设计那些事儿--缓存那些事儿(二)</title>
+    <title>架构设计那些事儿--缓存那些事儿(二)，缓存设计模式</title>
     <url>/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <h2 id="缓存设计的几种常见模式"><a href="#缓存设计的几种常见模式" class="headerlink" title="缓存设计的几种常见模式"></a>缓存设计的几种常见模式</h2><h3 id="1，Cache-Aside"><a href="#1，Cache-Aside" class="headerlink" title="1，Cache-Aside"></a>1，Cache-Aside</h3><ul>
 <li>读操作：应用先去查询缓存，命中则返回；没命中应用则会去数据库读取数据，写入缓存后返回。</li>
 <li>写操作：应用先更新数据库再删除缓存，然后返回。<br>可以看到，这种模式下，缓存只有写入与删除而没有修改操作。<br>适用场景：读多写少。<br>存在的问题：多线程下易出现数据不一致的问题。</li>
@@ -8827,13 +8854,22 @@
       </tags>
   </entry>
   <entry>
-    <title>架构设计那些事儿--缓存那些事儿(四)</title>
+    <title>架构设计那些事儿--缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</title>
     <url>/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <h2 id="缓存穿透、-缓存雪崩-和-缓存击穿"><a href="#缓存穿透、-缓存雪崩-和-缓存击穿" class="headerlink" title="缓存穿透、 缓存雪崩 和 缓存击穿"></a>缓存穿透、 缓存雪崩 和 缓存击穿</h2><blockquote>
 <p>在生产环境中，会因为很多的原因造成访问请求绕过了缓存，都需要访问数据库持久层，虽然对Redsi缓存服务器不会造成影响，但是数据库的负载就会增大，使缓存的作用降低</p>
 </blockquote>
@@ -8888,13 +8924,22 @@
       </tags>
   </entry>
   <entry>
-    <title>架构设计那些事儿--缓存那些事儿(五)</title>
+    <title>架构设计那些事儿--缓存那些事儿(五)，布隆过滤器详解</title>
     <url>/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
 <blockquote>
 <p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
 </blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
 <h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><p>本质上布隆过滤器(Bloom Filter)是一种数据结构，比较巧妙的概率型数据结构（probabilistic data structure），特点是高效地插入和查询，可以用来告诉你 某样东西一定不存在或者可能存在。</p>
 <p>相比于传统的 List、Set、Map 等数据结构，它更高效、占用空间更少，但是缺点是其返回的结果是概率性的，而不是确切的。</p>
 <p>可以一句话总结：</p>
@@ -8963,6 +9008,33 @@
 <li>不支持删除 因为布隆过滤器是通过多个哈希函数把数据映射到多个bit中，那么不同的value可能映射到其中相同的bit中，所以如果删除某一个value，会影响所有其他映射到同样的bit中的value。</li>
 <li>误判率 由于是hash映射，所以多个value可能映射到同样的bit位中，可以通过增大hash的数量来减少误判率，但是无法完全避免。</li>
 <li>如果总的元素数量大于最初预估的总元素数量，误判率就会升高，需要重新扩容并初始化布隆过滤器。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>架构设计那些事儿</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>架构设计那些事儿--缓存那些事儿(六)，redis</title>
+    <url>/2022/07/12/uncatalog/cl5hsfpv60000m4r706d63234/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<blockquote>
+<p>目前各种类型的缓存都活跃在成千上万的应用服务中，还没有一种缓存方案可以解决一切的业务场景或数据类型，我们需要根据自身的特殊场景和背景，选择最适合的缓存方案。缓存的使用是程序员、架构师的必备技能，好的程序员能根据数据类型、业务场景来准确判断使用何种类型的缓存，如何使用这种缓存，以最小的成本最快的效率达到最优的目的。</p>
+</blockquote>
+<p>《架构设计那些事儿–缓存那些事儿》系列共分六章：</p>
+<ul>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl56he3gx000050r72rv69xlr/">架构设计那些事儿–缓存那些事儿(一)，缓存的前世今生</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235qb0001ikr7dxwr0zu2/">架构设计那些事儿–缓存那些事儿(二)，缓存设计模式</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/04/uncatalog/cl58235q80000ikr72lnvg3qt/">架构设计那些事儿–缓存那些事儿(三)，缓存性能和一致性的最佳实践</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hl5x3l00000wr734tl8oua/">架构设计那些事儿–缓存那些事儿(四)，缓存穿透、 缓存雪崩 和 缓存击穿</a></li>
+<li><a href="https://bugkillerpro.github.io/2022/07/12/uncatalog/cl5hm81oo00000wr786z6dmjl/">架构设计那些事儿–缓存那些事儿(五)，布隆过滤器详解</a></li>
+<li><a href>架构设计那些事儿–缓存那些事儿(六)，redis</a></li>
+</ul>
+<h2 id="First-of-all"><a href="#First-of-all" class="headerlink" title="First of all"></a>First of all</h2><p> 当我们想要全面无误的了解一个工具的时候，强烈建议直接去读官方文档，redis也不例外</p>
+<ul>
+<li><a href="https://redis.io/">reids官方文档</a></li>
+<li><a href="https://redis.uptrace.dev/">go redis</a></li>
 </ul>
 ]]></content>
       <tags>
