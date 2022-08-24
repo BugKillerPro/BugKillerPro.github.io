@@ -9127,6 +9127,7 @@
 <li>Redis 存储结构多样化，不同的数据结构对数据存储进行了优化，如压缩表，对短数据进行压缩存储，再如，跳表，使用有序的数据结构加快读取的速度。</li>
 <li>Redis 采用自己实现的事件分离器，效率比较高，内部采用非阻塞的执行方式，吞吐能力比较大。</li>
 </ul>
+<p>(Redis性能很快的原因<br>1）基于内存操作，Redis的所有数据都存在内存中，因此所有的运算都是内存级别的，所以他的性能比较高。<br>2）数据结构简单：Redis的数据结构都是专门设计的，而这些简单的数据结构的查找和操作的时间大部分复杂度都是O（1），因此性能比较强，可以参考我之前写过的这篇文章。深入理解redis——redis经典五种数据类型及底层实现<br>3）多路复用和非阻塞I/O，Redis使用I/O多路复用来监听多个socket链接客户端，这样就可以使用一个线程链接来处理多个请求，减少线程切换带来的开销，同时也避免了I/O阻塞操作。<br>4）主线程为单线程，避免上下文切换，因为是单线程模型，因此避免了不必要的上下文切换和多线程竞争（比如锁），这就省去了多线程切换带来的时间和性能上的消耗，而且单线程不会导致死锁问题的发生。)</p>
 <h3 id="redis-安装"><a href="#redis-安装" class="headerlink" title="redis 安装"></a>redis 安装</h3><p><a href="https://www.cnblogs.com/hunanzp/p/12304622.html">参考链接</a></p>
 <h2 id="Redis-数据结构与命令使用"><a href="#Redis-数据结构与命令使用" class="headerlink" title="Redis 数据结构与命令使用"></a>Redis 数据结构与命令使用</h2><p>Redis 的数据结构有：string(字符串)、hash(哈希)、list(列表)、set(集合)、zset(有序集 合)。但这些只是 Redis 对外的数据结构，实际上每种数据结构都有自己底层的内部编码实现，而且是多种实现， 这样 Redis 会在合适的场景选择合适的内部编码。<br><img src="/2022/07/12/uncatalog/cl5hsfpv60000m4r706d63234/640.jpg" alt="img"><br>可以看到每种数据结构都有两种以上的内部编码实现，例如 list 数据结 构包含了 linkedlist 和 ziplist 两种内部编码。同时，有些内部编码，例如 ziplist， 可以作为多种外部数据结构的内部实现，可以通过 object encoding 命令查询内部编码。</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">object encoding xxx  # xxx 为键名</span><br></pre></td></tr></table></figure></div>
