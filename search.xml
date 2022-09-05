@@ -9812,4 +9812,60 @@
         <tag>架构设计那些事儿</tag>
       </tags>
   </entry>
+  <entry>
+    <title>git三剑客之-安装和配置</title>
+    <url>/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/</url>
+    <content><![CDATA[<hr>
+<span id="more"></span>
+<blockquote>
+<p>极客时间<a href="https://time.geekbang.org/course/intro/100021601">《玩转 Git 三剑客》</a> 课程笔记</p>
+</blockquote>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官方安装包下载地址:<a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a><br>验证是否安装成功：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git --version</span></span><br><span class="line">git version 2.11.1.windows.1</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="git使用之前要做的最小配置"><a href="#git使用之前要做的最小配置" class="headerlink" title="git使用之前要做的最小配置"></a>git使用之前要做的最小配置</h2><ol>
+<li><p>配置全局用户信息 </p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &#x27;your_name&#x27;</span><br><span class="line">git config --global user.email &#x27;your_email@domain.com&#x27;</span><br></pre></td></tr></table></figure></div></li>
+<li><p>配置某个git仓库的用户信息</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">git config --local user.name &#x27;your_name&#x27;</span><br><span class="line">git config --local user.email &#x27;your_email@domain.com&#x27;</span><br></pre></td></tr></table></figure></div></li>
+<li><p>config的三个作用域(优先级从高到低)</p>
+<table>
+<thead>
+<tr>
+<th>作用域</th>
+<th>用法</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>local</td>
+<td>git config –local</td>
+<td>只对某个仓库有效</td>
+</tr>
+<tr>
+<td>global</td>
+<td>git config –global</td>
+<td>对当前用户所有仓库有效</td>
+</tr>
+<tr>
+<td>system</td>
+<td>git config –system</td>
+<td>对系统所有登录的用户有效</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>查看git配置</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">git config --list --local</span><br><span class="line">git config --list --global</span><br><span class="line">git config --list --system</span><br></pre></td></tr></table></figure></div></li>
+</ol>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><ol>
+<li><p>把已有的项目代码纳入git管理</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 项目代码所在文件夹</span><br><span class="line">git init</span><br></pre></td></tr></table></figure></div></li>
+<li><p>新建的项目直接用git管理</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 某个文件夹</span><br><span class="line">git init your_project_name</span><br><span class="line">cd your_project_name</span><br></pre></td></tr></table></figure></div></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
 </search>
