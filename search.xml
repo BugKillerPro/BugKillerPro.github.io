@@ -9813,7 +9813,7 @@
       </tags>
   </entry>
   <entry>
-    <title>git三剑客之-安装和配置</title>
+    <title>玩转git三剑客</title>
     <url>/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/</url>
     <content><![CDATA[<hr>
 <span id="more"></span>
@@ -9821,8 +9821,8 @@
 <p>极客时间<a href="https://time.geekbang.org/course/intro/100021601">《玩转 Git 三剑客》</a> 课程笔记</p>
 </blockquote>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官方安装包下载地址:<a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a><br>验证是否安装成功：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git --version</span></span><br><span class="line">git version 2.11.1.windows.1</span><br></pre></td></tr></table></figure></div>
-
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git --version</span></span><br><span class="line">git version 2.37.3.windows.1</span><br></pre></td></tr></table></figure></div>
+<p>(建议使用比较高的版本，旧版本可能会在<code>git log --all</code>这些结果展示上有些不太友好的差异)</p>
 <h2 id="git使用之前要做的最小配置"><a href="#git使用之前要做的最小配置" class="headerlink" title="git使用之前要做的最小配置"></a>git使用之前要做的最小配置</h2><ol>
 <li><p>配置全局用户信息 </p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &#x27;your_name&#x27;</span><br><span class="line">git config --global user.email &#x27;your_email@domain.com&#x27;</span><br></pre></td></tr></table></figure></div></li>
@@ -9857,18 +9857,75 @@
 <li><p>查看git配置</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">git config --list --local</span><br><span class="line">git config --list --global</span><br><span class="line">git config --list --system</span><br></pre></td></tr></table></figure></div></li>
 </ol>
-<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><ol>
+<h2 id="git项目初始化"><a href="#git项目初始化" class="headerlink" title="git项目初始化"></a>git项目初始化</h2><ol>
 <li><p>把已有的项目代码纳入git管理</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 项目代码所在文件夹</span><br><span class="line">git init</span><br></pre></td></tr></table></figure></div></li>
 <li><p>新建的项目直接用git管理</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 某个文件夹</span><br><span class="line">git init your_project_name</span><br><span class="line">cd your_project_name</span><br></pre></td></tr></table></figure></div></li>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 某个文件夹</span><br><span class="line">git init your_project_name # 会自动创建文件夹</span><br><span class="line">cd your_project_name</span><br></pre></td></tr></table></figure></div></li>
 </ol>
-<h2 id="Some-tips"><a href="#Some-tips" class="headerlink" title="Some tips"></a>Some tips</h2><p><img src="/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/add.png"></p>
-<ol>
+<h2 id="了解工作区和暂存区"><a href="#了解工作区和暂存区" class="headerlink" title="了解工作区和暂存区"></a>了解工作区和暂存区</h2><p><img src="/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/add.png"></p>
+<h2 id="通过git-log查看版本演变历史"><a href="#通过git-log查看版本演变历史" class="headerlink" title="通过git log查看版本演变历史"></a>通过<code>git log</code>查看版本演变历史</h2><ol>
+<li><p>基本命令<code>git log</code></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span></span></span><br><span class="line">commit a0b98ea6769a71901895c5f879b4b23383ba6bcd</span><br><span class="line">Author: xxx</span><br><span class="line">Date:   Wed Sep 7 11:20:39 xxx</span><br><span class="line"></span><br><span class="line">    Move readme.md to readme</span><br><span class="line"></span><br><span class="line">commit 63ca73303c196401d6f0312186a11d517c51f749</span><br><span class="line">Author: xxx</span><br><span class="line">Date:   Tue Sep 6 11:10:01 xxx</span><br><span class="line"></span><br><span class="line">    Add refering projects</span><br><span class="line"></span><br><span class="line">commit f77ad615d0a091ac22f78f892c4d50077b43096a</span><br><span class="line">Author: xxx</span><br><span class="line">Date:   Tue Sep 6 11:01:34 xxx</span><br><span class="line"></span><br><span class="line">    Add js</span><br><span class="line"></span><br></pre></td></tr></table></figure></div></li>
+<li><p>简洁命令命令<code>git log</code>。(这条命令可以帮助你以简洁的方式查看提交记录。它把提交记录浓缩在了一行，而且只保留类似较短的提交哈希值和提交信息)</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> --oneline</span></span><br><span class="line">a0b98ea Move readme.md to readme</span><br><span class="line">63ca733 Add refering projects</span><br><span class="line">f77ad61 Add js</span><br></pre></td></tr></table></figure></div></li>
+<li><p>查看指定的最近m个commit，在上面的两个命令里面添加 <code>-nm</code>即可</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">最近的四次提交</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> -n4</span> </span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> -n4 --oneline</span></span><br></pre></td></tr></table></figure></div></li>
+<li><p>图形化查看各个分支的<code>git log</code></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> --all --graph</span></span><br><span class="line">* commit fee6bacc33f975bdb0f9ecd7edc7db5acd5429de (HEAD -&gt; main)</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Wed Sep 7 15:05:37 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Modify style.css on branch main</span><br><span class="line">|</span><br><span class="line">| * commit 97b461a6abd2c7700cc063b5795ec192d6d7d1c3 (tmp)</span><br><span class="line">|/  Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">|   Date:   Wed Sep 7 14:46:59 2022 +0800</span><br><span class="line">|</span><br><span class="line">|       Add test to branch tmp</span><br><span class="line">|</span><br><span class="line">* commit a0b98ea6769a71901895c5f879b4b23383ba6bcd</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Wed Sep 7 11:20:39 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Move readme.md to readme</span><br><span class="line">|</span><br><span class="line">* commit 63ca73303c196401d6f0312186a11d517c51f749</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Tue Sep 6 11:10:01 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Add refering projects</span><br><span class="line">|</span><br><span class="line">* commit f77ad615d0a091ac22f78f892c4d50077b43096a (tag: js01)</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Tue Sep 6 11:01:34 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Add js</span><br><span class="line">|</span><br><span class="line">* commit 78be6970adb1671a56e4536b7ea2170a4aa0a7cf</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Tue Sep 6 10:59:30 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Add style.css</span><br><span class="line">|</span><br><span class="line">* commit f51e1172b2dca4aea588ec756f630f5ad803212d</span><br><span class="line">| Author: BugKillerPro &lt;511808895@qq.com&gt;</span><br><span class="line">| Date:   Tue Sep 6 10:55:52 2022 +0800</span><br><span class="line">|</span><br><span class="line">|     Add index _ log</span><br><span class="line">|</span><br><span class="line">* commit 97ad72879455e51a3529a52806f2ec07f67bc8bd (origin/main, origin/HEAD)</span><br><span class="line">  Author: bugmakerprox &lt;112847253+bugmakerprox@users.noreply.github.com&gt;</span><br><span class="line">  Date:   Mon Sep 5 14:02:11 2022 +0800</span><br><span class="line"></span><br><span class="line">      Initial commit</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>同样也可以加上<code>--oneline</code>查看简洁化的log，也可以加上<code>-nm</code>，查看所有分支的最近m条log</p>
+</li>
+</ol>
+<h2 id="通过图形化界面工具查看版本演变历史"><a href="#通过图形化界面工具查看版本演变历史" class="headerlink" title="通过图形化界面工具查看版本演变历史"></a>通过图形化界面工具查看版本演变历史</h2><p>输入<code>gitk</code>命令，会弹出图形化工具界面</p>
+<h2 id="探秘-git文件夹"><a href="#探秘-git文件夹" class="headerlink" title="探秘.git文件夹"></a>探秘<code>.git</code>文件夹</h2><ol>
+<li><p>查看所有文件</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls -al</span></span><br><span class="line">drwxr-xr-x  7 root root 222 9月   7 15:30 .</span><br><span class="line">drwxr-xr-x  3 root root  18 9月   7 16:26 ..</span><br><span class="line">-rw-r--r--  1 root root  32 9月   7 15:05 COMMIT_EDITMSG</span><br><span class="line">-rw-r--r--  1 root root 360 9月   7 14:44 config</span><br><span class="line">-rw-r--r--  1 root root  73 9月   5 14:04 description</span><br><span class="line">-rw-r--r--  1 root root 103 9月   7 10:54 FETCH_HEAD</span><br><span class="line">-rw-r--r--  1 root root 546 9月   7 15:30 gitk.cache</span><br><span class="line">-rw-r--r--  1 root root  21 9月   7 14:52 HEAD</span><br><span class="line">drwxr-xr-x  2 root root 268 9月   5 14:04 hooks</span><br><span class="line">-rw-r--r--  1 root root 554 9月   7 15:05 index</span><br><span class="line">drwxr-xr-x  2 root root  21 9月   5 14:04 info</span><br><span class="line">drwxr-xr-x  3 root root  30 9月   5 14:04 logs</span><br><span class="line">drwxr-xr-x 32 root root 310 9月   7 16:03 objects</span><br><span class="line">-rw-r--r--  1 root root  41 9月   7 10:59 ORIG_HEAD</span><br><span class="line">-rw-r--r--  1 root root 105 9月   5 14:04 packed-refs</span><br><span class="line">drwxr-xr-x  5 root root  46 9月   5 14:04 refs</span><br><span class="line"></span><br></pre></td></tr></table></figure></div></li>
+<li><p>几个文件的说明</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>文件(夹)名</th>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HEAD</td>
+<td>当前仓库工作所在的分支</td>
+<td>文件内容<code>ref: refs/heads/main</code> ，指向refs/heads下的分支文件</td>
+</tr>
+<tr>
+<td>config</td>
+<td>和本地仓库相关的配置信息</td>
+<td>local作用域的信息会写在这里面；同样，编辑该文件，信息也可以从git config –local –list看到</td>
+</tr>
+<tr>
+<td>refs/</td>
+<td></td>
+<td>对系统所有登录的用户有效</td>
+</tr>
+</tbody></table>
+<p>2.1 <code>refs/</code>文件夹</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> tree refs</span></span><br><span class="line">refs/</span><br><span class="line">├── heads</span><br><span class="line">│ ├── main</span><br><span class="line">│ └── tmp</span><br><span class="line">├── remotes</span><br><span class="line">│ └── origin</span><br><span class="line">│     └── HEAD</span><br><span class="line">└── tags</span><br><span class="line">    └── js01</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<p>2.1.1 <code>heads</code>– 仓库的分支情况</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat main</span></span><br><span class="line">fee6bacc33f975bdb0f9ecd7edc7db5acd5429de</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat tmp</span></span><br><span class="line">97b461a6abd2c7700cc063b5795ec192d6d7d1c3</span><br></pre></td></tr></table></figure></div>
+<p>通过对比上面讲到的“图形化查看各个分支”，可以发现，<code>main</code>和<code>tmp</code>文件里存放的分别是这两个分支当前指向的<code>commit</code>，也就是每个分支的最后一个<code>commit</code>。<br>另外，可以通过<code>git cat-file -t</code>查看对象的信息，关于<code>git cat-file</code>的用法，详见<a href="https://cloud.tencent.com/developer/section/1138770">cat-file</a></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git cat-file -t fee6bacc33f975bdb0f9ecd7edc7db5acd5429de</span></span><br><span class="line">commit</span><br></pre></td></tr></table></figure></div>
+<p>所以，<code>refs/heads/</code>目录下的文件内容是<code>commit</code>对象信息</p>
+<p>2.1.1 <code>tags</code>– 仓库的tag信息</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat tags/js01</span></span><br><span class="line">db9cd1f2ba810d45ab0c214326ad50fc026dd65d</span><br></pre></td></tr></table></figure></div>
+<p>同样，通过通过<code>git cat-file -t</code>查看对象信息</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git cat-file -t db9cd1f2ba810d45ab0c214326ad50fc026dd65d</span></span><br><span class="line">tag</span><br></pre></td></tr></table></figure></div>
+<p>所以，<code>refs/tags/</code>目录下的文件内容是<code>tag</code>对象信息，再通过<code>git cat-file -p</code>查看一下详细信息</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git cat-file -p db9cd1f2ba810d45ab0c214326ad50fc026dd65d</span></span><br><span class="line">object f77ad615d0a091ac22f78f892c4d50077b43096a</span><br><span class="line">type commit</span><br><span class="line">tag js01</span><br><span class="line">tagger xxx &lt;email&gt; 1662537810 +0800</span><br><span class="line"></span><br><span class="line">js01</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git cat-file -t f77ad615d0a091ac22f78f892c4d50077b43096a</span></span><br><span class="line">commit</span><br></pre></td></tr></table></figure></div>
+<p>可以看出，<code>js01</code>这个tag是打在<code>f77ad615d0a091ac22f78f892c4d50077b43096a</code>这次<code>commit</code>上的，和上面“图形化查看各个分支”看到的信息一致。</p>
+<h2 id="Some-tips"><a href="#Some-tips" class="headerlink" title="Some tips"></a>Some tips</h2><ol>
 <li>windows系统中，<code>git commit -m &quot;Add file or files&quot;</code> 提交说明建议用双引号，以免出现不可预知的错误</li>
-<li><code>git commit -m &quot;Add file or files&quot;</code>，提交说明，建议<code>Add</code>首字母大写</li>
+<li><code>git commit -m &quot;Add file or files&quot;</code>，提交说明，建议第一个单词(<code>Add</code>)的首字母大写</li>
 <li>对于git已经跟踪的文件，文件内容变更后，建议使用<code>git add -u</code></li>
-<li>对于git已经跟踪的文件，文件重命名后，建议使用</li>
+<li>对于git已经跟踪的文件，如果要对其进行重命名，建议使用<code>git mv oldName newName</code>,然后直接commit</li>
 </ol>
 ]]></content>
       <tags>
