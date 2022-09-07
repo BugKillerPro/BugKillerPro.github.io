@@ -9863,6 +9863,13 @@
 <li><p>新建的项目直接用git管理</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 某个文件夹</span><br><span class="line">git init your_project_name</span><br><span class="line">cd your_project_name</span><br></pre></td></tr></table></figure></div></li>
 </ol>
+<h2 id="Some-tips"><a href="#Some-tips" class="headerlink" title="Some tips"></a>Some tips</h2><p><img src="/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/add.png"></p>
+<ol>
+<li>windows系统中，<code>git commit -m &quot;Add file or files&quot;</code> 提交说明建议用双引号，以免出现不可预知的错误</li>
+<li><code>git commit -m &quot;Add file or files&quot;</code>，提交说明，建议<code>Add</code>首字母大写</li>
+<li>对于git已经跟踪的文件，文件内容变更后，建议使用<code>git add -u</code></li>
+<li>对于git已经跟踪的文件，文件重命名后，建议使用</li>
+</ol>
 ]]></content>
       <tags>
         <tag>git</tag>
