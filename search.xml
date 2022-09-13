@@ -9869,7 +9869,7 @@
 <h2 id="git项目初始化"><a href="#git项目初始化" class="headerlink" title="git项目初始化"></a>git项目初始化</h2><ol>
 <li>把已有的项目代码纳入git管理</li>
 </ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">span</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="code"><pre><span class="line">cd 项目代码所在文件夹</span><br><span class="line">git init</span><br></pre></td></tr></table></figure></div>
 
 <ol start="2">
 <li>新建的项目直接用git管理</li>
