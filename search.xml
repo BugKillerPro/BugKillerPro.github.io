@@ -10108,7 +10108,7 @@
 <li><code>git add index1.htm</code><br>查看<code>git status</code>:<br><img src="/2022/09/05/uncatalog/cl7oebs5q0000f0r7e0oq9fnk/4.png" alt="img"></li>
 </ul>
 <p>冲突已经解决，接下来<code>git commit</code>和<code>git push</code>即可。</p>
-<h2 id="Some-tips"><a href="#Some-tips" class="headerlink" title="Some tips"></a>Some tips</h2><ol>
+<h2 id="禁止向集成分支执行git-push-f操作"><a href="#禁止向集成分支执行git-push-f操作" class="headerlink" title="禁止向集成分支执行git push -f操作"></a>禁止向集成分支执行<code>git push -f</code>操作</h2><h2 id="禁止向集成分支执行变更历史的操作"><a href="#禁止向集成分支执行变更历史的操作" class="headerlink" title="禁止向集成分支执行变更历史的操作"></a>禁止向集成分支执行变更历史的操作</h2><h2 id="Some-tips"><a href="#Some-tips" class="headerlink" title="Some tips"></a>Some tips</h2><ol>
 <li>windows系统中，<code>git commit -m &quot;Add file or files&quot;</code> 提交说明建议用双引号，以免出现不可预知的错误</li>
 <li><code>git commit -m &quot;Add file or files&quot;</code>，提交说明，建议第一个单词(<code>Add</code>)的首字母大写</li>
 <li>对于git已经跟踪的文件，文件内容变更后，建议使用<code>git add -u</code></li>
